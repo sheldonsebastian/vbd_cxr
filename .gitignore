@@ -126,5 +126,5 @@ dmypy.json
 *.pt
 *.jpeg
 .idea/
-transformed_data/train/
-transformed_data/test/
+/transformed_data/train/
+/transformed_data/test/

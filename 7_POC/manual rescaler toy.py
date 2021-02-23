@@ -6,8 +6,7 @@ from common.utilities import plot_img, get_image_as_array, get_bb_info, bounding
     dicom2array, convert_bb_smallest_max_scale
 
 # %% --------------------
-train_dir_path = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-                 "Workspace/vbd_cxr/transformed_data/train"
+train_dir_path = "/transformed_data/train"
 
 # %% --------------------
 label2color = {0: ("Aortic enlargement", "#2a52be"),
@@ -29,8 +28,7 @@ label2color = {0: ("Aortic enlargement", "#2a52be"),
 
 # %% --------------------
 train_data = pd.read_csv(
-    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-    "Workspace/vbd_cxr/transformed_data/transformed_train.csv")
+    "/transformed_data/transformed_train.csv")
 
 # %% --------------------
 train_data.head()

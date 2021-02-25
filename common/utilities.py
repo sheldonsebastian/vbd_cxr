@@ -134,6 +134,7 @@ def read_text_literal(file_path):
 
 
 # %% --------------------
+# reverse operation for SmallestMaxSize Albumentation Transformation
 def convert_bb_smallest_max_scale(bb_df, original_width, original_height, transformed_width,
                                   transformed_height):
     """bb_df contains x_min, y_min, x_max, y_max which is in original_height and original_width
@@ -144,6 +145,23 @@ def convert_bb_smallest_max_scale(bb_df, original_width, original_height, transf
     scale_factor = original_min / transformed_min
 
     return bb_df / scale_factor
+
+
+# %% --------------------
+# reverse operation for Resize Albumentation Transformation
+def convert_bb_resize_scale(bb_df, original_width, original_height, transformed_width,
+                            transformed_height):
+    """bb_df contains x_min, y_min, x_max, y_max which is in original_height and original_width
+    dimensions """
+    x_axis_scale_factor = original_height / transformed_height
+    y_axis_scale_factor = original_width / transformed_width
+
+    bb_df_res = bb_df.copy()
+
+    bb_df_res[:, [0, 2]] /= x_axis_scale_factor
+    bb_df_res[:, [1, 3]] /= y_axis_scale_factor
+
+    return bb_df_res
 
 
 # %% --------------------

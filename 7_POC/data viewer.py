@@ -29,7 +29,7 @@ label2color = {0: ("Aortic enlargement", "#2a52be"),
 train_data2 = pd.read_csv(
     "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr/transformed_data/transformed_train.csv")
 train_data = pd.read_csv(
-    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr/1_merger/fused_train_0.csv")
+    "/1_merger/wbf_merged/fused_train_0.csv")
 
 # %% --------------------
 train_data.head()

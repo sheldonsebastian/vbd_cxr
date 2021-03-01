@@ -1,4 +1,4 @@
-# %% --------------------
+# %% --------------------convert DICOM to jpeg
 import os
 import warnings
 from datetime import datetime

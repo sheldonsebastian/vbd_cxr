@@ -41,12 +41,16 @@ print(merged_wbf["class_id"].value_counts())
 
 # %% --------------------
 # perform 90-10 stratified split
-train_df, holdout_df = multi_label_split_based_on_percentage(merged_wbf, 2, 0.1, "image_id",
+train_df, holdout_df = multi_label_split_based_on_percentage(merged_wbf, 1, 0.1, "image_id",
                                                              "class_id", seed=42)
 
 # %% --------------------
 # visualize the split
 display_fold_distribution(train_df, holdout_df, "class_id", color=list('rgbkymc'))
+
+# %% --------------------
+train_df = train_df.drop(["fold"], axis=1)
+holdout_df = holdout_df.drop(["fold"], axis=1)
 
 # %% --------------------
 # save in csv

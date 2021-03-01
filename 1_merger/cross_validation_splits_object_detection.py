@@ -33,17 +33,17 @@ merged_wbf_abnormal = merged_wbf[merged_wbf["class_id"] != 14].copy(deep=True)
 
 # %% --------------------
 # perform 90-10 stratified split
-train_df, holdout_df = multi_label_split_based_on_percentage(merged_wbf_abnormal, 2, 0.1,
+train_df, holdout_df = multi_label_split_based_on_percentage(merged_wbf_abnormal, 1, 0.1,
                                                              "image_id",
                                                              "class_id", seed=42)
-# %% --------------------
-print(len(merged_wbf_abnormal))
-print(len(train_df) // 2)
-print(len(holdout_df) // 2)
 
 # %% --------------------
 # visualize the split
 display_fold_distribution(train_df, holdout_df, "class_id", color=list('rgbkymc'))
+
+# %% --------------------
+train_df = train_df.drop(["fold"], axis=1)
+holdout_df = holdout_df.drop(["fold"], axis=1)
 
 # %% --------------------
 # save in csv

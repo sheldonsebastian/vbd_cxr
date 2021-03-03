@@ -288,7 +288,7 @@ def merge_bb_nms(bb_arr, x_min_col, y_min_col, x_max_col, y_max_col, iou_thr=0, 
 
 # %% --------------------
 def multi_label_split_based_on_percentage(df, n_splits, test_percentage, unique_id_column,
-                                          target_column, seed=42):
+                                          target_column, seed):
     """
     :param df: The dataframe in which 1 row = 1 class for multi-label classification
     :param n_splits: How to split the dataframe
@@ -335,13 +335,12 @@ def multi_label_split_based_on_percentage(df, n_splits, test_percentage, unique_
 
 
 # %% --------------------
-def multi_label_split_based_on_fold(df, n_splits, unique_id_column, target_column, seed=42):
+def multi_label_split_based_on_fold(df, n_splits, unique_id_column, target_column, seed):
     """
     :param df: The dataframe in which 1 row = 1 class for multi-label classification
     :param n_splits: How to split the dataframe
     :param unique_id_column: the column which uniquely identifies the dataframe
     :param target_column: the classes column (multi labels). It has to be numeric
-    :param seed: 42
     :return: train and validation dataframe same as df but with fold columns
     """
 

@@ -24,8 +24,8 @@ from common.utilities import multi_label_split_based_on_percentage, display_fold
     multi_label_split_based_on_fold
 
 # %% --------------------splits for 2 class classifier
-# read train.csv file
-merged_wbf = pd.read_csv(MERGED_DIR + "/wbf_merged/fused_train_0_6.csv")
+# read train_df.csv file
+merged_wbf = pd.read_csv(MERGED_DIR + "/wbf_merged/train_df.csv")
 
 # %% --------------------
 # create binary class
@@ -34,14 +34,15 @@ merged_wbf["class_id"] = merged_wbf["class_id"].replace(
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0])
 
 # %% --------------------
+# drop duplicates since we are not interested in bounding boxes
 merged_wbf = merged_wbf[["image_id", "class_id"]].drop_duplicates()
 
 # %% --------------------
 print(merged_wbf["class_id"].value_counts())
 
 # %% --------------------
-# perform 90-10 stratified split
-train_df, holdout_df = multi_label_split_based_on_percentage(merged_wbf, 1, 0.1, "image_id",
+# perform 95-5 stratified split
+train_df, holdout_df = multi_label_split_based_on_percentage(merged_wbf, 1, 0.05, "image_id",
                                                              "class_id", seed=42)
 
 # %% --------------------

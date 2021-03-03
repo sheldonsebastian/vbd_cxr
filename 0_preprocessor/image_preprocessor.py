@@ -36,9 +36,12 @@ def dicom2array(path, voi_lut=True, fix_monochrome=True):
     if fix_monochrome and dicom.PhotometricInterpretation == "MONOCHROME1":
         data = np.amax(data) - data
 
-    # normalizing the data?
+    # setting range of data to be between 0 and 1
     data = data - np.min(data)
     data = data / np.max(data)
+
+    # then multiplying by 255 to make it human friendly
+    # NOTE: THE DATA IS NOT NORMALIZED DUE TO THIS HUMAN FRIENDLY OPERATION
     data = (data * 255).astype(np.uint8)
 
     return data

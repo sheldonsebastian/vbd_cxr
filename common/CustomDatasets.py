@@ -31,8 +31,7 @@ class VBD_CXR_2_Class_Train(Dataset):
 
         # subset data based on fold
         if fold is not None:
-            # TODO remove head
-            self.data = self.data[self.data["fold"] == fold].head(250)
+            self.data = self.data[self.data["fold"] == fold]
 
         # sorted the image_ids
         self.image_ids = sorted(self.data["image_id"].unique())

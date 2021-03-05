@@ -179,7 +179,7 @@ model, input_size = initialize_model(model_name, num_classes, feature_extract_pa
 
 # %% --------------------HYPER-PARAMETERS
 LR = 1e-3
-EPOCHS = 2
+EPOCHS = 50
 
 # %% --------------------OPTIMIZER
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
@@ -235,7 +235,7 @@ best_acc = 0.0
 saved_model_dir = Path(f"{SAVED_MODEL_DIR}/2_class_classifier/{fold}/")
 
 if not saved_model_dir.exists():
-    os.mkdir(saved_model_dir)
+    os.makedirs(saved_model_dir)
 
 saved_model_path = f"{saved_model_dir}/{model_name}.pt"
 
@@ -320,7 +320,7 @@ for epoch in range(EPOCHS):
     train_writer.add_scalar("accuracy", epoch_acc, global_step=epoch)
 
     train_loss_arr.append(epoch_loss)
-    train_acc_history_arr.append(epoch_acc)
+    train_acc_history_arr.append(epoch_acc.item())
 
     # ----------------------VALIDATION PHASE----------------------
     # https://visualstudiomagazine.com/Articles/2020/11/24/pytorch-accuracy.aspx?Page=2
@@ -372,7 +372,7 @@ for epoch in range(EPOCHS):
     validation_writer.add_scalar("accuracy", epoch_acc, global_step=epoch)
 
     valid_loss_arr.append(epoch_loss)
-    val_acc_history_arr.append(epoch_acc)
+    val_acc_history_arr.append(epoch_acc.item())
 
     # model checkpoint, save best model only when epoch accuracy in validation is best
     if epoch_acc > best_acc:

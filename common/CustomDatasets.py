@@ -31,7 +31,8 @@ class VBD_CXR_2_Class_Train(Dataset):
 
         # subset data based on fold
         if fold is not None:
-            self.data = self.data[self.data["fold"] == fold]
+            # TODO remove head
+            self.data = self.data[self.data["fold"] == fold].head(250)
 
         # sorted the image_ids
         self.image_ids = sorted(self.data["image_id"].unique())
@@ -55,13 +56,13 @@ class VBD_CXR_2_Class_Train(Dataset):
         target = self.data[self.data["image_id"] == image_id]["class_id"].values[0]
 
         # handle transformations for majority and minority classes
-        if target in self.minority_class:
+        if (self.minority_class is not None) and (target in self.minority_class):
             transformations = self.minority_transformations
         else:
             transformations = self.majority_transformations
 
         # convert target to Tensor
-        target = torch.as_tensor(target, dtype=torch.int64)
+        target = torch.as_tensor(target, dtype=torch.float)
 
         # image https://discuss.pytorch.org/t/grayscale-to-rgb-transform/18315/2 ==> Convert
         # greyscale to RGB

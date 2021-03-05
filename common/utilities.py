@@ -49,6 +49,9 @@ def get_image_as_array(img_path):
 # https://www.kaggle.com/trungthanhnguyen0502/eda-vinbigdata-chest-x-ray-abnormalities#1.-dicom-to-numpy-array
 # we are plotting the image by not resizing the image but resizing the plot
 def plot_img(img_as_arr, title, cmap='gray'):
+    if type(img_as_arr) is torch.Tensor:
+        img_as_arr = img_as_arr.permute(1, 2, 0).numpy()
+
     plt.figure(figsize=(7, 7))
     plt.imshow(img_as_arr, cmap=cmap)
     plt.title(title)
@@ -402,3 +405,26 @@ def display_fold_distribution(train_df, val_df, target_column, color="blue"):
             ax.set_title(f"{type_of} Fold {i}")
 
         plt.show()
+
+
+# %% --------------------Non Normalizing the image
+# https://discuss.pytorch.org/t/simple-way-to-inverse-transform-normalization/4821/3?u=coolcucumber94
+class UnNormalize(object):
+    def __init__(self, mean, std):
+        self.mean = mean
+        self.std = std
+
+    def __call__(self, tensors):
+        """
+        Args:
+            tensors (Tensors): Tensors of size (B, C, H, W) to be normalized.
+        Returns:
+            Tensor: Normalized image.
+        """
+        for tensor in tensors:
+            for t, m, s in zip(tensor, self.mean, self.std):
+                # inplace operation
+                t.mul_(s).add_(m)
+                # The normalize code -> t.sub_(m).div_(s)
+
+        return tensors

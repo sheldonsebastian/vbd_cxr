@@ -6,10 +6,9 @@
 #SBATCH -t 24:00:00
 #SBATCH -p gpu
 #SBATCH -w node009
-#SBATCH --mail-type=all
+#SBATCH --mail-type=END,FAIL
 #SBATCH --mail-user=ssebastian94@gwu.edu
 
-# command line scripts
 module load anaconda/2020.07
 source /modules/apps/anaconda3/etc/profile.d/conda.sh
 conda activate vbd_cxr

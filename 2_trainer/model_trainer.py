@@ -12,8 +12,6 @@ from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
-warnings.filterwarnings("ignore")
-
 # %% --------------------
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
@@ -221,7 +219,6 @@ def get_model_instance():
 
 
 # %% --------------------
-
 model = get_model_instance()
 
 # %% --------------------

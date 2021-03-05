@@ -29,6 +29,8 @@ merged_wbf = pd.read_csv(MERGED_DIR + "/wbf_merged/train_df.csv")
 
 # %% --------------------
 # create binary class
+# 1 = abnormal
+# 0 = normal
 merged_wbf["class_id"] = merged_wbf["class_id"].replace(
     [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0])

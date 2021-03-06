@@ -28,7 +28,6 @@ sys.path.append(os.getenv("HOME_DIR"))
 # Reference:
 # https://www.kaggle.com/pestipeti/vinbigdata-fasterrcnn-pytorch-inference?scriptVersionId=50935253
 import random
-import warnings
 from datetime import datetime
 
 import numpy as np

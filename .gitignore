@@ -128,3 +128,4 @@ dmypy.json
 .idea/
 /transformed_data/train/
 /transformed_data/test/
+/8_tensorboard_logs/

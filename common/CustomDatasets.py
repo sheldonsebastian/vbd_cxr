@@ -76,7 +76,7 @@ class VBD_CXR_2_Class_Train(Dataset):
         # convert image to tensor
         image = T.ToTensor()(transformed["image"])
 
-        return image, target
+        return image_id, image, target
 
     def __len__(self):
         return len(self.image_ids)

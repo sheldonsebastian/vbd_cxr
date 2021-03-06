@@ -256,7 +256,7 @@ for epoch in range(EPOCHS):
     train_epoch_flag = True
 
     # iterate the data
-    for images, targets in train_data_loader:
+    for _, images, targets in train_data_loader:
         # send the input to device
         images = images.to(device)
         targets = targets.to(device)
@@ -331,13 +331,10 @@ for epoch in range(EPOCHS):
     running_corrects = 0
 
     # iterate the data
-    for images, targets in validation_data_loader:
+    for _, images, targets in validation_data_loader:
         # send the input to device
         images = images.to(device)
         targets = targets.to(device)
-
-        # zero the parameter gradients
-        optimizer.zero_grad()
 
         # forward pass
         # dont track the history in validation mode

@@ -26,6 +26,7 @@ from common.CustomDatasets import VBD_CXR_2_Class_Train
 from common.classifier_models import initialize_model
 from datetime import datetime
 import pandas as pd
+from pathlib import Path
 
 # %% --------------------set seeds
 seed = 42
@@ -79,7 +80,7 @@ validation_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
 holdout_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
                                          MERGED_DIR + "/wbf_merged/k_fold_splits"
                                                       "/2_class_classifier"
-                                                      "/holdout.csv",
+                                                      "/holdout_df.csv",
                                          majority_transformations=generic_transformer,
                                          fold=None)
 
@@ -159,7 +160,11 @@ with torch.no_grad():
             # https://discuss.pytorch.org/t/multilabel-classification-how-to-binarize-scores-how-to-learn-thresholds/25396
             preds = (torch.sigmoid(outputs.view(-1)) > 0.5).to(torch.float32)
 
-        # TODO iterate preds, image_ids, and targets and add them to the csv file
+        # iterate preds, image_ids, and targets and add them to the csv file
+        for img_id, t, p in zip(image_ids, targets, preds):
+            image_id_arr.append(img_id)
+            pred_label_arr.append(p.item())
+            target_label_arr.append(t.item())
 
         if val_iter % 50 == 0:
             print(f"Iteration #: {val_iter}")
@@ -175,10 +180,13 @@ val_predictions = pd.DataFrame({"image_id": image_id_arr,
 
 # %% --------------------
 # validation path
-validation_path = f"{VALIDATION_PREDICTION_DIR}/2_class_classifier/predictions/validation_predictions_{fold}.csv"
+validation_path = f"{VALIDATION_PREDICTION_DIR}/2_class_classifier/predictions"
+
+if not Path(validation_path).exists():
+    os.makedirs(validation_path)
 
 # write csv file
-val_predictions.to_csv(validation_path, index=False)
+val_predictions.to_csv(validation_path + f"/validation_predictions_{fold}.csv", index=False)
 
 # %% --------------------
 # make predictions for holdout data
@@ -210,7 +218,11 @@ with torch.no_grad():
             # https://discuss.pytorch.org/t/multilabel-classification-how-to-binarize-scores-how-to-learn-thresholds/25396
             preds = (torch.sigmoid(outputs.view(-1)) > 0.5).to(torch.float32)
 
-        # TODO iterate preds, image_ids, and targets and add them to the csv file
+        # iterate preds, image_ids, and targets and add them to the csv file
+        for img_id, t, p in zip(image_ids, targets, preds):
+            image_id_arr.append(img_id)
+            pred_label_arr.append(p.item())
+            target_label_arr.append(t.item())
 
         if holdout_iter % 50 == 0:
             print(f"Iteration #: {holdout_iter}")
@@ -226,7 +238,10 @@ holdout_predictions = pd.DataFrame({"image_id": image_id_arr,
 
 # %% --------------------
 # holdout path
-holdout_path = f"{VALIDATION_PREDICTION_DIR}/2_class_classifier/predictions/holdout_prediction_{fold}.csv"
+holdout_path = f"{VALIDATION_PREDICTION_DIR}/2_class_classifier/predictions"
+
+if not Path(validation_path).exists():
+    os.makedirs(holdout_path)
 
 # write csv file
-holdout_predictions.to_csv(holdout_path, index=False)
+holdout_predictions.to_csv(holdout_path + f"/holdout_{fold}.csv", index=False)

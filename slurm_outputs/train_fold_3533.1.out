@@ -1,0 +1,11 @@
+Cerberus running for fold: 1
+cuda
+Validation predictions started
+Iteration #: 0
+Iteration #: 50
+Predictions Complete
+End time:0:00:42.854125
+Holdout predictions started
+Iteration #: 0
+Predictions Complete
+End time:0:00:11.256159

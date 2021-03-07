@@ -428,3 +428,30 @@ class UnNormalize(object):
                 # The normalize code -> t.sub_(m).div_(s)
 
         return tensors
+
+
+# %% --------------------
+# https://vitalflux.com/python-draw-confusion-matrix-matplotlib/
+def confusion_matrix_plotter(conf_matrix, title):
+    fig, ax = plt.subplots(figsize=(7.5, 7.5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha=0.3)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i, s=conf_matrix[i, j], va='center', ha='center', size='xx-large')
+
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title(title, fontsize=18)
+    plt.show()
+
+
+# %% --------------------
+# https://www.codespeedy.com/how-to-plot-roc-curve-using-sklearn-library-in-python/
+def plot_roc_cur(fper, tper, title):
+    plt.plot(fper, tper, color='orange', label='ROC')
+    plt.plot([0, 1], [0, 1], color='darkblue', linestyle='--')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title(title)
+    plt.legend()
+    plt.show()

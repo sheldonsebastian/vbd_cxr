@@ -27,9 +27,11 @@ label2color = {0: ("Aortic enlargement", "#2a52be"),
 
 # %% --------------------
 train_data2 = pd.read_csv(
-    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr/transformed_data/transformed_train.csv")
+    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
+    "Workspace/vbd_cxr/transformed_data/transformed_train.csv")
 train_data = pd.read_csv(
-    "/1_merger/wbf_merged/fused_train_0.csv")
+    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
+    "Workspace/vbd_cxr/1_merger/wbf_merged/fused_train_0_6.csv")
 
 # %% --------------------
 train_data.head()
@@ -38,7 +40,8 @@ train_data.head()
 train_data.columns
 
 # %% --------------------
-for img in train_data2[train_data2["class_id"] != 14]["image_id"].unique()[:10]:
+# for img in train_data2[train_data2["class_id"] != 14]["image_id"].unique()[:10]:
+for img in ["f7fd31cb67b22bf95cc94d909b6dd2e3"]:
     img_array = get_image_as_array(f"{train_dir_path}/{img}.jpeg")
 
     # %% --------------------

@@ -91,7 +91,7 @@ def bounding_box_plotter(img_as_arr, img_id, bounding_boxes_info, label2color):
         ax.annotate(label2color[row[4]][0], xy=(xmax - 40, ymin + 20))
 
         # add bounding boxes to the image
-        rect = patches.rectangle((xmin, ymin), width, height, edgecolor=edgecolor, facecolor='none')
+        rect = patches.Rectangle((xmin, ymin), width, height, edgecolor=edgecolor, facecolor='none')
 
         ax.add_patch(rect)
 
@@ -267,26 +267,33 @@ def merge_bb_wbf(im_x_axis_size, im_y_axis_size, bb_df, label_column, x_min_col,
 
 
 # %% --------------------
-# nms does not care about labels, thus labels for different classes will also be considered
-# during box merging
-# todo fix this issue of NMS
-def merge_bb_nms(bb_arr, x_min_col, y_min_col, x_max_col, y_max_col, iou_thr=0, scores_col=None):
-    if scores_col is None:
-        # each bb has equal confidence score
-        scores = [[1] * bb_arr.shape[0]]
-    else:
-        scores = bb_arr[:, scores_col]
+def merge_bb_nms(bb_arr, x_min_col, y_min_col, x_max_col, y_max_col, class_col, iou_thr=0,
+                 scores_col=None):
+    result = []
+    for class_label in list(set(bb_arr[:, [class_col]].flatten())):
+        bb_arr_class = bb_arr[bb_arr[:, class_col] == class_label]
 
-    boxes = bb_arr[:, [x_min_col, y_min_col, x_max_col, y_max_col]]
+        # https://stackoverflow.com/questions/23911875/select-certain-rows-condition-met-but-only-some-columns-in-python-numpy
+        boxes = bb_arr_class[:, [x_min_col, y_min_col, x_max_col, y_max_col]]
 
-    # convert all to tensors
-    boxes = torch.from_numpy(boxes)
-    scores = torch.from_numpy(scores)
+        if scores_col is None:
+            # each bb has equal confidence score
+            scores = [[1] * bb_arr_class.shape[0]]
+        else:
+            scores = bb_arr_class[:, scores_col]
 
-    # indices to keep
-    keep_indices = torchvision.ops.nms(boxes, scores, iou_thr)
+        # convert all to tensors
+        boxes = torch.from_numpy(boxes)
+        scores = torch.from_numpy(scores)
 
-    return bb_arr[keep_indices, :].reshape(len(keep_indices), bb_arr.shape[1])
+        # indices to keep
+        keep_indices = torchvision.ops.nms(boxes, scores, iou_thr)
+
+        # add the filtered boxes to results
+        for idx in keep_indices:
+            result.append(bb_arr_class[idx, :])
+
+    return result
 
 
 # %% --------------------
@@ -455,3 +462,26 @@ def plot_roc_cur(fper, tper, title):
     plt.title(title)
     plt.legend()
     plt.show()
+
+
+# %% --------------------
+def get_label_2_color_dict():
+    label2color = {
+        0: ("Aortic enlargement", "#2a52be"),
+        1: ("Atelectasis", "#ffa812"),
+        2: ("Calcification", "#ff8243w"),
+        3: ("Cardiomegaly", "#4682b4"),
+        4: ("Consolidation", "#ddadaf"),
+        5: ("ILD", "#a3c1ad"),
+        6: ("Infiltration", "#008000"),
+        7: ("Lung Opacity", "#004953"),
+        8: ("Nodule/Mass", "#e3a857"),
+        9: ("Other lesion", "#dda0dd"),
+        10: ("Pleural effusion", "#e6e8fa"),
+        11: ("Pleural thickening", "#800020"),
+        12: ("Pneumothorax", "#918151"),
+        13: ("Pulmonary fibrosis", "#e75480"),
+        14: ("No findings", "#FFFFFF"),
+    }
+
+    return label2color

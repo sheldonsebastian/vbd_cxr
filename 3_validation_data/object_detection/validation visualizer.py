@@ -100,7 +100,7 @@ bounding_boxes_info_with_score = get_bb_info(validation_prediction, img,
                                               "confidence_score"])
 
 # get_bb_info returns numpy array which has no names thus used index numbers
-bounding_boxes_info_nms = merge_bb_nms(bounding_boxes_info_with_score, 0, 1, 2, 3, iou_thr=0.1,
+bounding_boxes_info_nms = merge_bb_nms(bounding_boxes_info_with_score, 0, 1, 2, 3,4, iou_thr=0.1,
                                        scores_col=5)
 
 # visualize nms predicted bb on 1024 dimension

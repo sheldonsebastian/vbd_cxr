@@ -81,14 +81,94 @@ class VBD_CXR_2_Class_Train(Dataset):
     def __len__(self):
         return len(self.image_ids)
 
-    # def __get_height_and_width__(self, index):
-    #     # https://discuss.pytorch.org/t/datasets-aspect-ratio-grouping-get-get-height-and-width/62640/2
-    #     ''' if you want to use aspect ratio grouping during training (so that each batch only
-    #     contains images with similar aspect ratio), then it is recommended to also implement
-    #     a get_height_and_width method, which returns the height and the width of the image.'''
-    #
-    #     image_id = self.image_ids[index]
-    #     image = Image.open(self.base_dir + "/" + image_id + ".jpeg")
-    #     width, height = image.size
-    #
-    #     return height, width
+
+# %% --------------------
+# dataset used for faster rcnn training
+# https://pytorch.org/docs/stable/data.html#map-style-datasets
+class VBD_CXR_FASTER_RCNN_Train(Dataset):
+
+    def __init__(self, image_dir, annotation_file_path, albumentation_transformations, fold=None):
+        super().__init__()
+
+        self.base_dir = image_dir
+
+        self.data = pd.read_csv(annotation_file_path)
+        # subset data based on fold
+        if fold is not None:
+            self.data = self.data[self.data["fold"] == fold]
+
+        # TODO DELETE THIS
+        self.data = self.data.head(10)
+
+        # sorted the image_ids
+        self.image_ids = sorted(self.data["image_id"].unique())
+
+        # albumentation transformations
+        self.albumentation_transformations = albumentation_transformations
+
+        # Change class_id of BB, since FasterRCNN assumes class_id==0 is background.
+        # https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
+        self.data["class_id"] = self.data["class_id"] + 1
+
+    def __getitem__(self, index):
+        """getitem should return image, target dictionary {boxes[x0,y0,x1,y1], labels, image_id,
+        area, iscrowd} """
+        image_id = self.image_ids[index]
+        image_data = self.data[self.data["image_id"] == image_id]
+
+        # read the image as grayscale
+        image = Image.open(self.base_dir + "/" + image_id + ".jpeg")
+
+        # boxes
+        boxes = image_data[['x_min', 'y_min', 'x_max', 'y_max']].values
+
+        # TODO need to implement and verify data augmentation using albumentations
+        # # add albumentation tranformations
+        # if self.albumentation_transformations is not None:
+        #     transformed = self.albumentation_transformations(image=np.array(image), bboxes=boxes)
+        #     image = transformed["image"]
+        #     boxes = transformed["bboxes"]
+
+        area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
+
+        # convert everything to tensor
+        boxes = torch.FloatTensor(boxes)
+        area = torch.FloatTensor(area)
+
+        # instances with iscrowd=True will be ignored during evaluation.
+        # here we set all to False since we are using zeros
+        iscrowd = torch.zeros((image_data.shape[0]), dtype=torch.int64)
+
+        # convert target to tensor
+        labels = torch.as_tensor(image_data["class_id"].values, dtype=torch.int64)
+
+        # dictionary as required by Faster RCNN
+        target = {"boxes": boxes, "labels": labels, "image_id": torch.tensor([index]),
+                  "area": area, "iscrowd": iscrowd}
+
+        # transform image to tensor
+        image = T.ToTensor()(image)
+
+        return image, target
+
+    def __len__(self):
+        return len(self.image_ids)
+
+    def __get_height_and_width__(self, index):
+        # https://discuss.pytorch.org/t/datasets-aspect-ratio-grouping-get-get-height-and-width/62640/2
+        """ if you want to use aspect ratio grouping during training (so that each batch only
+        contains images with similar aspect ratio), then it is recommended to also implement
+        a get_height_and_width method, which returns the height and the width of the image."""
+
+        image_id = self.image_ids[index]
+        image = Image.open(self.base_dir + "/" + image_id + ".jpeg")
+        width, height = image.size
+
+        return height, width
+
+    def get_image_id_using_index(self, index):
+        """
+        :index: get index from target dictionary from get_item function
+        """
+        image_id = self.image_ids[index]
+        return image_id

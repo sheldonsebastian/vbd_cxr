@@ -21,12 +21,12 @@ sys.path.append(os.getenv("home_dir"))
 saved_model_path = os.getenv("saved_model_dir") + "/saved_model_20210212.pt"
 validation_indices = os.getenv("validation_indices")
 image_dir = os.getenv("image_dir")
-bb_file = os.getenv("bb_file")
+bb_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr/1_merger/wbf_merged/fused_train_0_6.csv"
 validation_prediction_dir = os.getenv("validation_prediction_dir")
 
 # %% --------------------start here
 import pandas as pd
-from common.map_utils import DataFrameToCOCODataset, print_map
+from common.mAP_utils import DataFrameToCOCODataset, print_map
 from common.utilities import filter_df_based_on_confidence_threshold, merge_bb_nms, merge_bb_wbf
 
 # %% --------------------
@@ -49,7 +49,8 @@ id_to_label_map = label2color = {
 
 # %% --------------------
 # read the predicted validation csv
-validation_predictions = pd.read_csv(validation_prediction_dir + "/validation_predictions.csv")
+validation_predictions = pd.read_csv(
+    validation_prediction_dir + "/object_detection/validation_predictions.csv")
 
 # %% --------------------
 # read ground truth csv
@@ -104,7 +105,7 @@ for image_id in sorted(filtered_validation_predictions["image_id"].unique()):
         filtered_validation_predictions[filtered_validation_predictions["image_id"] == image_id][
             ["x_min", "y_min", "x_max", "y_max", "label", "confidence_score"]]
     bb_df = bb_df.to_numpy()
-    nms_bb = merge_bb_nms(bb_df, 0, 1, 2, 3, iou_thr=0.10, scores_col=5)
+    nms_bb = merge_bb_nms(bb_df, 0, 1, 2, 3, 4, iou_thr=0.10, scores_col=5)
 
     for i in range(len(nms_bb)):
         image_id_arr.append(image_id)

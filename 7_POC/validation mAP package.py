@@ -98,7 +98,7 @@ for image_id in sorted(filtered_validation_predictions["image_id"].unique()):
         filtered_validation_predictions[filtered_validation_predictions["image_id"] == image_id][
             ["x_min", "y_min", "x_max", "y_max", "label", "confidence_score"]]
     bb_df = bb_df.to_numpy()
-    nms_bb = merge_bb_nms(bb_df, 0, 1, 2, 3, iou_thr=0.10, scores_col=5)
+    nms_bb = merge_bb_nms(bb_df, 0, 1, 2, 3, 4, iou_thr=0.10, scores_col=5)
 
     for i in range(len(nms_bb)):
         # [xmin, ymin, xmax, ymax, class_id, confidence]

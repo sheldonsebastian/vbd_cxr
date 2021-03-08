@@ -273,7 +273,7 @@ for epoch in range(EPOCHS):
         # turn off image_flag for other batches for current epoch
         train_epoch_flag = False
 
-        # optimzer.zero_grad() is critically important because it resets all weight and bias
+        # optimizer.zero_grad() is critically important because it resets all weight and bias
         # gradients to 0
         optimizer.zero_grad()
 

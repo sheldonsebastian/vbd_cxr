@@ -150,7 +150,7 @@ model = get_faster_rcnn_model_instance(num_classes)
 
 # %% --------------------HYPER-PARAMETERS
 LR = 1e-3
-EPOCHS = 30
+EPOCHS = 15
 
 # %% --------------------OPTIMIZER
 # freeze the params for pretrained model
@@ -435,6 +435,16 @@ for epoch in range(EPOCHS):
         lowest_val_loss = validation_sum_train_losses_agg
         # save model state based on lowest val loss per epoch
         torch.save(model.state_dict(), saved_model_path)
+
+print("End time:" + str(datetime.now() - start))
+print("Program Complete")
+
+# tensorboard cleanup
+train_writer.flush()
+validation_writer.flush()
+
+train_writer.close()
+validation_writer.close()
 
 # %% --------------------
 print("-" * 25)

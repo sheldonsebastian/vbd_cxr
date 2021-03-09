@@ -8,7 +8,7 @@
 #SBATCH -w node009
 #SBATCH --mail-type=all
 #SBATCH --mail-user=ssebastian94@gwu.edu
-#SBATCH --array=0   # job array with index values 0
+#SBATCH --array=0-4   # job array with index values 0, 1,2,3,4
 
 module load anaconda/2020.07
 source /modules/apps/anaconda3/etc/profile.d/conda.sh

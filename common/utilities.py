@@ -485,3 +485,43 @@ def get_label_2_color_dict():
     }
 
     return label2color
+
+
+# %% --------------------
+def prep_gt_target_for_mAP(target):
+    # target = {"boxes": boxes, "labels": labels, "image_id": torch.tensor([index]),
+    # "area": area, "iscrowd": iscrowd}
+
+    # [xmin, ymin, xmax, ymax, class_id, difficult, crowd]
+    prepped_data = []
+    for box, label, crowd in zip(target["boxes"], target["labels"], target["iscrowd"]):
+        prepped_data.append(
+            [box[0].item(), box[1].item(), box[2].item(), box[3].item(), label.item(), 0.0,
+             crowd.item()])
+
+    return prepped_data
+
+
+# %% --------------------
+def prep_pred_for_mAP(output, confidence_thr=0.10, nms_iou_thr=0.10):
+    # 	{'boxes': tensor([[3.5217e-02, 7.7058e-02, 1.1359e+00, 1.1634e+00],
+    #               	[1.1598e+02, 7.5529e+02, 1.7569e+02, 8.2110e+02]], device='cuda:0'),
+    # 	'labels': tensor([15, 11], device='cuda:0'),
+    #   'scores': tensor([0.8151, 0.0597], device='cuda:0')}
+
+    # [xmin, ymin, xmax, ymax, class_id, confidence]
+    prepped_data = np.empty([0, 6])
+    for box, label, score in zip(output["boxes"].cpu().numpy(), output["labels"].cpu().numpy(),
+                                 output["scores"].cpu().numpy()):
+        prepped_data = np.append(prepped_data, [[box[0], box[1], box[2], box[3], label, score]],
+                                 axis=0)
+
+    # filter predictions based on confidence threshold
+    prepped_data = prepped_data[prepped_data[:, 5] > confidence_thr]
+
+    # delete extra predictions using lenient NMS (Rough Estimator to find train vs
+    # validation performance)
+    nms_data = merge_bb_nms(prepped_data, 0, 1, 2, 3, 4, iou_thr=nms_iou_thr, scores_col=5)
+
+    # add preds to list in format required by package
+    return nms_data

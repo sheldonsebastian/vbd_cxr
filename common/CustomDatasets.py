@@ -97,9 +97,6 @@ class VBD_CXR_FASTER_RCNN_Train(Dataset):
         if fold is not None:
             self.data = self.data[self.data["fold"] == fold]
 
-        # TODO DELETE THIS
-        self.data = self.data.head(10)
-
         # sorted the image_ids
         self.image_ids = sorted(self.data["image_id"].unique())
 

@@ -27,7 +27,7 @@ from common.utilities import multi_label_split_based_on_percentage, display_fold
 merged_wbf = pd.read_csv(MERGED_DIR + "/wbf_merged/fused_train_0_6.csv")
 
 # %% --------------------
-# split into train-holdout sets
+# split into train-holdout sets 90%-10%
 train_df, holdout_df = multi_label_split_based_on_percentage(merged_wbf, 1, 0.1, "image_id",
                                                              "class_id", seed=42)
 

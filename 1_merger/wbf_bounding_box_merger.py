@@ -9,8 +9,6 @@ from dotenv import load_dotenv
 env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
            "Workspace/vbd_cxr/6_environment_files/local.env "
 # cerberus
-
-
 # env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
 
 load_dotenv(env_file)
@@ -18,6 +16,7 @@ load_dotenv(env_file)
 # %% --------------------
 # DIRECTORIES
 IMAGE_DIR = os.getenv("IMAGE_DIR")
+BASE_TRAIN_DIR = IMAGE_DIR + "/original/transformed_data/train"
 
 # add HOME DIR to PYTHONPATH
 sys.path.append(os.getenv("HOME_DIR"))
@@ -26,9 +25,6 @@ sys.path.append(os.getenv("HOME_DIR"))
 import pandas as pd
 from PIL import Image
 from common.utilities import merge_bb_wbf, bounding_box_plotter_side_to_side
-
-# %% --------------------
-BASE_TRAIN_DIR = IMAGE_DIR
 
 # %% --------------------
 train_df = pd.read_csv(f"{BASE_TRAIN_DIR}/transformed_train.csv")

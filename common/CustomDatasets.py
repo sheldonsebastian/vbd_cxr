@@ -12,13 +12,12 @@ from torch.utils.data import Dataset
 # https://pytorch.org/docs/stable/data.html#map-style-datasets
 class VBD_CXR_2_Class_Train(Dataset):
 
-    def __init__(self, image_dir, annotation_file_path, majority_transformations, fold=None,
+    def __init__(self, image_dir, annotation_file_path, majority_transformations,
                  minority_class=None, minority_transformations=None, target_column="class_id"):
         """
         :image_dir: The path where all the images are present
         :annotation_file_path: csv file which contains image_id and label. 1 row = 1 image,
         not bounding box data, so drop duplicates
-        :fold: specifies the fold to use. If fold=None, then entire dataset will be used
         :majority_transformations: albumentation transformations to perform on majority class
         :minority_class: This is list in which we pass the minority classes
         :minority_transformations: albumentation transformations to perform on minority class
@@ -28,10 +27,6 @@ class VBD_CXR_2_Class_Train(Dataset):
         self.base_dir = image_dir
 
         self.data = pd.read_csv(annotation_file_path)
-
-        # subset data based on fold
-        if fold is not None:
-            self.data = self.data[self.data["fold"] == fold]
 
         # sorted the image_ids
         self.image_ids = sorted(self.data["image_id"].unique())
@@ -83,19 +78,65 @@ class VBD_CXR_2_Class_Train(Dataset):
 
 
 # %% --------------------
-# dataset used for faster rcnn training
+# dataset used for testing; does not return targets
+# https://pytorch.org/docs/stable/data.html#map-style-datasets
+class VBD_CXR_2_Class_Test(Dataset):
+
+    def __init__(self, image_dir, annotation_file_path, majority_transformations):
+        """
+        :image_dir: The path where all the images are present
+        :annotation_file_path: csv file which contains image_id and label. 1 row = 1 image,
+        not bounding box data, so drop duplicates
+        :majority_transformations: albumentation transformations to perform on majority class
+        """
+        super().__init__()
+        self.base_dir = image_dir
+
+        self.data = pd.read_csv(annotation_file_path)
+
+        # sorted the image_ids
+        self.image_ids = sorted(self.data["image_id"].unique())
+
+        # majority transformations
+        self.majority_transformations = majority_transformations
+
+    def __getitem__(self, index):
+        """getitem should return image and label"""
+
+        image_id = self.image_ids[index]
+
+        transformations = self.majority_transformations
+
+        # image https://discuss.pytorch.org/t/grayscale-to-rgb-transform/18315/2 ==> Convert
+        # greyscale to RGB
+        image = Image.open(self.base_dir + "/" + image_id + ".jpeg").convert('RGB')
+
+        # convert image to numpy array
+        image = np.asarray(image)
+
+        # apply transformations
+        transformed = transformations(image=image)
+
+        # convert image to tensor
+        image = T.ToTensor()(transformed["image"])
+
+        return image_id, image
+
+    def __len__(self):
+        return len(self.image_ids)
+
+
+# %% --------------------
+# dataset used for faster rcnn training, validation and holdout
 # https://pytorch.org/docs/stable/data.html#map-style-datasets
 class VBD_CXR_FASTER_RCNN_Train(Dataset):
 
-    def __init__(self, image_dir, annotation_file_path, albumentation_transformations, fold=None):
+    def __init__(self, image_dir, annotation_file_path, albumentation_transformations):
         super().__init__()
 
         self.base_dir = image_dir
 
         self.data = pd.read_csv(annotation_file_path)
-        # subset data based on fold
-        if fold is not None:
-            self.data = self.data[self.data["fold"] == fold]
 
         # sorted the image_ids
         self.image_ids = sorted(self.data["image_id"].unique())
@@ -147,6 +188,58 @@ class VBD_CXR_FASTER_RCNN_Train(Dataset):
         image = T.ToTensor()(image)
 
         return image, target
+
+    def __len__(self):
+        return len(self.image_ids)
+
+    def __get_height_and_width__(self, index):
+        # https://discuss.pytorch.org/t/datasets-aspect-ratio-grouping-get-get-height-and-width/62640/2
+        """ if you want to use aspect ratio grouping during training (so that each batch only
+        contains images with similar aspect ratio), then it is recommended to also implement
+        a get_height_and_width method, which returns the height and the width of the image."""
+
+        image_id = self.image_ids[index]
+        image = Image.open(self.base_dir + "/" + image_id + ".jpeg")
+        width, height = image.size
+
+        return height, width
+
+    def get_image_id_using_index(self, index):
+        """
+        :index: get index from target dictionary from get_item function
+        """
+        image_id = self.image_ids[index]
+        return image_id
+
+
+# %% --------------------
+# dataset used for faster rcnn kaggle test dataset
+# https://pytorch.org/docs/stable/data.html#map-style-datasets
+class VBD_CXR_FASTER_RCNN_Test(Dataset):
+
+    def __init__(self, image_dir, annotation_file_path, albumentation_transformations):
+        super().__init__()
+
+        self.base_dir = image_dir
+
+        self.data = pd.read_csv(annotation_file_path)
+
+        # sorted the image_ids
+        self.image_ids = sorted(self.data["image_id"].unique())
+
+        # albumentation transformations
+        self.albumentation_transformations = albumentation_transformations
+
+    def __getitem__(self, index):
+        image_id = self.image_ids[index]
+
+        # read the image as grayscale
+        image = Image.open(self.base_dir + "/" + image_id + ".jpeg")
+
+        # transform image to tensor
+        image = T.ToTensor()(image)
+
+        return image_id, image
 
     def __len__(self):
         return len(self.image_ids)

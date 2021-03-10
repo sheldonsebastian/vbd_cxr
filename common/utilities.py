@@ -197,7 +197,7 @@ def bounding_box_plotter_side_to_side(img_as_arr, img_id, bounding_boxes_left,
             label_bb = str(label2color[row[4]][0])
 
             # add bounding boxes to the image
-            rect = patches.rectangle((xmin, ymin), width, height, edgecolor=edgecolor,
+            rect = patches.Rectangle((xmin, ymin), width, height, edgecolor=edgecolor,
                                      facecolor='none', label=label_bb)
 
             ax.add_patch(rect)

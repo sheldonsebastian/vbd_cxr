@@ -25,194 +25,49 @@ from common.utilities import confusion_matrix_plotter, plot_roc_cur
 
 # %% --------------------
 # read the predicted csv files for validation and holdout set
-validation_fold_0 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/validation_predictions_0.csv")
-holdout_fold_0 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/holdout_0.csv")
+validation_fold = pd.read_csv(
+    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/validation_predictions.csv")
+holdout_fold = pd.read_csv(
+    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/holdout.csv")
 
-validation_fold_1 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/validation_predictions_1.csv")
-holdout_fold_1 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/holdout_1.csv")
-
-validation_fold_2 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/validation_predictions_2.csv")
-holdout_fold_2 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/holdout_2.csv")
-
-validation_fold_3 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/validation_predictions_3.csv")
-holdout_fold_3 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/holdout_3.csv")
-
-validation_fold_4 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/validation_predictions_4.csv")
-holdout_fold_4 = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/2_class_classifier/predictions/holdout_4.csv")
-
-# %% --------------------VALIDATION
+# --------------------VALIDATION
 # confusion matrix
-confusion_matrix_val_0 = confusion_matrix(validation_fold_0["target"],
-                                          validation_fold_0["prediction"])
-confusion_matrix_plotter(confusion_matrix_val_0, "Confusion Matrix Validation Fold 0")
+confusion_matrix_val = confusion_matrix(validation_fold["target"],
+                                        validation_fold["prediction"])
+confusion_matrix_plotter(confusion_matrix_val, f"Confusion Matrix Validation Fold")
 
-confusion_matrix_val_1 = confusion_matrix(validation_fold_1["target"],
-                                          validation_fold_1["prediction"])
-confusion_matrix_plotter(confusion_matrix_val_1, "Confusion Matrix Validation Fold 1")
-
-confusion_matrix_val_2 = confusion_matrix(validation_fold_2["target"],
-                                          validation_fold_2["prediction"])
-confusion_matrix_plotter(confusion_matrix_val_2, "Confusion Matrix Validation Fold 2")
-
-confusion_matrix_val_3 = confusion_matrix(validation_fold_3["target"],
-                                          validation_fold_3["prediction"])
-confusion_matrix_plotter(confusion_matrix_val_3, "Confusion Matrix Validation Fold 3")
-
-confusion_matrix_val_4 = confusion_matrix(validation_fold_4["target"],
-                                          validation_fold_4["prediction"])
-confusion_matrix_plotter(confusion_matrix_val_4, "Confusion Matrix Validation Fold 4")
-
-# %% --------------------HOLDOUT
+# --------------------HOLDOUT
 # confusion matrix
-confusion_matrix_holdout_0 = confusion_matrix(holdout_fold_0["target"],
-                                              holdout_fold_0["prediction"])
-confusion_matrix_plotter(confusion_matrix_holdout_0, "Confusion Matrix Holdout Fold 0")
+confusion_matrix_holdout = confusion_matrix(holdout_fold["target"],
+                                            holdout_fold["prediction"])
+confusion_matrix_plotter(confusion_matrix_holdout, f"Confusion Matrix Holdout Fold")
 
-confusion_matrix_holdout_1 = confusion_matrix(holdout_fold_1["target"],
-                                              holdout_fold_1["prediction"])
-confusion_matrix_plotter(confusion_matrix_holdout_1, "Confusion Matrix Holdout Fold 1")
-
-confusion_matrix_holdout_2 = confusion_matrix(holdout_fold_2["target"],
-                                              holdout_fold_2["prediction"])
-confusion_matrix_plotter(confusion_matrix_holdout_2, "Confusion Matrix Holdout Fold 2")
-
-confusion_matrix_holdout_3 = confusion_matrix(holdout_fold_3["target"],
-                                              holdout_fold_3["prediction"])
-confusion_matrix_plotter(confusion_matrix_holdout_3, "Confusion Matrix Holdout Fold 3")
-
-confusion_matrix_holdout_4 = confusion_matrix(holdout_fold_4["target"],
-                                              holdout_fold_4["prediction"])
-confusion_matrix_plotter(confusion_matrix_holdout_4, "Confusion Matrix Holdout Fold 4")
-
-# %% --------------------VALIDATION
+# --------------------VALIDATION
 # F1 Score
-f1_val_0 = f1_score(validation_fold_0["target"],
-                    validation_fold_0["prediction"])
-print("F1 score validation fold 0:" + str(f1_val_0))
+f1_val = f1_score(validation_fold["target"],
+                  validation_fold["prediction"])
+print(f"F1 score validation fold :" + str(f1_val))
 
-f1_val_1 = f1_score(validation_fold_1["target"],
-                    validation_fold_1["prediction"])
-print("F1 score validation fold 1:" + str(f1_val_1))
-
-f1_val_2 = f1_score(validation_fold_2["target"],
-                    validation_fold_2["prediction"])
-print("F1 score validation fold 2:" + str(f1_val_2))
-
-f1_val_3 = f1_score(validation_fold_3["target"],
-                    validation_fold_3["prediction"])
-print("F1 score validation fold 3:" + str(f1_val_3))
-
-f1_val_4 = f1_score(validation_fold_4["target"],
-                    validation_fold_4["prediction"])
-print("F1 score validation fold 4:" + str(f1_val_4))
-
-# %% --------------------HOLDOUT
+# --------------------HOLDOUT
 # F1 Score
-f1_holdout_0 = f1_score(holdout_fold_0["target"],
-                        holdout_fold_0["prediction"])
-print("F1 score holdout fold 0:" + str(f1_holdout_0))
+f1_holdout = f1_score(holdout_fold["target"],
+                      holdout_fold["prediction"])
+print(f"F1 score holdout fold :" + str(f1_holdout))
 
-f1_holdout_1 = f1_score(holdout_fold_1["target"],
-                        holdout_fold_1["prediction"])
-print("F1 score holdout fold 1:" + str(f1_holdout_1))
-
-f1_holdout_2 = f1_score(holdout_fold_2["target"],
-                        holdout_fold_2["prediction"])
-print("F1 score holdout fold 2:" + str(f1_holdout_2))
-
-f1_holdout_3 = f1_score(holdout_fold_3["target"],
-                        holdout_fold_3["prediction"])
-print("F1 score holdout fold 3:" + str(f1_holdout_3))
-
-f1_holdout_4 = f1_score(holdout_fold_4["target"],
-                        holdout_fold_4["prediction"])
-print("F1 score holdout fold 4:" + str(f1_holdout_4))
-
-# %% --------------------VALIDATION
+# --------------------VALIDATION
 # ROC AUC Curve
-roc_score_val_0 = roc_auc_score(validation_fold_0["target"],
-                                validation_fold_0["prediction"])
-roc_auc_val_0 = roc_curve(validation_fold_0["target"],
-                          validation_fold_0["prediction"])
-print("ROC score validation fold 0:" + str(roc_score_val_0))
-plot_roc_cur(roc_auc_val_0[0], roc_auc_val_0[1], f"ROC Validation Fold 0:{roc_score_val_0}")
+roc_score_val = roc_auc_score(validation_fold["target"],
+                              validation_fold["prediction"])
+roc_auc_val = roc_curve(validation_fold["target"],
+                        validation_fold["prediction"])
+print(f"ROC score validation fold :" + str(roc_score_val))
+plot_roc_cur(roc_auc_val[0], roc_auc_val[1], f"ROC Validation Fold :{roc_score_val}")
 
-roc_score_val_1 = roc_auc_score(validation_fold_1["target"],
-                                validation_fold_1["prediction"])
-roc_auc_val_1 = roc_curve(validation_fold_1["target"],
-                          validation_fold_1["prediction"])
-print("ROC score validation fold 1:" + str(roc_score_val_1))
-plot_roc_cur(roc_auc_val_1[0], roc_auc_val_1[1], f"ROC Validation Fold 1:{roc_score_val_1}")
-
-roc_score_val_2 = roc_auc_score(validation_fold_2["target"],
-                                validation_fold_2["prediction"])
-roc_auc_val_2 = roc_curve(validation_fold_2["target"],
-                          validation_fold_2["prediction"])
-print("ROC score validation fold 2:" + str(roc_score_val_2))
-plot_roc_cur(roc_auc_val_2[0], roc_auc_val_2[1], f"ROC Validation Fold 2:{roc_score_val_2}")
-
-roc_score_val_3 = roc_auc_score(validation_fold_3["target"],
-                                validation_fold_3["prediction"])
-roc_auc_val_3 = roc_curve(validation_fold_3["target"],
-                          validation_fold_3["prediction"])
-print("ROC score validation fold 3:" + str(roc_score_val_3))
-plot_roc_cur(roc_auc_val_3[0], roc_auc_val_3[1], f"ROC Validation Fold 3:{roc_score_val_3}")
-
-roc_score_val_4 = roc_auc_score(validation_fold_4["target"],
-                                validation_fold_4["prediction"])
-roc_auc_val_4 = roc_curve(validation_fold_4["target"],
-                          validation_fold_4["prediction"])
-print("ROC score validation fold 4:" + str(roc_score_val_4))
-plot_roc_cur(roc_auc_val_4[0], roc_auc_val_4[1], f"ROC Validation Fold 4:{roc_score_val_4}")
-
-# %% --------------------HOLDOUT
+# --------------------HOLDOUT
 # ROC AUC Curve
-roc_score_holdout_0 = roc_auc_score(holdout_fold_0["target"],
-                                    holdout_fold_0["prediction"])
-roc_auc_holdout_0 = roc_curve(holdout_fold_0["target"],
-                              holdout_fold_0["prediction"])
-print("ROC score holdout fold 0:" + str(roc_score_holdout_0))
-plot_roc_cur(roc_auc_holdout_0[0], roc_auc_holdout_0[1],
-             f"ROC Holdout Fold 0:{roc_score_holdout_0}")
-
-roc_score_holdout_1 = roc_auc_score(holdout_fold_1["target"],
-                                    holdout_fold_1["prediction"])
-roc_auc_holdout_1 = roc_curve(holdout_fold_1["target"],
-                              holdout_fold_1["prediction"])
-print("ROC score holdout fold 1:" + str(roc_score_holdout_1))
-plot_roc_cur(roc_auc_holdout_1[0], roc_auc_holdout_1[1],
-             f"ROC Holdout Fold 1:{roc_score_holdout_1}")
-
-roc_score_holdout_2 = roc_auc_score(holdout_fold_2["target"],
-                                    holdout_fold_2["prediction"])
-roc_auc_holdout_2 = roc_curve(holdout_fold_2["target"],
-                              holdout_fold_2["prediction"])
-print("ROC score holdout fold 2:" + str(roc_score_holdout_2))
-plot_roc_cur(roc_auc_holdout_2[0], roc_auc_holdout_2[1],
-             f"ROC Holdout Fold 2:{roc_score_holdout_2}")
-
-roc_score_holdout_3 = roc_auc_score(holdout_fold_3["target"],
-                                    holdout_fold_3["prediction"])
-roc_auc_holdout_3 = roc_curve(holdout_fold_3["target"],
-                              holdout_fold_3["prediction"])
-print("ROC score holdout fold 3:" + str(roc_score_holdout_3))
-plot_roc_cur(roc_auc_holdout_3[0], roc_auc_holdout_3[1],
-             f"ROC Holdout Fold 3:{roc_score_holdout_3}")
-
-roc_score_holdout_4 = roc_auc_score(holdout_fold_4["target"],
-                                    holdout_fold_4["prediction"])
-roc_auc_holdout_4 = roc_curve(holdout_fold_4["target"],
-                              holdout_fold_4["prediction"])
-print("ROC score holdout fold 4:" + str(roc_score_holdout_4))
-plot_roc_cur(roc_auc_holdout_4[0], roc_auc_holdout_4[1],
-             f"ROC Holdout Fold 4:{roc_score_holdout_4}")
+roc_score_holdout = roc_auc_score(holdout_fold["target"],
+                                  holdout_fold["prediction"])
+roc_auc_holdout = roc_curve(holdout_fold["target"],
+                            holdout_fold["prediction"])
+print(f"ROC score holdout fold :" + str(roc_score_holdout))
+plot_roc_cur(roc_auc_holdout[0], roc_auc_holdout[1], f"ROC Holdout Fold :{roc_score_holdout}")

@@ -314,3 +314,25 @@ def mAP_using_package(pred_boxes, true_boxes):
     metric_fn.add(np.asarray(pred_boxes), np.asarray(true_boxes))
 
     return metric_fn.value(iou_thresholds=0.4)['mAP']
+
+
+# %% --------------------
+def get_id_to_label_coco_api():
+    id_to_label_map = {
+        1: "aortic enlargement",
+        2: "atelectasis",
+        3: "calcification",
+        4: "cardiomegaly",
+        5: "consolidation",
+        6: "ild",
+        7: "infiltration",
+        8: "lung opacity",
+        9: "nodule/mass",
+        10: "other lesion",
+        11: "pleural effusion",
+        12: "pleural thickening",
+        13: "pneumothorax",
+        14: "pulmonary fibrosis"
+    }
+
+    return id_to_label_map

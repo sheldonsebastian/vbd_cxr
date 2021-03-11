@@ -28,7 +28,7 @@ def dicom2array(path, voi_lut=True, fix_monochrome=True):
         data = dicom.pixel_array
 
     # depending on this value, x-ray may look inverted - fix that:
-    if fix_monochrome and dicom.PhotometricInterpretation == "monochrome1":
+    if fix_monochrome and dicom.PhotometricInterpretation == "MONOCHROME1":
         data = np.amax(data) - data
 
     # scaling data to be between 0 to 255

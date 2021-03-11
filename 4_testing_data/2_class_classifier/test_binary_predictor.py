@@ -22,7 +22,7 @@ import random
 import albumentations
 import numpy as np
 import torch
-from common.CustomDatasets import VBD_CXR_2_Class_Train
+from common.CustomDatasets import VBD_CXR_2_Class_Test
 from common.classifier_models import initialize_model
 from datetime import datetime
 import pandas as pd
@@ -37,24 +37,10 @@ random.seed(seed)
 torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
-IMAGE_DIR = os.getenv("IMAGE_DIR")
-MERGED_DIR = os.getenv("MERGED_DIR")
+IMAGE_DIR = os.getenv("IMAGE_DIR") + "/original/transformed_data/test"
+TEST_DIR = os.getenv("TEST_DIR")
 SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
-VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
-
-folds = [0, 1, 2, 3, 4]
-
-# to get index from cerberus job id
-if "SLURM_ARRAY_TASK_ID" in os.environ:
-    idx = int(os.environ["SLURM_ARRAY_TASK_ID"])
-    print(f"Cerberus running for fold: {idx}")
-else:
-    # if running locally, randomly select any 1 fold
-    idx = random.choice(range(0, 5, 1))
-    print(f"Locally running for fold: {idx}")
-
-# define the fold
-fold = folds[idx]
+KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
 
 # %% --------------------
 # generic transformer used for validation data and holdout data
@@ -67,33 +53,18 @@ generic_transformer = albumentations.Compose([
 ])
 
 # %% --------------------DATASET
-# create validation dataset
-validation_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                            MERGED_DIR + "/wbf_merged/k_fold_splits"
-                                                         "/2_class_classifier"
-                                                         "/validation_df_5_folds.csv",
-                                            majority_transformations=generic_transformer,
-                                            fold=fold)
-
-# create holdout dataset
-# holdout does not have fold, thus use all data
-holdout_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                         MERGED_DIR + "/wbf_merged/k_fold_splits"
-                                                      "/2_class_classifier"
-                                                      "/holdout_df.csv",
-                                         majority_transformations=generic_transformer,
-                                         fold=None)
+# use kaggle test set
+test_data_set = VBD_CXR_2_Class_Test(IMAGE_DIR,
+                                     KAGGLE_TEST_DIR + "/test_original_dimension.csv",
+                                     majority_transformations=generic_transformer)
 
 # %% --------------------DATALOADER
 BATCH_SIZE = 32
 workers = int(os.getenv("NUM_WORKERS"))
 
 # create dataloader
-validation_data_loader = torch.utils.data.DataLoader(validation_data_set, batch_size=BATCH_SIZE,
-                                                     shuffle=False, num_workers=workers)
-
-holdout_data_loader = torch.utils.data.DataLoader(holdout_data_set, batch_size=BATCH_SIZE,
-                                                  shuffle=False, num_workers=workers)
+test_data_loader = torch.utils.data.DataLoader(test_data_set, batch_size=BATCH_SIZE,
+                                               shuffle=False, num_workers=workers)
 
 # %% --------------------
 # define device
@@ -103,7 +74,7 @@ print(device)
 # %% --------------------MODEL INSTANCE
 # create model instance
 # model name
-model_name = "resnet18"
+model_name = "resnet50"
 
 # feature_extract_param = True means all layers frozen except the last user added layers
 # feature_extract_param = False means all layers unfrozen and entire network learns new weights
@@ -119,8 +90,9 @@ model, input_size = initialize_model(model_name, num_classes, feature_extract_pa
                                      use_pretrained=True)
 
 # load model weights
-saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/{fold}/{model_name}.pt"
-model.load_state_dict(torch.load(saved_model_path, map_location=torch.device(device)))
+saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/{model_name}.pt"
+model.load_state_dict(
+    torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
 # %% --------------------
 # set model to eval mode, to not disturb the weights
@@ -131,82 +103,21 @@ model.eval()
 model = model.to(device)
 
 # %% --------------------
-# make predictions for validation data
-print("Validation predictions started")
-# start time
-start = datetime.now()
-
-# arrays
-image_id_arr = []
-pred_label_arr = []
-# ground truth
-target_label_arr = []
-
-val_iter = 0
-
-with torch.no_grad():
-    for image_ids, images, targets in validation_data_loader:
-        # send the input to device
-        images = images.to(device)
-        targets = targets.to(device)
-
-        # forward pass
-        # dont track the history in validation mode
-        with torch.set_grad_enabled(False):
-            # make prediction
-            outputs = model(images)
-
-            # converting logits to probabilities and keeping threshold of 0.5
-            # https://discuss.pytorch.org/t/multilabel-classification-how-to-binarize-scores-how-to-learn-thresholds/25396
-            preds = (torch.sigmoid(outputs.view(-1)) > 0.5).to(torch.float32)
-
-        # iterate preds, image_ids, and targets and add them to the csv file
-        for img_id, t, p in zip(image_ids, targets, preds):
-            image_id_arr.append(img_id)
-            pred_label_arr.append(p.item())
-            target_label_arr.append(t.item())
-
-        if val_iter % 50 == 0:
-            print(f"Iteration #: {val_iter}")
-
-        val_iter += 1
-
-print("Predictions Complete")
-print("End time:" + str(datetime.now() - start))
-
-val_predictions = pd.DataFrame({"image_id": image_id_arr,
-                                "target": pred_label_arr,
-                                "prediction": target_label_arr})
-
-# %% --------------------
-# validation path
-validation_path = f"{VALIDATION_PREDICTION_DIR}/2_class_classifier/predictions"
-
-if not Path(validation_path).exists():
-    os.makedirs(validation_path)
-
-# write csv file
-val_predictions.to_csv(validation_path + f"/validation_predictions_{fold}.csv", index=False)
-
-# %% --------------------
 # make predictions for holdout data
-print("Holdout predictions started")
+print("Test predictions started")
 # start time
 start = datetime.now()
 
 # arrays
 image_id_arr = []
 pred_label_arr = []
-# ground truth
-target_label_arr = []
 
 holdout_iter = 0
 
 with torch.no_grad():
-    for image_ids, images, targets in holdout_data_loader:
+    for image_ids, images in test_data_loader:
         # send the input to device
         images = images.to(device)
-        targets = targets.to(device)
 
         # forward pass
         # dont track the history in validation mode
@@ -218,11 +129,10 @@ with torch.no_grad():
             # https://discuss.pytorch.org/t/multilabel-classification-how-to-binarize-scores-how-to-learn-thresholds/25396
             preds = (torch.sigmoid(outputs.view(-1)) > 0.5).to(torch.float32)
 
-        # iterate preds, image_ids, and targets and add them to the csv file
-        for img_id, t, p in zip(image_ids, targets, preds):
+        # iterate preds, image_ids and add them to the csv file
+        for img_id, p in zip(image_ids, preds):
             image_id_arr.append(img_id)
             pred_label_arr.append(p.item())
-            target_label_arr.append(t.item())
 
         if holdout_iter % 50 == 0:
             print(f"Iteration #: {holdout_iter}")
@@ -232,16 +142,15 @@ with torch.no_grad():
 print("Predictions Complete")
 print("End time:" + str(datetime.now() - start))
 
-holdout_predictions = pd.DataFrame({"image_id": image_id_arr,
-                                    "target": pred_label_arr,
-                                    "prediction": target_label_arr})
+test_predictions = pd.DataFrame({"image_id": image_id_arr,
+                                 "target": pred_label_arr})
 
 # %% --------------------
 # holdout path
-holdout_path = f"{VALIDATION_PREDICTION_DIR}/2_class_classifier/predictions"
+test_path = f"{TEST_DIR}/2_class_classifier/predictions"
 
-if not Path(validation_path).exists():
-    os.makedirs(holdout_path)
+if not Path(test_path).exists():
+    os.makedirs(test_path)
 
 # write csv file
-holdout_predictions.to_csv(holdout_path + f"/holdout_{fold}.csv", index=False)
+test_predictions.to_csv(test_path + f"/test_2_class.csv", index=False)

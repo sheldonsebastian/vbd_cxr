@@ -1,212 +1,91 @@
-# combine outputs of 2 class classifier and object detector
 # %% --------------------
 import os
 import sys
 
 from dotenv import load_dotenv
 
-# %% --------------------
 # local
-# env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-#           "Workspace/vbd_cxr/6_environment_files/local.env "
+env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
+           "Workspace/vbd_cxr/6_environment_files/local.env "
 # cerberus
-env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
+# env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
 
 load_dotenv(env_file)
-
-# %% --------------------
-# DIRECTORIES
-SAVED_MODEL_PATH = os.getenv("SAVED_MODEL_DIR") + "/saved_model_20210212.pt"
-TEST_DIR = os.getenv("TEST_DIR")
-TEST_PREDICTION_DIR = os.getenv("TEST_PREDICTION_DIR")
 
 # add HOME DIR to PYTHONPATH
 sys.path.append(os.getenv("HOME_DIR"))
 
-# %% --------------------
-# Reference:
-# https://www.kaggle.com/pestipeti/vinbigdata-fasterrcnn-pytorch-inference?scriptVersionId=50935253
-import random
-from datetime import datetime
-
-import numpy as np
+# %% --------------------imports
 import pandas as pd
-import torch
-import torchvision
-import torchvision.transforms as T
-from PIL import Image
+from common.post_processing_utils import post_process_conf_filter_nms, post_process_conf_filter_wbf
+from common.kaggle_utils import up_scaler, submission_file_creator
 
-from torch.utils.data import Dataset
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-
-# %% --------------------
-torch.manual_seed(42)
-torch.cuda.manual_seed(42)
-np.random.seed(42)
-random.seed(42)
-torch.backends.cudnn.deterministic = True
+# %% --------------------directories
+TEST_DIR = os.getenv("TEST_DIR")
+KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
 
 # %% --------------------
-# workers for dataloader
-workers = 4
+confidence_threshold = 0.5
+iou_threshold = 0.4
 
+# %% --------------------read the predictions
+binary_prediction = pd.read_csv(TEST_DIR + "/2_class_classifier/predictions/test_2_class.csv")
 
-# %% --------------------
-# initialize model
-# https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
-def get_model_instance():
-    # load a model pre-trained pre-trained on COCO
-    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
-
-    # replace the classifier with a new one, that has
-    # num_classes which is user-defined
-    num_classes = 15  # 14 classes (abnormalities) + background (class=0)
-
-    # get number of input features for the classifier
-    in_features = model.roi_heads.box_predictor.cls_score.in_features
-
-    # replace the pre-trained head with a new one
-    model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
-
-    return model
-
+object_detection_prediction = pd.read_csv(
+    TEST_DIR + "/object_detection/predictions/test_object_detection_prediction.csv")
 
 # %% --------------------
-# get device
-device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-print("Torch is using following device: " + str(device))
+# adjust object detection classes
+object_detection_prediction["label"] -= 1
 
 # %% --------------------
-# load saved model to appropriate device
-model = get_model_instance()
-model.load_state_dict(torch.load(SAVED_MODEL_PATH, map_location=torch.device(device)))
+# get all image ids in original dataset
+original_dataset = pd.read_csv(KAGGLE_TEST_DIR + "/test_original_dimension.csv")
 
 # %% --------------------
-# set model to eval mode, to not disturb the weights
-model.eval()
+original_image_ids = list(original_dataset["image_id"].unique())
 
 # %% --------------------
-# send model to device
-model = model.to(device)
+# normal ids from binary classifier
+normal_ids = list(binary_prediction[binary_prediction["target"] == 0]["image_id"].unique())
 
-
-# %% --------------------
-# dataset used for test
-# https://pytorch.org/docs/stable/data.html#map-style-datasets
-class VinBigDataCXR(Dataset):
-
-    def __init__(self, image_dir, annotation_file_path):
-        super().__init__()
-        self.base_dir = image_dir
-        self.data = pd.read_csv(annotation_file_path)
-
-        # sorted the image_ids
-        self.image_ids = sorted(self.data["image_id"].unique())
-
-    def __getitem__(self, index):
-        """getitem should return image"""
-        image_id = self.image_ids[index]
-
-        # image
-        # https://discuss.pytorch.org/t/grayscale-to-rgb-transform/18315/2 ==> Convert greyscale to RGB
-        image = Image.open(self.base_dir + "/" + image_id + ".jpeg").convert('RGB')
-
-        # transform image to tensor
-        image = T.ToTensor()(image)
-
-        # return image_id so we can use it for validation
-        return image, image_id
-
-    def __len__(self):
-        return len(self.image_ids)
-
-    def __get_height_and_width__(self, index):
-        # https://discuss.pytorch.org/t/datasets-aspect-ratio-grouping-get-get-height-and-width/62640/2
-        ''' if you want to use aspect ratio grouping during training (so that each batch only
-        contains images with similar aspect ratio), then it is recommended to also implement
-        a get_height_and_width method, which returns the height and the width of the image.'''
-
-        image_id = self.image_ids[index]
-        image = Image.open(self.base_dir + "/" + image_id + ".jpeg")
-        width, height = image.size
-
-        return height, width
-
+# abnormal ids
+abnormal_ids = list(binary_prediction[binary_prediction["target"] == 1]["image_id"].unique())
 
 # %% --------------------
-# test dataset
-dataset_test = VinBigDataCXR(TEST_DIR, TEST_DIR + "/test_original_dimension.csv")
+# subset the object detections based on binary classifier
+object_detection_prediction_subset = object_detection_prediction[
+    object_detection_prediction["image_id"].isin(abnormal_ids)]
 
+# %% --------------------CONFIDENCE + NMS
+nms_predictions = post_process_conf_filter_nms(object_detection_prediction_subset,
+                                               confidence_threshold,
+                                               iou_threshold, normal_ids)
+
+# %% --------------------CONFIDENCE + WBF
+wbf_predictions = post_process_conf_filter_wbf(object_detection_prediction_subset,
+                                               confidence_threshold, iou_threshold,
+                                               original_dataset, normal_ids)
+# %% --------------------
+nms_predictions.to_csv(
+    TEST_DIR + "/pipeline_predictions/nms_filtered.csv",
+    index=False)
+wbf_predictions.to_csv(
+    TEST_DIR + "/pipeline_predictions/wbf_filtered.csv",
+    index=False)
+
+# %% --------------------submission prepper
+# upscale
+upscaled_nms = up_scaler(nms_predictions, original_dataset)
+upscaled_wbf = up_scaler(wbf_predictions, original_dataset)
 
 # %% --------------------
-# https://discuss.pytorch.org/t/how-to-use-collate-fn/27181
-# https://github.com/pytorch/vision/blob/master/references/detection/utils.py
-def collate_fn(batch):
-    # https://www.geeksforgeeks.org/zip-in-python/
-    # zip(*x) is used to unzip x, where x is iterator
-    return tuple(zip(*batch))
-
-
-# create dataloader
-BATCH_SIZE_TEST = 5
-
-# define training data loaders using the subset defined earlier
-test_data_loader = torch.utils.data.DataLoader(dataset_test, batch_size=BATCH_SIZE_TEST,
-                                               shuffle=False, num_workers=workers,
-                                               collate_fn=collate_fn)
+# formatter
+formatted_nms = submission_file_creator(upscaled_nms, "x_min", "y_min", "x_max", "y_max", "label",
+                                        "confidence_score")
+formatted_wbf = submission_file_creator(upscaled_wbf, "x_min", "y_min", "x_max", "y_max", "label",
+                                        "confidence_score")
 
 # %% --------------------
-# make predictions
-print("Testing predictions started")
-# start time
-start = datetime.now()
-
-# arrays
-image_id = []
-x_min = []
-y_min = []
-x_max = []
-y_max = []
-label_arr = []
-confidence_score = []
-
-with torch.no_grad():
-    for images, image_ids in test_data_loader:
-        # iterate through images and send to device
-        images_device = list(image.to(device) for image in images)
-
-        # output is list of dictionary [{boxes:tensor([[xmin, ymin, xmax, ymax], [...]],
-        # device=cuda), labels:tensor([15, 11, ...], device=cuda), scores:tensor([0.81, 0.92,
-        # ...], device=cuda)},{...}]
-        outputs = model(images_device)
-        print(image_ids)
-        print(outputs)
-
-        for img_id, output in zip(image_ids, outputs):
-            boxes = output["boxes"].cpu().numpy()
-            labels = output["labels"].cpu().numpy()
-            scores = output["scores"].cpu().numpy()
-
-            for box, label, score in zip(boxes, labels, scores):
-                image_id.append(img_id)
-                x_min.append(box[0])
-                y_min.append(box[1])
-                x_max.append(box[2])
-                y_max.append(box[3])
-                label_arr.append(label)
-                confidence_score.append(score)
-
-print("Predictions Complete")
-print("End time:" + str(datetime.now() - start))
-
-test_predictions = pd.DataFrame({"image_id": image_id,
-                                 "x_min": x_min,
-                                 "y_min": y_min,
-                                 "x_max": x_max,
-                                 "y_max": y_max,
-                                 "label": label_arr,
-                                 "confidence_score": confidence_score})
-
-# %% --------------------
-# write csv file
-test_predictions.to_csv(TEST_PREDICTION_DIR + "/test_predictions.csv", index=False)
+formatted_nms.to_csv(TEST_DIR + "/submissions/nms_pipeline.csv", index=False)
+formatted_wbf.to_csv(TEST_DIR + "/submissions/wbf_pipeline.csv", index=False)

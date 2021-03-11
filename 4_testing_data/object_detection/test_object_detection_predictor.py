@@ -1,10 +1,10 @@
 # %% --------------------
+# https://www.kaggle.com/pestipeti/vinbigdata-fasterrcnn-pytorch-inference?scriptVersionId=50935253
 import os
 import sys
 
 from dotenv import load_dotenv
 
-# %% --------------------
 # local
 # env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
 #           "Workspace/vbd_cxr/6_environment_files/local.env "
@@ -13,72 +13,80 @@ env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
 
 load_dotenv(env_file)
 
-# %% --------------------
-# DIRECTORIES
-SAVED_MODEL_PATH = os.getenv("SAVED_MODEL_DIR") + "/saved_model_20210212.pt"
-TEST_DIR = os.getenv("TEST_DIR")
-TEST_PREDICTION_DIR = os.getenv("TEST_PREDICTION_DIR")
-
 # add HOME DIR to PYTHONPATH
 sys.path.append(os.getenv("HOME_DIR"))
 
 # %% --------------------
-# Reference:
-# https://www.kaggle.com/pestipeti/vinbigdata-fasterrcnn-pytorch-inference?scriptVersionId=50935253
 import random
 from datetime import datetime
 
 import numpy as np
 import pandas as pd
 import torch
-import torchvision
-import torchvision.transforms as T
-from PIL import Image
 
 from torch.utils.data import Dataset
-from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+from common.object_detection_models import get_faster_rcnn_model_instance
+from common.CustomDatasets import VBD_CXR_FASTER_RCNN_Test
+from pathlib import Path
 
-# %% --------------------
+# %% --------------------set seed
 torch.manual_seed(42)
 torch.cuda.manual_seed(42)
 np.random.seed(42)
 random.seed(42)
 torch.backends.cudnn.deterministic = True
 
-# %% --------------------
-# workers for dataloader
-workers = 4
+# %% --------------------DIRECTORIES and variables
+IMAGE_DIR = os.getenv("IMAGE_DIR") + "/original/transformed_data/test"
+TEST_DIR = os.getenv("TEST_DIR")
+SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
+KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
+
+# %% --------------------DATASET
+# NOTE THE DATASET IS GRAY SCALE AND HAS MIN SIDE 512 AND IS NORMALIZED BY FASTER RCNN
+test_data_set = VBD_CXR_FASTER_RCNN_Test(IMAGE_DIR,
+                                         KAGGLE_TEST_DIR + "/test_original_dimension.csv",
+                                         albumentation_transformations=None)
+
+
+# %% --------------------COLLATE FUNCTION required since the image are not of same size
+# https://discuss.pytorch.org/t/how-to-use-collate-fn/27181
+# https://github.com/pytorch/vision/blob/master/references/detection/utils.py
+def collate_fn(batch):
+    # https://www.geeksforgeeks.org/zip-in-python/
+    # zip(*x) is used to unzip x, where x is iterator
+    # thus in the end we will have [(img_id, img_id, ...), (img, img, ...), (target, target, ...)]
+    return tuple(zip(*batch))
 
 
 # %% --------------------
-# initialize model
-# https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
-def get_model_instance():
-    # load a model pre-trained pre-trained on COCO
-    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
+BATCH_SIZE = 8
+workers = int(os.getenv("NUM_WORKERS"))
 
-    # replace the classifier with a new one, that has
-    # num_classes which is user-defined
-    num_classes = 15  # 14 classes (abnormalities) + background (class=0)
-
-    # get number of input features for the classifier
-    in_features = model.roi_heads.box_predictor.cls_score.in_features
-
-    # replace the pre-trained head with a new one
-    model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
-
-    return model
-
+holdout_data_loader = torch.utils.data.DataLoader(test_data_set, batch_size=BATCH_SIZE,
+                                                  shuffle=False, num_workers=workers,
+                                                  collate_fn=collate_fn)
 
 # %% --------------------
-# get device
+# define device
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-print("Torch is using following device: " + str(device))
+print(device)
+
+# %% --------------------MODEL INSTANCE
+# 15 = 14 classes (abnormalities) + 1 background class (class=0)
+# NOTE:: no findings class is ignored
+num_classes = 15
+
+# initializing a pretrained model of Faster RCNN with ResNet50-FPN as Backbone
+# NOTE:: FASTER RCNN PyTorch implementation performs normalization based on ImageNet
+model = get_faster_rcnn_model_instance(num_classes)
 
 # %% --------------------
-# load saved model to appropriate device
-model = get_model_instance()
-model.load_state_dict(torch.load(SAVED_MODEL_PATH, map_location=torch.device(device)))
+# load saved model state to appropriate device
+# using model saved at epoch 25
+saved_model_path = f"{SAVED_MODEL_DIR}/object_detection/faster_rcnn_5.pt"
+model.load_state_dict(
+    torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
 # %% --------------------
 # set model to eval mode, to not disturb the weights
@@ -88,89 +96,23 @@ model.eval()
 # send model to device
 model = model.to(device)
 
-
-# %% --------------------
-# dataset used for test
-# https://pytorch.org/docs/stable/data.html#map-style-datasets
-class VinBigDataCXR(Dataset):
-
-    def __init__(self, image_dir, annotation_file_path):
-        super().__init__()
-        self.base_dir = image_dir
-        self.data = pd.read_csv(annotation_file_path)
-
-        # sorted the image_ids
-        self.image_ids = sorted(self.data["image_id"].unique())
-
-    def __getitem__(self, index):
-        """getitem should return image"""
-        image_id = self.image_ids[index]
-
-        # image
-        # https://discuss.pytorch.org/t/grayscale-to-rgb-transform/18315/2 ==> Convert greyscale to RGB
-        image = Image.open(self.base_dir + "/" + image_id + ".jpeg").convert('RGB')
-
-        # transform image to tensor
-        image = T.ToTensor()(image)
-
-        # return image_id so we can use it for validation
-        return image, image_id
-
-    def __len__(self):
-        return len(self.image_ids)
-
-    def __get_height_and_width__(self, index):
-        # https://discuss.pytorch.org/t/datasets-aspect-ratio-grouping-get-get-height-and-width/62640/2
-        ''' if you want to use aspect ratio grouping during training (so that each batch only
-        contains images with similar aspect ratio), then it is recommended to also implement
-        a get_height_and_width method, which returns the height and the width of the image.'''
-
-        image_id = self.image_ids[index]
-        image = Image.open(self.base_dir + "/" + image_id + ".jpeg")
-        width, height = image.size
-
-        return height, width
-
-
-# %% --------------------
-# test dataset
-dataset_test = VinBigDataCXR(TEST_DIR, TEST_DIR + "/test_original_dimension.csv")
-
-
-# %% --------------------
-# https://discuss.pytorch.org/t/how-to-use-collate-fn/27181
-# https://github.com/pytorch/vision/blob/master/references/detection/utils.py
-def collate_fn(batch):
-    # https://www.geeksforgeeks.org/zip-in-python/
-    # zip(*x) is used to unzip x, where x is iterator
-    return tuple(zip(*batch))
-
-
-# create dataloader
-BATCH_SIZE_TEST = 5
-
-# define training data loaders using the subset defined earlier
-test_data_loader = torch.utils.data.DataLoader(dataset_test, batch_size=BATCH_SIZE_TEST,
-                                               shuffle=False, num_workers=workers,
-                                               collate_fn=collate_fn)
-
-# %% --------------------
-# make predictions
-print("Testing predictions started")
+# %% --------------------HOLDOUT DATA
+# make predictions for holdout data
+print("Test predictions started")
 # start time
 start = datetime.now()
 
 # arrays
-image_id = []
-x_min = []
-y_min = []
-x_max = []
-y_max = []
+image_id_arr = []
+x_min_arr = []
+y_min_arr = []
+x_max_arr = []
+y_max_arr = []
 label_arr = []
-confidence_score = []
+confidence_score_arr = []
 
 with torch.no_grad():
-    for images, image_ids in test_data_loader:
+    for img_ids, images in holdout_data_loader:
         # iterate through images and send to device
         images_device = list(image.to(device) for image in images)
 
@@ -178,34 +120,38 @@ with torch.no_grad():
         # device=cuda), labels:tensor([15, 11, ...], device=cuda), scores:tensor([0.81, 0.92,
         # ...], device=cuda)},{...}]
         outputs = model(images_device)
-        print(image_ids)
-        print(outputs)
 
-        for img_id, output in zip(image_ids, outputs):
+        for img_id, output in zip(img_ids, outputs):
             boxes = output["boxes"].cpu().numpy()
             labels = output["labels"].cpu().numpy()
             scores = output["scores"].cpu().numpy()
 
             for box, label, score in zip(boxes, labels, scores):
-                image_id.append(img_id)
-                x_min.append(box[0])
-                y_min.append(box[1])
-                x_max.append(box[2])
-                y_max.append(box[3])
+                image_id_arr.append(img_id)
+                x_min_arr.append(box[0])
+                y_min_arr.append(box[1])
+                x_max_arr.append(box[2])
+                y_max_arr.append(box[3])
                 label_arr.append(label)
-                confidence_score.append(score)
+                confidence_score_arr.append(score)
 
 print("Predictions Complete")
 print("End time:" + str(datetime.now() - start))
 
-test_predictions = pd.DataFrame({"image_id": image_id,
-                                 "x_min": x_min,
-                                 "y_min": y_min,
-                                 "x_max": x_max,
-                                 "y_max": y_max,
+test_predictions = pd.DataFrame({"image_id": image_id_arr,
+                                 "x_min": x_min_arr,
+                                 "y_min": y_min_arr,
+                                 "x_max": x_max_arr,
+                                 "y_max": y_max_arr,
                                  "label": label_arr,
-                                 "confidence_score": confidence_score})
+                                 "confidence_score": confidence_score_arr})
 
 # %% --------------------
+# test path
+test_path = f"{TEST_DIR}/object_detection/predictions"
+
+if not Path(test_path).exists():
+    os.makedirs(test_path)
+
 # write csv file
-test_predictions.to_csv(TEST_PREDICTION_DIR + "/test_predictions.csv", index=False)
+test_predictions.to_csv(test_path + "/test_object_detection_prediction.csv", index=False)

@@ -114,11 +114,11 @@ def get_bb_info(df, img_id, columns):
 # https://www.kaggle.com/bjoernholzhauer/eda-dicom-reading-vinbigdata-chest-x-ray#7.-creating-fast-to-read-shelve-file
 def resize_image(df, img_arr, image_id, columns, smallest_max_size=1024):
     # create resize transform pipeline
-    transform = albumentations.compose([
+    transform = albumentations.Compose([
         # faster rcnn needs minimum 800x800 dimension (
         # https://debuggercafe.com/faster-rcnn-object-detection-with-pytorch/)
-        albumentations.smallestmaxsize(max_size=smallest_max_size, always_apply=True)
-    ], bbox_params=albumentations.bboxparams(format='pascal_voc'))
+        albumentations.SmallestMaxSize(max_size=smallest_max_size, always_apply=True)
+    ], bbox_params=albumentations.BboxParams(format='pascal_voc'))
 
     # each row in bounding boxes will contain 'x_min', 'y_min', 'x_max', 'y_max', "class_id"
     bboxes = get_bb_info(df, image_id, columns)

@@ -19,7 +19,7 @@ sys.path.append(os.getenv("HOME_DIR"))
 VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
 
 # %% --------------------START HERE
-from sklearn.metrics import confusion_matrix, f1_score, roc_auc_score, roc_curve
+from sklearn.metrics import confusion_matrix, f1_score, roc_auc_score, roc_curve, accuracy_score
 import pandas as pd
 from common.utilities import confusion_matrix_plotter, plot_roc_cur
 
@@ -29,6 +29,18 @@ validation_fold = pd.read_csv(
     VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/validation_predictions.csv")
 holdout_fold = pd.read_csv(
     VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/holdout.csv")
+
+# --------------------VALIDATION
+# Accuracy
+acc_val = accuracy_score(validation_fold["target"],
+                         validation_fold["prediction"])
+print(f"Accuracy Score validation :" + str(acc_val))
+
+# --------------------HOLDOUT
+# Accuracy
+acc_holdout = accuracy_score(holdout_fold["target"],
+                             holdout_fold["prediction"])
+print(f"Accuracy Score holdout :" + str(acc_holdout))
 
 # --------------------VALIDATION
 # confusion matrix

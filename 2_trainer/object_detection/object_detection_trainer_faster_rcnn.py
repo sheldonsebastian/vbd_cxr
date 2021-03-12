@@ -5,11 +5,11 @@ import sys
 from dotenv import load_dotenv
 
 # local
-env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-           "Workspace/vbd_cxr/6_environment_files/local.env "
+# env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
+#            "Workspace/vbd_cxr/6_environment_files/local.env "
 
 # cerberus
-# env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
+env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
 
 load_dotenv(env_file)
 
@@ -138,7 +138,7 @@ model = get_faster_rcnn_model_instance(num_classes, 512)
 
 # %% --------------------HYPER-PARAMETERS
 LR = 1e-3
-EPOCHS = 3
+EPOCHS = 50
 
 # %% --------------------
 if EPOCHS // 10 == 0:

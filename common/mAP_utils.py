@@ -2,19 +2,13 @@
 # pip install pycocotools
 
 import numpy as np
+import pandas as pd
+import operator
 from map_boxes import mean_average_precision_for_boxes
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 
 from common.kaggle_utils import extract_dimension_df
-
-
-# %% --------------------
-class ListToCOCODataset:
-    # to handle raw preds from model
-    # to handle gt from target dictionary in data loader
-    def __init__(self):
-        pass
 
 
 # %% --------------------
@@ -126,40 +120,44 @@ def get_id_to_label_mAP():
         11: "pleural effusion",
         12: "pleural thickening",
         13: "pneumothorax",
-        14: "pulmonary fibrosis"
+        14: "pulmonary fibrosis",
+        15: "No Findings class"
     }
 
     return id_to_label_map
 
 
 # %% --------------------
-def normalize_bb(pred_df, dimension_df, dimension_df_height_col, dimension_df_width_col):
+def normalize_bb(df_og, dimension_df, dimension_df_height_col, dimension_df_width_col):
+    # make a copy
+    df = df_og.copy(deep=True)
+
     # get height and width data
     image_dimensions = extract_dimension_df(dimension_df)
 
-    for image_id in pred_df["image_id"].unique():
+    for image_id in df["image_id"].unique():
         # normalize x_min
-        pred_df.loc[pred_df["image_id"] == image_id, "x_min"] /= image_dimensions.loc[
+        df.loc[df["image_id"] == image_id, "x_min"] /= image_dimensions.loc[
             image_id, dimension_df_width_col]
 
         # normalize x_max
-        pred_df.loc[pred_df["image_id"] == image_id, "x_max"] /= image_dimensions.loc[
+        df.loc[df["image_id"] == image_id, "x_max"] /= image_dimensions.loc[
             image_id, dimension_df_width_col]
 
         # normalize y_min
-        pred_df.loc[pred_df["image_id"] == image_id, "y_min"] /= image_dimensions.loc[
+        df.loc[df["image_id"] == image_id, "y_min"] /= image_dimensions.loc[
             image_id, dimension_df_height_col]
 
         # normalize y_max
-        pred_df.loc[pred_df["image_id"] == image_id, "y_max"] /= image_dimensions.loc[
+        df.loc[df["image_id"] == image_id, "y_max"] /= image_dimensions.loc[
             image_id, dimension_df_height_col]
 
     # normalization checker to check if values are b/w 0 and 1
-    if not ((pred_df["x_min"] > 1).any() or (pred_df["x_min"] < 0).any() or
-            (pred_df["x_max"] > 1).any() or (pred_df["x_max"] < 0).any() or
-            (pred_df["y_min"] > 1).any() or (pred_df["y_min"] < 0).any() or
-            (pred_df["y_max"] > 1).any() or (pred_df["y_max"] < 0).any()):
-        return pred_df
+    if not ((df["x_min"] > 1).any() or (df["x_min"] < 0).any() or
+            (df["x_max"] > 1).any() or (df["x_max"] < 0).any() or
+            (df["y_min"] > 1).any() or (df["y_min"] < 0).any() or
+            (df["y_max"] > 1).any() or (df["y_max"] < 0).any()):
+        return df
     else:
         raise ValueError("Normalization failed since normalized values were not in range of 0-1")
 
@@ -167,8 +165,8 @@ def normalize_bb(pred_df, dimension_df, dimension_df_height_col, dimension_df_wi
 # %% --------------------
 # https://github.com/ZFTurbo/Mean-Average-Precision-for-Boxes
 # https://github.com/ZFTurbo/Mean-Average-Precision-for-Boxes/blob/4fea46a6153efa72632a968b4bc61292da1fd38f/map_boxes/__init__.py#L93
-def compute_mAP_zfturbo(normalized_gt_df, normalized_pred_df, id_to_label, gt_class_id="class_id",
-                        pred_class_id="label"):
+def zfturbo_compute_mAP(normalized_gt_df, normalized_pred_df, id_to_label, gt_class_id="class_id",
+                        pred_class_id="label", verbose=False):
     """
     :gt: is ground truth dataframe. The co-ordinates are normalized based on image height and
     width using normalize_bb()
@@ -199,5 +197,91 @@ def compute_mAP_zfturbo(normalized_gt_df, normalized_pred_df, id_to_label, gt_cl
     mean_ap, average_precisions = mean_average_precision_for_boxes(normalized_gt_df_np,
                                                                    normalized_pred_df_np,
                                                                    iou_threshold=0.4,
-                                                                   verbose=True)
-    return mean_ap, average_precisions
+                                                                   exclude_not_in_annotations=True,
+                                                                   verbose=verbose)
+
+    return mean_ap, sorted(average_precisions.items(), key=operator.itemgetter(1), reverse=True)
+
+
+# %% --------------------
+class ZFTurbo_MAP_TRAINING:
+    """Wrapper class for ZFTurbo mAP used during training"""
+
+    def __init__(self, df_dimension, id_to_label_map):
+        self.true_image_id_arr = []
+        self.true_label_arr = []
+        self.true_x_min_arr = []
+        self.true_x_max_arr = []
+        self.true_y_min_arr = []
+        self.true_y_max_arr = []
+
+        self.pred_image_id_arr = []
+        self.pred_label_arr = []
+        self.pred_confd_arr = []
+        self.pred_x_min_arr = []
+        self.pred_x_max_arr = []
+        self.pred_y_min_arr = []
+        self.pred_y_max_arr = []
+
+        self.dimensions_df = extract_dimension_df(df_dimension)
+        self.id_to_label = id_to_label_map
+
+    def zfturbo_convert_targets_from_dataloader(self, targets, image_ids):
+        """
+        reads the targets from data loader, reads image_id and extends the arrays
+        appropriately.
+        """
+        for img_id, t in zip(image_ids, targets):
+
+            for box, label in zip(t["boxes"].numpy(), t["labels"].numpy()):
+                self.true_image_id_arr.append(img_id)
+                self.true_label_arr.append(label)
+                self.true_x_min_arr.append(box[0])
+                self.true_x_max_arr.append(box[2])
+                self.true_y_min_arr.append(box[1])
+                self.true_y_max_arr.append(box[3])
+
+    def zfturbo_convert_outputs_from_model(self, outputs, image_ids):
+        """
+        reads the output from outputs, reads image_id and extends the arrays
+        appropriately.
+        """
+        for img_id, output in zip(image_ids, outputs):
+
+            for box, label, confd_score in zip(output["boxes"].cpu().numpy(),
+                                               output["labels"].cpu().numpy(),
+                                               output["scores"].cpu().numpy()):
+                self.pred_image_id_arr.append(img_id)
+                self.pred_label_arr.append(label)
+                self.pred_confd_arr.append(confd_score)
+                self.pred_x_min_arr.append(box[0])
+                self.pred_x_max_arr.append(box[2])
+                self.pred_y_min_arr.append(box[1])
+                self.pred_y_max_arr.append(box[3])
+
+    def zfturbo_compute_mAP(self):
+
+        train_df = pd.DataFrame(
+            {"image_id": self.true_image_id_arr, "class_id": self.true_label_arr,
+             "x_min": self.true_x_min_arr, "x_max": self.true_x_max_arr,
+             "y_min": self.true_y_min_arr, "y_max": self.true_y_max_arr})
+
+        pred_df = pd.DataFrame(
+            {"image_id": self.pred_image_id_arr, "label": self.pred_label_arr,
+             "confidence_score": self.pred_confd_arr, "x_min": self.pred_x_min_arr,
+             "x_max": self.pred_x_max_arr, "y_min": self.pred_y_min_arr,
+             "y_max": self.pred_y_max_arr})
+
+        # normalize
+        train_df_normalized = normalize_bb(train_df, self.dimensions_df, "transformed_height",
+                                           "transformed_width")
+        pred_df_normalized = normalize_bb(pred_df, self.dimensions_df, "transformed_height",
+                                          "transformed_width")
+
+        # compute mAP
+        mean_ap, average_precisions = zfturbo_compute_mAP(train_df_normalized, pred_df_normalized,
+                                                          self.id_to_label,
+                                                          gt_class_id="class_id",
+                                                          pred_class_id="label", verbose=False)
+
+        return mean_ap, average_precisions

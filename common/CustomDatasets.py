@@ -109,6 +109,7 @@ class VBD_CXR_2_Class_Test(Dataset):
 
         # image https://discuss.pytorch.org/t/grayscale-to-rgb-transform/18315/2 ==> Convert
         # greyscale to RGB
+        # TODO check whether it works w/o RGB
         image = Image.open(self.base_dir + "/" + image_id + ".jpeg").convert('RGB')
 
         # convert image to numpy array

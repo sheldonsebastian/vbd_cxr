@@ -27,8 +27,6 @@ import torch
 from torch.utils.data import Dataset
 from common.object_detection_models import get_faster_rcnn_model_instance
 from common.CustomDatasets import VBD_CXR_FASTER_RCNN_Train
-from common.utilities import prep_pred_for_mAP, prep_gt_target_for_mAP
-from common.mAP_utils import mAP_using_package
 from pathlib import Path
 
 # %% --------------------set seed
@@ -126,8 +124,6 @@ y_max_arr = []
 label_arr = []
 confidence_score_arr = []
 
-train_preds = []
-train_true = []
 with torch.no_grad():
     for images, targets in validation_data_loader:
         # iterate through images and send to device
@@ -140,16 +136,10 @@ with torch.no_grad():
             # need image_ids to compare with target data
             image_ids.append(image_id)
 
-        for t in targets:
-            # add targets to train_true for computing mAP
-            train_true.extend(prep_gt_target_for_mAP(t))
-
         # output is list of dictionary [{boxes:tensor([[xmin, ymin, xmax, ymax], [...]],
         # device=cuda), labels:tensor([15, 11, ...], device=cuda), scores:tensor([0.81, 0.92,
         # ...], device=cuda)},{...}]
         outputs = model(images_device)
-        for output in outputs:
-            train_preds.extend(prep_pred_for_mAP(output))
 
         for img_id, output in zip(image_ids, outputs):
             boxes = output["boxes"].cpu().numpy()
@@ -164,10 +154,6 @@ with torch.no_grad():
                 y_max_arr.append(box[3])
                 label_arr.append(label)
                 confidence_score_arr.append(score)
-
-# track mAP
-train_mAP = mAP_using_package(train_preds, train_true)
-print(f"Validation mAP: {train_mAP}")
 
 print("Predictions Complete")
 print("End time:" + str(datetime.now() - start))

@@ -1,11 +1,9 @@
-# Compute mAP for validation and 5% holdout set
 # %% --------------------
 import os
 import sys
 
 from dotenv import load_dotenv
 
-# %% --------------------
 # local
 env_file = "d:/gwu/4 spring 2021/6501 capstone/vbd cxr/pycharm " \
            "workspace/vbd_cxr/6_environment_files/local.env "
@@ -19,9 +17,8 @@ sys.path.append(os.getenv("home_dir"))
 
 # %% --------------------start here
 import pandas as pd
-import numpy as np
-from mean_average_precision import MetricBuilder
-from common.utilities import filter_df_based_on_confidence_threshold, merge_bb_nms, merge_bb_wbf
+from common.mAP_utils import zfturbo_compute_mAP, normalize_bb, get_id_to_label_mAP
+from common.post_processing_utils import post_process_conf_filter_nms, post_process_conf_filter_wbf
 
 # %% --------------------DIRECTORIES
 VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
@@ -52,11 +49,12 @@ holdout_predictions = pd.read_csv(
 # %% --------------------
 confidence_filter_thr = 0.5
 iou_thr = 0.4
+id_to_label = get_id_to_label_mAP()
 
 # %% --------------------
 for gt_values, pred_values, title in zip([val_gt_df, holdout_gt_df],
                                          [val_predictions, holdout_predictions],
-                                         ["Validation Data", "Holdout Data"]):
+                                         ["Validation Data", "Holdout 5% Data"]):
     print("-" * 10 + title + "-" * 10)
     # %% --------------------
     # merge with validation predicted image ids
@@ -66,93 +64,30 @@ for gt_values, pred_values, title in zip([val_gt_df, holdout_gt_df],
     gt_df = gt_values[gt_values["image_id"].isin(validation_predictions_image_ids)]
     gt_df = gt_df.reset_index(drop=True)
 
-    # %% --------------------
-    # compute map based on validation target data
-    pred_boxes = []
-    for idx, row in pred_values.iterrows():
-        # [xmin, ymin, xmax, ymax, class_id, confidence]
-        temp = [float(row["x_min"]), float(row["y_min"]), float(row["x_max"]), float(row["y_max"]),
-                int(row["label"]), float(row["confidence_score"]), ]
-        pred_boxes.append(temp)
-        del temp
+    # %% --------------------NORMALIZE
+    normalized_gt = normalize_bb(gt_df, gt_df, "transformed_height", "transformed_width")
+    normalized_preds = normalize_bb(pred_values, gt_df, "transformed_height",
+                                    "transformed_width")
 
-    true_boxes = []
-    for idx, row in gt_df.iterrows():
-        # [xmin, ymin, xmax, ymax, class_id, difficult, crowd]
-        temp = [float(row["x_min"]), float(row["y_min"]), float(row["x_max"]), float(row["y_max"]),
-                int(row["class_id"]), 0, 0]
-        true_boxes.append(temp)
-        del temp
+    # %% --------------------RAW
+    print(zfturbo_compute_mAP(normalized_gt, normalized_preds, id_to_label))
 
-    # %% --------------------
-    metric_fn = MetricBuilder.build_evaluation_metric("map_2d", async_mode=False, num_classes=14)
-    metric_fn.add(np.asarray(pred_boxes), np.asarray(true_boxes))
-    print(metric_fn.value(iou_thresholds=0.4)['mAP'])
+    # %% --------------------CONF + NMS
+    validation_conf_nms = post_process_conf_filter_nms(pred_values, confidence_filter_thr,
+                                                       iou_thr)
 
-    # %% --------------------
-    filtered_validation_predictions = filter_df_based_on_confidence_threshold(pred_values,
-                                                                              "confidence_score",
-                                                                              confidence_filter_thr)
+    # normalize
+    normalized_preds_nms = normalize_bb(validation_conf_nms, gt_df, "transformed_height",
+                                        "transformed_width")
 
-    # %% --------------------
-    filtered_pred_boxes = []
-    for idx, row in filtered_validation_predictions.iterrows():
-        # [xmin, ymin, xmax, ymax, class_id, confidence]
-        temp = [float(row["x_min"]), float(row["y_min"]), float(row["x_max"]),
-                float(row["y_max"]), int(row["label"]), float(row["confidence_score"])]
-        filtered_pred_boxes.append(temp)
-        del temp
+    print(zfturbo_compute_mAP(normalized_gt, normalized_preds_nms, id_to_label))
 
-    # %% --------------------
-    metric_fn = MetricBuilder.build_evaluation_metric("map_2d", async_mode=False, num_classes=14)
-    metric_fn.add(np.asarray(filtered_pred_boxes), np.asarray(true_boxes))
-    print(metric_fn.value(iou_thresholds=0.4)['mAP'])
+    # %% --------------------CONF + WBF
+    validation_conf_wbf = post_process_conf_filter_wbf(pred_values, confidence_filter_thr,
+                                                       iou_thr, gt_df)
 
-    # %% --------------------
-    # compute map based on NMS
-    nms_filtered_pred_boxes = []
+    # normalize
+    normalized_preds_wbf = normalize_bb(validation_conf_wbf, gt_df, "transformed_height",
+                                        "transformed_width")
 
-    for image_id in sorted(filtered_validation_predictions["image_id"].unique()):
-        bb_df = \
-            filtered_validation_predictions[
-                filtered_validation_predictions["image_id"] == image_id][
-                ["x_min", "y_min", "x_max", "y_max", "label", "confidence_score"]]
-        bb_df = bb_df.to_numpy()
-        nms_bb = merge_bb_nms(bb_df, 0, 1, 2, 3, 4, iou_thr=iou_thr, scores_col=5)
-
-        for i in range(len(nms_bb)):
-            # [xmin, ymin, xmax, ymax, class_id, confidence]
-            temp = [nms_bb[i][0], nms_bb[i][1], nms_bb[i][2], nms_bb[i][3], nms_bb[i][4],
-                    nms_bb[i][5]]
-            nms_filtered_pred_boxes.append(temp)
-
-    metric_fn = MetricBuilder.build_evaluation_metric("map_2d", async_mode=False, num_classes=14)
-    metric_fn.add(np.asarray(nms_filtered_pred_boxes), np.asarray(true_boxes))
-    print(metric_fn.value(iou_thresholds=0.4)['mAP'])
-
-    # %% --------------------
-    # compute map based on WBF
-    wbf_filtered_pred_boxes = []
-
-    for image_id in sorted(filtered_validation_predictions["image_id"].unique()):
-        bb_df = \
-            filtered_validation_predictions[
-                filtered_validation_predictions["image_id"] == image_id][
-                ["x_min", "y_min", "x_max", "y_max", "label", "confidence_score"]]
-        bb_df = bb_df.to_numpy()
-        t_width, t_height = \
-            gt_df[gt_df["image_id"] == image_id][
-                ["transformed_width", "transformed_height"]].values[0]
-
-        wbf_bb = merge_bb_wbf(t_width, t_height, bb_df, 4, 0, 1, 2, 3, iou_thr=iou_thr,
-                              scores_col=5)
-
-        for i in range(len(wbf_bb)):
-            # [xmin, ymin, xmax, ymax, class_id, confidence]
-            temp = [wbf_bb[i][0], wbf_bb[i][1], wbf_bb[i][2], wbf_bb[i][3], wbf_bb[i][4],
-                    wbf_bb[i][5]]
-            wbf_filtered_pred_boxes.append(temp)
-
-    metric_fn = MetricBuilder.build_evaluation_metric("map_2d", async_mode=False, num_classes=14)
-    metric_fn.add(np.asarray(wbf_filtered_pred_boxes), np.asarray(true_boxes))
-    print(metric_fn.value(iou_thresholds=0.4)['mAP'])
+    print(zfturbo_compute_mAP(normalized_gt, normalized_preds_wbf, id_to_label))

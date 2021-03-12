@@ -25,7 +25,7 @@ validation_prediction_dir = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm 
 # %% --------------------start here
 # https://github.com/ZFTurbo/Mean-Average-Precision-for-Boxes
 import pandas as pd
-from common.mAP_utils import normalize_bb, compute_mAP_zfturbo, get_id_to_label_mAP
+from common.mAP_utils import normalize_bb, zfturbo_compute_mAP, get_id_to_label_mAP
 from common.post_processing_utils import post_process_conf_filter_nms, post_process_conf_filter_wbf
 
 # %% --------------------
@@ -56,14 +56,22 @@ normalized_preds = normalize_bb(validation_predictions, gt_df, "transformed_heig
                                 "transformed_width")
 
 # %% --------------------RAW
-print(compute_mAP_zfturbo(normalized_gt, normalized_preds, id_to_label))
+print(zfturbo_compute_mAP(normalized_gt, normalized_preds, id_to_label))
 
 # %% --------------------CONF + NMS
-validation_conf_nms = post_process_conf_filter_nms(normalized_preds, 0.10, 0.4)
+validation_conf_nms = post_process_conf_filter_nms(validation_predictions, 0.10, 0.4)
 
-print(compute_mAP_zfturbo(normalized_gt, validation_conf_nms, id_to_label))
+# normalize
+normalized_preds_nms = normalize_bb(validation_conf_nms, gt_df, "transformed_height",
+                                    "transformed_width")
+
+print(zfturbo_compute_mAP(normalized_gt, normalized_preds_nms, id_to_label))
 
 # %% --------------------CONF + WBF
-validation_conf_wbf = post_process_conf_filter_wbf(normalized_preds, 0.10, 0.4, gt_df)
+validation_conf_wbf = post_process_conf_filter_wbf(validation_predictions, 0.10, 0.4, gt_df)
 
-print(compute_mAP_zfturbo(normalized_gt, validation_conf_wbf, id_to_label))
+# normalize
+normalized_preds_wbf = normalize_bb(validation_conf_wbf, gt_df, "transformed_height",
+                                    "transformed_width")
+
+print(zfturbo_compute_mAP(normalized_gt, normalized_preds_wbf, id_to_label))

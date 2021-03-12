@@ -5,11 +5,11 @@ import sys
 from dotenv import load_dotenv
 
 # local
-# env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-#            "Workspace/vbd_cxr/6_environment_files/local.env "
+env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
+           "Workspace/vbd_cxr/6_environment_files/local.env "
 
 # cerberus
-env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
+# env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
 
 load_dotenv(env_file)
 
@@ -18,7 +18,8 @@ sys.path.append(os.getenv("HOME_DIR"))
 
 # %% --------------------START HERE
 # https://pytorch.org/vision/stable/models.html#faster-r-cnn
-# Faster RCNN default parameters + Adam optimizer
+# Faster RCNN
+import albumentations
 import random
 from common.object_detection_models import get_faster_rcnn_model_instance
 import numpy as np
@@ -28,10 +29,11 @@ from common.CustomDatasets import VBD_CXR_FASTER_RCNN_Train
 from torch.utils import tensorboard
 from pathlib import Path
 import shutil
+from common.utilities import extract_image_id_from_batch_using_dataset
 from datetime import datetime
+from common.mAP_utils import ZFTurbo_MAP_TRAINING, get_id_to_label_mAP
+import pandas as pd
 import math
-from common.utilities import prep_gt_target_for_mAP, prep_pred_for_mAP
-from common.mAP_utils import mAP_using_package
 
 # %% --------------------set seeds
 seed = 42
@@ -42,14 +44,14 @@ random.seed(seed)
 torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
-IMAGE_DIR = os.getenv("IMAGE_DIR") + "/original/transformed_data/train"
+IMAGE_DIR = os.getenv("IMAGE_DIR")
 MERGED_DIR = os.getenv("MERGED_DIR")
 SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
 
 # %% --------------------TENSORBOARD DIRECTORY INITIALIZATION
-train_tensorboard_dir = f"{TENSORBOARD_DIR}/object_detection/train"
-validation_tensorboard_dir = f"{TENSORBOARD_DIR}/object_detection/validation"
+train_tensorboard_dir = f"{TENSORBOARD_DIR}/object_detection/current/train"
+validation_tensorboard_dir = f"{TENSORBOARD_DIR}/object_detection/current/validation"
 
 # if logs already exist then delete them
 train_dirpath = Path(train_tensorboard_dir)
@@ -66,19 +68,21 @@ validation_writer = tensorboard.SummaryWriter(validation_tensorboard_dir)
 
 # %% --------------------Data transformations using albumentations
 # augmentation of data for training data only
-# TODO need to verify augmentations by visualizing it with bounding boxes
-# generic_transformer = albumentations.Compose([
-#     # augmentation operations
-#     albumentations.augmentations.transforms.ColorJitter(brightness=0.5, contrast=0.5,
-#                                                         saturation=0.5, hue=0.5,
-#                                                         always_apply=False,
-#                                                         p=0.5),
-#     # horizontal flipping
-#     albumentations.augmentations.transforms.HorizontalFlip(p=0.5),
-# ])
+# augmentor = albumentations.Compose(
+#     [
+#         # changing brightness, contrast, saturation, hue
+#         albumentations.augmentations.transforms.ColorJitter(brightness=0.3, contrast=0.3,
+#                                                             saturation=0.3, hue=0.3,
+#                                                             always_apply=False,
+#                                                             p=0.5),
+#         # horizontal flipping
+#         albumentations.augmentations.transforms.HorizontalFlip(p=0.5)
+#     ],
+#     bbox_params=albumentations.BboxParams(format='pascal_voc')
+# )
 
 # %% --------------------DATASET
-# NOTE THE DATASET IS GRAY SCALE AND HAS MIN SIDE 512 AND IS NORMALIZED BY FASTER RCNN
+# NOTE THE DATASET IS GRAY SCALE AND HAS MIN SIDE 1024 AND IS NORMALIZED BY FASTER RCNN
 train_data_set = VBD_CXR_FASTER_RCNN_Train(IMAGE_DIR,
                                            MERGED_DIR + "/wbf_merged"
                                                         "/object_detection/train_df_80.csv",
@@ -130,11 +134,11 @@ num_classes = 15
 
 # initializing a pretrained model of Faster RCNN with ResNet50-FPN as Backbone
 # NOTE:: FASTER RCNN PyTorch implementation performs normalization based on ImageNet
-model = get_faster_rcnn_model_instance(num_classes)
+model = get_faster_rcnn_model_instance(num_classes, 512)
 
 # %% --------------------HYPER-PARAMETERS
 LR = 1e-3
-EPOCHS = 50
+EPOCHS = 3
 
 # %% --------------------
 if EPOCHS // 10 == 0:
@@ -150,6 +154,11 @@ optimizer = torch.optim.Adam(params, lr=LR)
 # %% --------------------move to device
 model.to(device)
 
+# %% --------------------
+train_original_dimension = pd.read_csv(MERGED_DIR + "/wbf_merged/object_detection/train_df_80.csv")
+validation_original_dimension = pd.read_csv(
+    MERGED_DIR + "/wbf_merged/object_detection/val_df_20.csv")
+
 # %% --------------------TRAINING LOOP
 print("Program started")
 
@@ -164,7 +173,6 @@ if not saved_model_dir.exists():
 
 # TRAIN
 sum_train_losses_arr = []
-mAP_train_arr = []
 # FC Layer losses for object detection
 train_loss_classifier_arr = []
 train_loss_box_reg_arr = []
@@ -174,7 +182,6 @@ train_loss_rpn_box_reg_arr = []
 
 # VALIDATION
 sum_validation_losses_arr = []
-mAP_validation_arr = []
 # FC Layer losses for object detection
 validation_loss_classifier_arr = []
 validation_loss_box_reg_arr = []
@@ -193,11 +200,8 @@ for epoch in range(EPOCHS):
     print('Epoch {}/{}'.format(epoch, EPOCHS - 1))
     print('-' * 10)
 
-    # [xmin, ymin, xmax, ymax, class_id, difficult, crowd]
-    train_true = []
-
-    # [xmin, ymin, xmax, ymax, class_id, confidence]
-    train_preds = []
+    # https://github.com/pytorch/vision/blob/master/references/detection/engine.py
+    # ---------------------------COMPUTING LOSSES::TRAINING DATA------------------------------------
 
     # running stats for iteration level
     running_sum_train_losses = 0
@@ -206,32 +210,14 @@ for epoch in range(EPOCHS):
     running_train_loss_objectness = 0
     running_train_loss_rpn_box_reg = 0
 
-    # https://github.com/pytorch/vision/blob/master/references/detection/engine.py
-    # ----------------------TRAINING DATA --------------
     # iterate through train data in batches
     for train_images, train_targets in train_data_loader:
         # input data as batch
         train_images = list(image.to(device) for image in train_images)
+        train_targets_device = [{k: v.to(device) for k, v in t.items()} for t in train_targets]
 
-        train_targets_device = []
-
-        for t in train_targets:
-            # add targets to train_true for computing mAP
-            train_true.extend(prep_gt_target_for_mAP(t))
-
-            train_targets_dict = {}
-            # send target to device
-            for k, v in t.items():
-                train_targets_dict[k] = v.to(device)
-
-            train_targets_device.append(train_targets_dict)
-        # ------------------- LOSS --------------------------------------
         # set model to train phase
         model.train()
-
-        # optimizer.zero_grad() is critically important because it resets all weight and bias
-        # gradients to 0
-        optimizer.zero_grad()
 
         # forward pass
         # track history in training mode
@@ -248,6 +234,10 @@ for epoch in range(EPOCHS):
                 print("Loss is {}, stopping training".format(loss_value))
                 print(loss_dict)
                 sys.exit(1)
+
+            # optimizer.zero_grad() is critically important because it resets all weight and bias
+            # gradients to 0
+            optimizer.zero_grad()
 
             # loss.backward() method uses the back-propagation algorithm to compute all the
             # gradients associated with the weights and biases that are part of the network
@@ -268,24 +258,7 @@ for epoch in range(EPOCHS):
         if train_iter % 50 == 0:
             print(f"Training Total Loss for Iteration {train_iter} :: {losses.item()}")
 
-        # ------------------- mAP --------------------------------------
-        # compute train mAP
-        # set model to eval phase
-        model.eval()
-        with torch.set_grad_enabled(False):
-            # make predictions
-            outputs = model(train_images)
-
-            for output in outputs:
-                train_preds.extend(prep_pred_for_mAP(output))
-
         train_iter += 1
-
-    # track mAP at epoch level
-    train_mAP = mAP_using_package(train_preds, train_true)
-    mAP_train_arr.append(train_mAP)
-    train_writer.add_scalar("mAP", train_mAP, global_step=epoch)
-    print(f"Train mAP Epoch {epoch}: {train_mAP}")
 
     # average the losses per epoch
     train_sum_train_losses_agg = running_sum_train_losses / len(train_data_loader.dataset)
@@ -310,12 +283,7 @@ for epoch in range(EPOCHS):
     train_writer.add_scalar("rpn_loss_rpn_box_reg", train_loss_rpn_box_reg_agg, global_step=epoch)
 
     # https://github.com/pytorch/vision/blob/master/references/detection/engine.py
-    # ----------------------VALIDATION DATA --------------
-    # [xmin, ymin, xmax, ymax, class_id, difficult, crowd]
-    validation_true = []
-
-    # [xmin, ymin, xmax, ymax, class_id, confidence]
-    validation_preds = []
+    # -------------------------COMPUTING LOSSES::VALIDATION DATA------------------------------------
 
     # running stats for iteration level
     running_sum_validation_losses = 0
@@ -328,19 +296,9 @@ for epoch in range(EPOCHS):
     for validation_images, validation_targets in validation_data_loader:
         # input data as batch
         validation_images = list(image.to(device) for image in validation_images)
+        validation_targets_device = [{k: v.to(device) for k, v in t.items()} for t in
+                                     validation_targets]
 
-        validation_targets_device = []
-
-        for t in validation_targets:
-            # add targets to train_true for computing mAP
-            validation_true.extend(prep_gt_target_for_mAP(t))
-
-            validation_targets_dict = {}
-            # send target to device
-            for k, v in t.items():
-                validation_targets_dict[k] = v.to(device)
-
-            validation_targets_device.append(validation_targets_dict)
         # ------------------- LOSS --------------------------------------
         # set model to train phase
         model.train()
@@ -371,24 +329,7 @@ for epoch in range(EPOCHS):
         if val_iter % 50 == 0:
             print(f"Validation Total Loss for Iteration {val_iter} :: {losses.item()}")
 
-        # ------------------- mAP --------------------------------------
-        # compute validation mAP
-        # set model to eval phase
-        model.eval()
-        with torch.set_grad_enabled(False):
-            # make predictions
-            outputs = model(validation_images)
-
-            for output in outputs:
-                validation_preds.extend(prep_pred_for_mAP(output))
-
         val_iter += 1
-
-    # track mAP at epoch level
-    val_mAP = mAP_using_package(validation_preds, validation_true)
-    mAP_validation_arr.append(val_mAP)
-    validation_writer.add_scalar("mAP", val_mAP, global_step=epoch)
-    print(f"Validation mAP Epoch {epoch}: {val_mAP}")
 
     # average the losses per epoch
     validation_sum_train_losses_agg = running_sum_validation_losses / len(
@@ -417,17 +358,97 @@ for epoch in range(EPOCHS):
     validation_writer.add_scalar("rpn_loss_rpn_box_reg", val_loss_rpn_box_reg_agg,
                                  global_step=epoch)
 
-    # compute mAP and save model based for (epoch/10)th and also save last epoch
+    # TODO handle exploding losses problem, early stopping
+
+    # split epoch into 10 equal parts and for each part and last epoch compute mAP and save model
     if (epoch % save_step_size == 0) or (epoch == (EPOCHS - 1)):
-        saved_model_path = f"{saved_model_dir}/faster_rcnn_{model_save_counter}.pt"
+        # set model to eval mode
+        model.eval()
 
-        # https://debuggercafe.com/effective-model-saving-and-resuming-training-in-pytorch/
-        torch.save({
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-        }, saved_model_path)
+        # --------------------------------------mAP: TRAINING(unfiltered)---------------------------
+        train_map = ZFTurbo_MAP_TRAINING(train_original_dimension, get_id_to_label_mAP())
 
+        with torch.no_grad():
+            # get data from train loader
+            for images, targets in train_data_loader:
+                # send images to device
+                images = list(image.to(device) for image in images)
+
+                img_ids = extract_image_id_from_batch_using_dataset(targets,
+                                                                    train_data_loader.dataset)
+
+                # add the target data
+                train_map.zfturbo_convert_targets_from_dataloader(targets, img_ids)
+
+                # get model outputs
+                outputs = model(images)
+
+                # add the output data
+                train_map.zfturbo_convert_outputs_from_model(outputs, img_ids)
+
+        # compute the mAP
+        mAP_train, ap_classes_train = train_map.zfturbo_compute_mAP()
+
+        # print overall mAP and mAP for each class in console
+        print(f"mAP for training at {epoch} is: {mAP_train}")
+        print(f"mAP for training for all classes at {epoch} is: {ap_classes_train}")
+        print()
+
+        # save mAP as per counter level in tensorboard
+        train_writer.add_scalar("mAP", mAP_train, global_step=model_save_counter)
+
+        # ------------------------------------mAP: VALIDATION(unfiltered)---------------------------
+        validation_map = ZFTurbo_MAP_TRAINING(validation_original_dimension, get_id_to_label_mAP())
+
+        with torch.no_grad():
+            # get data from validation loader
+            for images, targets in validation_data_loader:
+                # send images to device
+                images = list(image.to(device) for image in images)
+
+                img_ids = extract_image_id_from_batch_using_dataset(targets,
+                                                                    validation_data_loader.dataset)
+
+                # add the target data
+                validation_map.zfturbo_convert_targets_from_dataloader(targets, img_ids)
+
+                # get model outputs
+                outputs = model(images)
+
+                # add the output data
+                validation_map.zfturbo_convert_outputs_from_model(outputs, img_ids)
+
+        # compute the mAP
+        mAP_val, ap_classes_val = validation_map.zfturbo_compute_mAP()
+
+        # print overall mAP and mAP for each class in console
+        print(f"mAP for validation at {epoch} is: {mAP_val}")
+        print(f"mAP for validation for all classes at {epoch} is: {ap_classes_val}")
+        print()
+
+        # save mAP as per counter level in tensorboard
+        validation_writer.add_scalar("mAP", mAP_val, global_step=model_save_counter)
+
+        # ------------------- SAVE MODEL --------------------------------------
+        # last epoch
+        if epoch == (EPOCHS - 1):
+            # for last epoch save the state of model so that you can continue training the model
+            saved_model_path = f"{saved_model_dir}/faster_rcnn_{model_save_counter}.pt"
+
+            # https://debuggercafe.com/effective-model-saving-and-resuming-training-in-pytorch/
+            torch.save({
+                'epoch': epoch,
+                'model_state_dict': model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+            }, saved_model_path)
+
+        # other times
+        else:
+            # save only model state for each (epoch/10)th
+            saved_model_path = f"{saved_model_dir}/faster_rcnn_{model_save_counter}.pt"
+            torch.save(model.state_dict(), saved_model_path)
+
+        # INCREMENT MODEL COUNTER
         model_save_counter += 1
 
 print("End time:" + str(datetime.now() - start))
@@ -444,7 +465,6 @@ validation_writer.close()
 print("-" * 25)
 # print aggregates
 # TRAIN
-print(f"Train: Average: mAP: {np.mean(mAP_train_arr)}")
 print(f"Train: Average: Sum Loss: {np.mean(sum_train_losses_arr)}")
 print(f"Train: Average: Loss Classifier: {np.mean(train_loss_classifier_arr)}")
 print(f"Train: Average: Loss Box Reg: {np.mean(train_loss_box_reg_arr)}")
@@ -452,7 +472,6 @@ print(f"Train: Average: RPN Loss Objectness: {np.mean(train_loss_objectness_arr)
 print(f"Train: Average: Loss RPN Box Reg: {np.mean(train_loss_rpn_box_reg_arr)}")
 
 # validation
-print(f"Validation: Average: mAP: {np.mean(mAP_validation_arr)}")
 print(f"Validation: Average: Sum Loss: {np.mean(sum_validation_losses_arr)}")
 print(f"Validation: Average: Loss Classifier: {np.mean(validation_loss_classifier_arr)}")
 print(f"Validation: Average: Loss Box Reg: {np.mean(validation_loss_box_reg_arr)}")

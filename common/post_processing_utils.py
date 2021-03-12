@@ -9,6 +9,10 @@ from common.utilities import merge_bb_nms, merge_bb_wbf
 # %% --------------------
 def post_process_conf_filter_nms(df, confidence_threshold, nms_iou_threshold,
                                  extra_normal_ids=None):
+    # raise exception if predictions contain 0 i.e. background class
+    if 0 in list(df["label"].unique()):
+        raise ValueError("In predictions class 0 is reserved for background class")
+
     # filter rows based on confidence threshold
     object_detection_prediction_filtered = df[df["confidence_score"] >= confidence_threshold].copy()
 
@@ -58,7 +62,8 @@ def post_process_conf_filter_nms(df, confidence_threshold, nms_iou_threshold,
         y_min_arr.append(0)
         x_max_arr.append(1)
         y_max_arr.append(1)
-        label_arr.append(14)
+        # NOTE: NO FINDINGS CLASS IS CLASS 15
+        label_arr.append(15)
         score_arr.append(1)
 
     # convert the predictions into pandas dataframe
@@ -78,6 +83,10 @@ def post_process_conf_filter_nms(df, confidence_threshold, nms_iou_threshold,
 # %% --------------------
 def post_process_conf_filter_wbf(df, confidence_threshold, wbf_iou_threshold,
                                  original_dimensions_df, extra_normal_ids=None):
+    # raise exception if predictions contain 0 i.e. background class
+    if 0 in list(df["label"].unique()):
+        raise ValueError("In predictions class 0 is reserved for background class")
+
     # filter rows based on confidence threshold
     object_detection_prediction_filtered = df[df["confidence_score"] >= confidence_threshold].copy()
 
@@ -135,7 +144,8 @@ def post_process_conf_filter_wbf(df, confidence_threshold, wbf_iou_threshold,
         y_min_arr.append(0)
         x_max_arr.append(1)
         y_max_arr.append(1)
-        label_arr.append(14)
+        # NOTE: NO FINDINGS CLASS IS CLASS 15
+        label_arr.append(15)
         score_arr.append(1)
 
     # convert the predictions into pandas dataframe

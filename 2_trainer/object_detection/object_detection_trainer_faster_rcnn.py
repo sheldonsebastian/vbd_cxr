@@ -136,6 +136,12 @@ model = get_faster_rcnn_model_instance(num_classes)
 LR = 1e-3
 EPOCHS = 50
 
+# %% --------------------
+if EPOCHS // 10 == 0:
+    save_step_size = 1
+else:
+    save_step_size = (EPOCHS // 10)
+
 # %% --------------------OPTIMIZER
 # freeze the params for pretrained model
 params = [p for p in model.parameters() if p.requires_grad]
@@ -411,9 +417,8 @@ for epoch in range(EPOCHS):
     validation_writer.add_scalar("rpn_loss_rpn_box_reg", val_loss_rpn_box_reg_agg,
                                  global_step=epoch)
 
-    # save model based for (epoch/10)th and save last epoch
-    # run for min 10 epochs!!
-    if ((epoch % (EPOCHS // 10)) == 0) or (epoch == (EPOCHS - 1)):
+    # compute mAP and save model based for (epoch/10)th and also save last epoch
+    if (epoch % save_step_size == 0) or (epoch == (EPOCHS - 1)):
         saved_model_path = f"{saved_model_dir}/faster_rcnn_{model_save_counter}.pt"
 
         # https://debuggercafe.com/effective-model-saving-and-resuming-training-in-pytorch/

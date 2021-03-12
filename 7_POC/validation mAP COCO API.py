@@ -4,7 +4,6 @@ import sys
 
 from dotenv import load_dotenv
 
-# %% --------------------
 # local
 env_file = "d:/gwu/4 spring 2021/6501 capstone/vbd cxr/pycharm " \
            "workspace/vbd_cxr/6_environment_files/local.env "
@@ -26,26 +25,11 @@ validation_prediction_dir = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm 
 
 # %% --------------------start here
 import pandas as pd
-from common.mAP_utils import DataFrameToCOCODataset, print_map
-from common.utilities import filter_df_based_on_confidence_threshold, merge_bb_nms, merge_bb_wbf
+from common.mAP_utils import DataFrameToCOCODataset, get_map, get_id_to_label_mAP
+from common.post_processing_utils import post_process_conf_filter_nms, post_process_conf_filter_wbf
 
 # %% --------------------
-id_to_label_map = label2color = {
-    1: "aortic enlargement",
-    2: "atelectasis",
-    3: "calcification",
-    4: "cardiomegaly",
-    5: "consolidation",
-    6: "ild",
-    7: "infiltration",
-    8: "lung opacity",
-    9: "nodule/mass",
-    10: "other lesion",
-    11: "pleural effusion",
-    12: "pleural thickening",
-    13: "pneumothorax",
-    14: "pulmonary fibrosis"
-}
+id_to_label_map = get_id_to_label_mAP()
 
 # %% --------------------
 # read the predicted validation csv
@@ -63,6 +47,7 @@ validation_predictions_image_ids = validation_predictions["image_id"].unique()
 gt_df = gt_df[gt_df["image_id"].isin(validation_predictions_image_ids)]
 
 # %% --------------------
+# validation_predictions["label"] -= 1
 gt_df["class_id"] += 1
 
 # %% --------------------
@@ -75,95 +60,26 @@ gt_coco_ds = DataFrameToCOCODataset(gt_df, id_to_label_map, "image_id", "x_min",
                                     "y_max", "class_id").get_coco_dataset()
 
 # %% --------------------
-print_map(gt_coco_ds, pred_coco_ds, 0.4)
+print(get_map(gt_coco_ds, pred_coco_ds, 0.4))
+
+# %% --------------------CONF + NMS
+validation_conf_nms = post_process_conf_filter_nms(validation_predictions, 0.10, 0.4)
 
 # %% --------------------
-filtered_validation_predictions = filter_df_based_on_confidence_threshold(validation_predictions,
-                                                                          "confidence_score", 0.10)
-
-# %% --------------------
-filtered_pred_coco_ds = DataFrameToCOCODataset(filtered_validation_predictions, id_to_label_map,
-                                               "image_id", "x_min", "y_min", "x_max", "y_max",
-                                               "label", "confidence_score").get_coco_dataset()
-
-# %% --------------------
-print_map(gt_coco_ds, filtered_pred_coco_ds, 0.4)
-
-# %% --------------------
-# compute map based on NMS
-image_id_arr = []
-x_min_arr = []
-y_min_arr = []
-x_max_arr = []
-y_max_arr = []
-label_arr = []
-score_arr = []
-
-for image_id in sorted(filtered_validation_predictions["image_id"].unique()):
-    bb_df = \
-        filtered_validation_predictions[filtered_validation_predictions["image_id"] == image_id][
-            ["x_min", "y_min", "x_max", "y_max", "label", "confidence_score"]]
-    bb_df = bb_df.to_numpy()
-    nms_bb = merge_bb_nms(bb_df, 0, 1, 2, 3, 4, iou_thr=0.10, scores_col=5)
-
-    for i in range(len(nms_bb)):
-        image_id_arr.append(image_id)
-        x_min_arr.append(nms_bb[i][0])
-        y_min_arr.append(nms_bb[i][1])
-        x_max_arr.append(nms_bb[i][2])
-        y_max_arr.append(nms_bb[i][3])
-        label_arr.append(nms_bb[i][4])
-        score_arr.append(nms_bb[i][5])
-
-nms_filtered_df = pd.DataFrame(
-    {"image_id": image_id_arr, "x_min": x_min_arr, "y_min": y_min_arr, "x_max": x_max_arr,
-     "y_max": y_max_arr, "label": label_arr, "confidence_score": score_arr})
-
-# %% --------------------
-nms_filtered_pred_coco_ds = DataFrameToCOCODataset(nms_filtered_df, id_to_label_map,
+filtered_pred_coco_ds_nms = DataFrameToCOCODataset(validation_conf_nms, id_to_label_map,
                                                    "image_id", "x_min", "y_min", "x_max", "y_max",
                                                    "label", "confidence_score").get_coco_dataset()
 
 # %% --------------------
-print_map(gt_coco_ds, nms_filtered_pred_coco_ds, 0.4)
+print(get_map(gt_coco_ds, filtered_pred_coco_ds_nms, 0.4))
+
+# %% --------------------CONF + WBF
+validation_conf_wbf = post_process_conf_filter_wbf(validation_predictions, 0.10, 0.4, gt_df)
 
 # %% --------------------
-# compute map based on WBF
-image_id_arr = []
-x_min_arr = []
-y_min_arr = []
-x_max_arr = []
-y_max_arr = []
-label_arr = []
-score_arr = []
-
-for image_id in sorted(filtered_validation_predictions["image_id"].unique()):
-    bb_df = \
-        filtered_validation_predictions[filtered_validation_predictions["image_id"] == image_id][
-            ["x_min", "y_min", "x_max", "y_max", "label", "confidence_score"]]
-    bb_df = bb_df.to_numpy()
-    t_width, t_height = \
-        gt_df[gt_df["image_id"] == image_id][["transformed_width", "transformed_height"]].values[0]
-
-    wbf_bb = merge_bb_wbf(t_width, t_height, bb_df, 4, 0, 1, 2, 3, iou_thr=0.2, scores_col=5)
-
-    for i in range(len(wbf_bb)):
-        image_id_arr.append(image_id)
-        x_min_arr.append(wbf_bb[i][0])
-        y_min_arr.append(wbf_bb[i][1])
-        x_max_arr.append(wbf_bb[i][2])
-        y_max_arr.append(wbf_bb[i][3])
-        label_arr.append(wbf_bb[i][4])
-        score_arr.append(wbf_bb[i][5])
-
-wbf_filtered_df = pd.DataFrame(
-    {"image_id": image_id_arr, "x_min": x_min_arr, "y_min": y_min_arr, "x_max": x_max_arr,
-     "y_max": y_max_arr, "label": label_arr, "confidence_score": score_arr})
-
-# %% --------------------
-wbf_filtered_pred_coco_ds = DataFrameToCOCODataset(wbf_filtered_df, id_to_label_map,
+filtered_pred_coco_ds_wbf = DataFrameToCOCODataset(validation_conf_wbf, id_to_label_map,
                                                    "image_id", "x_min", "y_min", "x_max", "y_max",
                                                    "label", "confidence_score").get_coco_dataset()
 
 # %% --------------------
-print_map(gt_coco_ds, wbf_filtered_pred_coco_ds, 0.4)
+print(get_map(gt_coco_ds, filtered_pred_coco_ds_wbf, 0.4))

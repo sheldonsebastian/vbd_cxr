@@ -67,7 +67,8 @@ def view_dicom_metadata(image_path, dicom_file_name):
 # %% --------------------
 # code to plot image with bounding boxes
 # bounding_boxes_info as [{'x_min':.., 'y_min':.., 'x_max':.., 'y_max':.., "class_id":..},{...}]
-def bounding_box_plotter(img_as_arr, img_id, bounding_boxes_info, label2color):
+def bounding_box_plotter(img_as_arr, img_id, bounding_boxes_info, label2color,
+                         label_annotations=True):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot()
 
@@ -88,7 +89,9 @@ def bounding_box_plotter(img_as_arr, img_id, bounding_boxes_info, label2color):
 
         # assign different color to different classes of objects
         edgecolor = label2color[row[4]][1]
-        ax.annotate(label2color[row[4]][0], xy=(xmax - 40, ymin + 20))
+
+        if label_annotations:
+            ax.annotate(label2color[row[4]][0], xy=(xmax - 40, ymin + 20))
 
         # add bounding boxes to the image
         rect = patches.Rectangle((xmin, ymin), width, height, edgecolor=edgecolor, facecolor='none')

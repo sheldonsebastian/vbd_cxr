@@ -1,17 +1,24 @@
 # %% --------------------
 # pip install pycocotools
-# https://www.kaggle.com/pestipeti/competition-metric-map-0-4
-
-from collections import Counter
 
 import numpy as np
-import torch
-from mean_average_precision import MetricBuilder
+from map_boxes import mean_average_precision_for_boxes
 from pycocotools.coco import COCO
 from pycocotools.cocoeval import COCOeval
 
+from common.kaggle_utils import extract_dimension_df
+
 
 # %% --------------------
+class ListToCOCODataset:
+    # to handle raw preds from model
+    # to handle gt from target dictionary in data loader
+    def __init__(self):
+        pass
+
+
+# %% --------------------
+# https://www.kaggle.com/pestipeti/competition-metric-map-0-4
 class DataFrameToCOCODataset:
     def __init__(self, df, id_to_label_map, image_id_col, x_min_col, y_min_col, x_max_col,
                  y_max_col, label_col, confidence_col=None):
@@ -86,8 +93,8 @@ class DataFrameToCOCODataset:
 
 
 # %% --------------------
-def print_map(gt_obj, pred_obj, iou_threshold):
-    """gt_obj and pred_obj are objects of DataFrameToCOCODataset"""
+def get_map(gt_obj, pred_obj, iou_threshold):
+    """gt_obj and pred_obj are objects of DataFrameToCOCODataset or ListToCOCODataset"""
     imgIds = sorted(gt_obj.getImgIds())
 
     cocoEval = COCOeval(gt_obj, pred_obj, 'bbox')
@@ -100,224 +107,11 @@ def print_map(gt_obj, pred_obj, iou_threshold):
     cocoEval.accumulate()
     cocoEval.summarize()
 
-    return cocoEval.summarize()
-
-
-# %% --------------------mAP manual computation
-# youtube.com/watch?v=FppOzcDvaDI
-# https://github.com/aladdinpersson/Machine-Learning-Collection/blob/master/ML/Pytorch/object_detection/metrics/mean_avg_precision.py
-def mean_average_precision(
-        pred_boxes, true_boxes, iou_threshold=0.4, box_format="corners", num_classes=14
-):
-    """
-    Calculates mean average precision
-    Parameters:
-        pred_boxes (list): list of lists containing all bboxes with each bboxes
-        specified as [train_idx, class_prediction, prob_score, x1, y1, x2, y2]
-        true_boxes (list): Similar as pred_boxes except all the correct ones
-        iou_threshold (float): threshold where predicted bboxes is correct
-        box_format (str): "midpoint" or "corners" used to specify bboxes
-        num_classes (int): number of classes
-    Returns:
-        float: mAP value across all classes given a specific IoU threshold
-    """
-
-    # list storing all AP for respective classes
-    average_precisions = []
-
-    # used for numerical stability later on
-    epsilon = 1e-6
-
-    for c in range(num_classes):
-        detections = []
-        ground_truths = []
-
-        # Go through all predictions and targets,
-        # and only add the ones that belong to the
-        # current class c
-        for detection in pred_boxes:
-            if detection[1] == c:
-                detections.append(detection)
-
-        for true_box in true_boxes:
-            if true_box[1] == c:
-                ground_truths.append(true_box)
-
-        # find the amount of bboxes for each training example
-        # Counter here finds how many ground truth bboxes we get
-        # for each training example, so let's say img 0 has 3,
-        # img 1 has 5 then we will obtain a dictionary with:
-        # amount_bboxes = {0:3, 1:5}
-        amount_bboxes = Counter([gt[0] for gt in ground_truths])
-
-        # We then go through each key, val in this dictionary
-        # and convert to the following (w.r.t same example):
-        # ammount_bboxes = {0:torch.tensor[0,0,0], 1:torch.tensor[0,0,0,0,0]}
-        for key, val in amount_bboxes.items():
-            amount_bboxes[key] = torch.zeros(val)
-
-        # sort by box probabilities which is index 2
-        detections.sort(key=lambda x: x[2], reverse=True)
-        TP = torch.zeros((len(detections)))
-        FP = torch.zeros((len(detections)))
-        total_true_bboxes = len(ground_truths)
-
-        # If none exists for this class then we can safely skip
-        if total_true_bboxes == 0:
-            continue
-
-        for detection_idx, detection in enumerate(detections):
-            # Only take out the ground_truths that have the same
-            # training idx as detection
-            ground_truth_img = [
-                bbox for bbox in ground_truths if bbox[0] == detection[0]
-            ]
-
-            num_gts = len(ground_truth_img)
-            best_iou = 0
-
-            for idx, gt in enumerate(ground_truth_img):
-                iou = intersection_over_union(
-                    torch.tensor(detection[3:]),
-                    torch.tensor(gt[3:]),
-                    box_format=box_format,
-                )
-
-                if iou > best_iou:
-                    best_iou = iou
-                    best_gt_idx = idx
-
-            if best_iou > iou_threshold:
-                # only detect ground truth detection once
-                if amount_bboxes[detection[0]][best_gt_idx] == 0:
-                    # true positive and add this bounding box to seen
-                    TP[detection_idx] = 1
-                    amount_bboxes[detection[0]][best_gt_idx] = 1
-                else:
-                    FP[detection_idx] = 1
-
-            # if IOU is lower then the detection is a false positive
-            else:
-                FP[detection_idx] = 1
-
-        TP_cumsum = torch.cumsum(TP, dim=0)
-        FP_cumsum = torch.cumsum(FP, dim=0)
-        recalls = TP_cumsum / (total_true_bboxes + epsilon)
-        precisions = TP_cumsum / (TP_cumsum + FP_cumsum + epsilon)
-        precisions = torch.cat((torch.tensor([1.0]), precisions))
-        recalls = torch.cat((torch.tensor([0.0]), recalls))
-        # torch.trapz for numerical integration
-        average_precisions.append(torch.trapz(precisions, recalls))
-
-    # right now it returns mAP for all classes together
-    return sum(average_precisions) / len(average_precisions)
+    return cocoEval.stats[0]
 
 
 # %% --------------------
-def intersection_over_union(boxes_preds, boxes_labels, box_format="corners"):
-    """
-    Calculates intersection over union
-    Parameters:
-        boxes_preds (tensor): Predictions of Bounding Boxes (BATCH_SIZE, 4)
-        boxes_labels (tensor): Correct Labels of Boxes (BATCH_SIZE, 4)
-        box_format (str): midpoint/corners, if boxes (x,y,w,h) or (x1,y1,x2,y2)
-    Returns:
-        tensor: Intersection over union for all examples
-    """
-
-    # Slicing idx:idx+1 in order to keep tensor dimensionality
-    # Doing ... in indexing if there would be additional dimensions
-    # Like for Yolo algorithm which would have (N, S, S, 4) in shape
-    if box_format == "midpoint":
-        box1_x1 = boxes_preds[..., 0:1] - boxes_preds[..., 2:3] / 2
-        box1_y1 = boxes_preds[..., 1:2] - boxes_preds[..., 3:4] / 2
-        box1_x2 = boxes_preds[..., 0:1] + boxes_preds[..., 2:3] / 2
-        box1_y2 = boxes_preds[..., 1:2] + boxes_preds[..., 3:4] / 2
-        box2_x1 = boxes_labels[..., 0:1] - boxes_labels[..., 2:3] / 2
-        box2_y1 = boxes_labels[..., 1:2] - boxes_labels[..., 3:4] / 2
-        box2_x2 = boxes_labels[..., 0:1] + boxes_labels[..., 2:3] / 2
-        box2_y2 = boxes_labels[..., 1:2] + boxes_labels[..., 3:4] / 2
-
-    elif box_format == "corners":
-        box1_x1 = boxes_preds[..., 0:1]
-        box1_y1 = boxes_preds[..., 1:2]
-        box1_x2 = boxes_preds[..., 2:3]
-        box1_y2 = boxes_preds[..., 3:4]
-        box2_x1 = boxes_labels[..., 0:1]
-        box2_y1 = boxes_labels[..., 1:2]
-        box2_x2 = boxes_labels[..., 2:3]
-        box2_y2 = boxes_labels[..., 3:4]
-
-    x1 = torch.max(box1_x1, box2_x1)
-    y1 = torch.max(box1_y1, box2_y1)
-    x2 = torch.min(box1_x2, box2_x2)
-    y2 = torch.min(box1_y2, box2_y2)
-
-    # Need clamp(0) in case they do not intersect, then we want intersection to be 0
-    intersection = (x2 - x1).clamp(0) * (y2 - y1).clamp(0)
-    box1_area = abs((box1_x2 - box1_x1) * (box1_y2 - box1_y1))
-    box2_area = abs((box2_x2 - box2_x1) * (box2_y2 - box2_y1))
-
-    return intersection / (box1_area + box2_area - intersection + 1e-6)
-
-
-# %% --------------------
-def nms(bboxes, iou_threshold, threshold, box_format="corners"):
-    """
-    Does Non Max Suppression given bboxes
-    Parameters:
-        bboxes (list): list of lists containing all bboxes with each bboxes
-        specified as [class_pred, prob_score, x1, y1, x2, y2]
-        iou_threshold (float): threshold where predicted bboxes is correct
-        threshold (float): threshold to remove predicted bboxes (independent of IoU)
-        box_format (str): "midpoint" or "corners" used to specify bboxes
-    Returns:
-        list: bboxes after performing NMS given a specific IoU threshold
-    """
-
-    assert type(bboxes) == list
-
-    bboxes = [box for box in bboxes if box[1] > threshold]
-    bboxes = sorted(bboxes, key=lambda x: x[1], reverse=True)
-    bboxes_after_nms = []
-
-    while bboxes:
-        chosen_box = bboxes.pop(0)
-
-        bboxes = [
-            box
-            for box in bboxes
-            if box[0] != chosen_box[0]
-               or intersection_over_union(
-                torch.tensor(chosen_box[2:]),
-                torch.tensor(box[2:]),
-                box_format=box_format,
-            )
-               < iou_threshold
-        ]
-
-        bboxes_after_nms.append(chosen_box)
-
-    return bboxes_after_nms
-
-
-# %% --------------------
-# https://github.com/bes-dev/mean_average_precision
-def mAP_using_package(pred_boxes, true_boxes):
-    """
-    :pred_boxes: [[xmin, ymin, xmax, ymax, class_id, confidence], [xmin, ymin, xmax, ymax, class_id,
-     confidence], ...]
-    :true_boxes: [[xmin, ymin, xmax, ymax, class_id, difficult, crowd], [xmin, ymin,xmax, ymax,
-    class_id, difficult, crowd], ....], set difficult=0 and crowd=0
-    """
-    metric_fn = MetricBuilder.build_evaluation_metric("map_2d", async_mode=False, num_classes=14)
-    metric_fn.add(np.asarray(pred_boxes), np.asarray(true_boxes))
-
-    return metric_fn.value(iou_thresholds=0.4)['mAP']
-
-
-# %% --------------------
-def get_id_to_label_coco_api():
+def get_id_to_label_mAP():
     id_to_label_map = {
         1: "aortic enlargement",
         2: "atelectasis",
@@ -336,3 +130,74 @@ def get_id_to_label_coco_api():
     }
 
     return id_to_label_map
+
+
+# %% --------------------
+def normalize_bb(pred_df, dimension_df, dimension_df_height_col, dimension_df_width_col):
+    # get height and width data
+    image_dimensions = extract_dimension_df(dimension_df)
+
+    for image_id in pred_df["image_id"].unique():
+        # normalize x_min
+        pred_df.loc[pred_df["image_id"] == image_id, "x_min"] /= image_dimensions.loc[
+            image_id, dimension_df_width_col]
+
+        # normalize x_max
+        pred_df.loc[pred_df["image_id"] == image_id, "x_max"] /= image_dimensions.loc[
+            image_id, dimension_df_width_col]
+
+        # normalize y_min
+        pred_df.loc[pred_df["image_id"] == image_id, "y_min"] /= image_dimensions.loc[
+            image_id, dimension_df_height_col]
+
+        # normalize y_max
+        pred_df.loc[pred_df["image_id"] == image_id, "y_max"] /= image_dimensions.loc[
+            image_id, dimension_df_height_col]
+
+    # normalization checker to check if values are b/w 0 and 1
+    if not ((pred_df["x_min"] > 1).any() or (pred_df["x_min"] < 0).any() or
+            (pred_df["x_max"] > 1).any() or (pred_df["x_max"] < 0).any() or
+            (pred_df["y_min"] > 1).any() or (pred_df["y_min"] < 0).any() or
+            (pred_df["y_max"] > 1).any() or (pred_df["y_max"] < 0).any()):
+        return pred_df
+    else:
+        raise ValueError("Normalization failed since normalized values were not in range of 0-1")
+
+
+# %% --------------------
+# https://github.com/ZFTurbo/Mean-Average-Precision-for-Boxes
+# https://github.com/ZFTurbo/Mean-Average-Precision-for-Boxes/blob/4fea46a6153efa72632a968b4bc61292da1fd38f/map_boxes/__init__.py#L93
+def compute_mAP_zfturbo(normalized_gt_df, normalized_pred_df, id_to_label, gt_class_id="class_id",
+                        pred_class_id="label"):
+    """
+    :gt: is ground truth dataframe. The co-ordinates are normalized based on image height and
+    width using normalize_bb()
+    :pred: is a prediction dataframe. The co-ordinates are normalized based on image height and
+    width using normalize_bb()
+    :id_to_label: maps the ids in gt and pred to string labels
+    :return: tuple, where first value is mAP and second values is dict with AP for each class.
+    """
+    # create copies
+    normalized_gt_df_copy = normalized_gt_df.copy(deep=True)
+    normalized_pred_df_copy = normalized_pred_df.copy(deep=True)
+
+    # replace numeric ids to string labels
+    # https://stackoverflow.com/questions/22100130/pandas-replace-multiple-values-one-column
+    normalized_gt_df_copy[gt_class_id] = normalized_gt_df_copy[gt_class_id].astype(int).map(
+        id_to_label)
+    normalized_pred_df_copy[pred_class_id] = normalized_pred_df_copy[pred_class_id].astype(int).map(
+        id_to_label)
+
+    # convert dataframe to numpy array format as required by package
+    normalized_gt_df_np = normalized_gt_df_copy[
+        ["image_id", gt_class_id, "x_min", "x_max", "y_min", "y_max"]].values
+
+    normalized_pred_df_np = normalized_pred_df_copy[
+        ["image_id", pred_class_id, "confidence_score", "x_min", "x_max", "y_min", "y_max"]].values
+
+    # compute mAP
+    mean_ap, average_precisions = mean_average_precision_for_boxes(normalized_gt_df_np,
+                                                                   normalized_pred_df_np,
+                                                                   iou_threshold=0.4,
+                                                                   verbose=True)
+    return mean_ap, average_precisions

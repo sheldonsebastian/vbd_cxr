@@ -48,8 +48,8 @@ SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
 
 # %% --------------------TENSORBOARD DIRECTORY INITIALIZATION
-train_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/current/train"
-validation_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/current/validation"
+train_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/histogram/train"
+validation_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/histogram/validation"
 
 # if logs already exist then delete them
 train_dirpath = Path(train_tensorboard_dir)
@@ -219,7 +219,7 @@ valid_loss_arr = []
 best_acc = 0.0
 
 # if directory does not exist then create it
-saved_model_dir = Path(f"{SAVED_MODEL_DIR}/2_class_classifier/current")
+saved_model_dir = Path(f"{SAVED_MODEL_DIR}/2_class_classifier/histogram")
 
 if not saved_model_dir.exists():
     os.makedirs(saved_model_dir)

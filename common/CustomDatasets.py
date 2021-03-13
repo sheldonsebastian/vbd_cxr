@@ -4,6 +4,7 @@ import pandas as pd
 import torch
 import torchvision.transforms as T
 from PIL import Image
+from skimage.exposure import exposure
 from torch.utils.data import Dataset
 
 
@@ -13,7 +14,8 @@ from torch.utils.data import Dataset
 class VBD_CXR_2_Class_Train(Dataset):
 
     def __init__(self, image_dir, annotation_file_path, majority_transformations,
-                 minority_class=None, minority_transformations=None, target_column="class_id"):
+                 minority_class=None, minority_transformations=None, target_column="class_id",
+                 histogram_normalize=False, clahe_normalize=False):
         """
         :image_dir: The path where all the images are present
         :annotation_file_path: csv file which contains image_id and label. 1 row = 1 image,
@@ -22,6 +24,8 @@ class VBD_CXR_2_Class_Train(Dataset):
         :minority_class: This is list in which we pass the minority classes
         :minority_transformations: albumentation transformations to perform on minority class
         :target_column: the target column in the annotation_file_path pandas dataframe
+        :histogram_normalize: To perform histogram normalization
+        :clahe_normalize: To perform clahe normalization
         """
         super().__init__()
         self.base_dir = image_dir
@@ -42,6 +46,9 @@ class VBD_CXR_2_Class_Train(Dataset):
 
         # target classes as list used to handle class imbalance
         self.targets = self.data[target_column].tolist()
+
+        self.hist = histogram_normalize
+        self.clahe = clahe_normalize
 
     def __getitem__(self, index):
         """getitem should return image and label"""
@@ -64,6 +71,13 @@ class VBD_CXR_2_Class_Train(Dataset):
 
         # convert image to numpy array
         image = np.asarray(image)
+
+        # https://www.kaggle.com/raddar/popular-x-ray-image-normalization-techniques
+        # apply either hist or clahe but not both
+        if self.hist:
+            image = exposure.equalize_hist(image)
+        elif self.clahe:
+            image = exposure.equalize_adapthist(image / np.max(image))
 
         # apply transformations
         transformed = transformations(image=image)

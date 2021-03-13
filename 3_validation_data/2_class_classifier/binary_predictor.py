@@ -122,6 +122,7 @@ print("Validation predictions started")
 # start time
 start = datetime.now()
 
+# TODO save probabilities instead of targets
 # arrays
 image_id_arr = []
 pred_label_arr = []

@@ -34,6 +34,7 @@ from datetime import datetime
 from common.mAP_utils import ZFTurbo_MAP_TRAINING, get_id_to_label_mAP
 import pandas as pd
 import math
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 # %% --------------------set seeds
 seed = 42
@@ -68,25 +69,30 @@ validation_writer = tensorboard.SummaryWriter(validation_tensorboard_dir)
 
 # %% --------------------Data transformations using albumentations
 # augmentation of data for training data only
-# augmentor = albumentations.Compose(
-#     [
-#         # changing brightness, contrast, saturation, hue
-#         albumentations.augmentations.transforms.ColorJitter(brightness=0.3, contrast=0.3,
-#                                                             saturation=0.3, hue=0.3,
-#                                                             always_apply=False,
-#                                                             p=0.5),
-#         # horizontal flipping
-#         albumentations.augmentations.transforms.HorizontalFlip(p=0.5)
-#     ],
-#     bbox_params=albumentations.BboxParams(format='pascal_voc')
-# )
+augmentor = albumentations.Compose(
+    [
+        # augmentation operations
+        albumentations.augmentations.transforms.ColorJitter(brightness=0.3, contrast=0.3,
+                                                            saturation=0.3, hue=0.3,
+                                                            always_apply=False,
+                                                            p=0.4),
+        albumentations.augmentations.transforms.GlassBlur(p=0.2),
+        albumentations.augmentations.transforms.GaussNoise(p=0.2),
+        albumentations.augmentations.transforms.RandomGamma(p=0.2),
+        albumentations.augmentations.transforms.ShiftScaleRotate(rotate_limit=20, p=0.2),
+
+        # horizontal flipping
+        albumentations.augmentations.transforms.HorizontalFlip(p=0.4)
+    ],
+    bbox_params=albumentations.BboxParams(format='pascal_voc')
+)
 
 # %% --------------------DATASET
-# NOTE THE DATASET IS GRAY SCALE AND HAS MIN SIDE 1024 AND IS NORMALIZED BY FASTER RCNN
+# NOTE THE DATASET IS GRAY SCALE AND HAS MIN SIDE 512 AND IS NORMALIZED BY FASTER RCNN
 train_data_set = VBD_CXR_FASTER_RCNN_Train(IMAGE_DIR,
                                            MERGED_DIR + "/wbf_merged"
                                                         "/object_detection/train_df_80.csv",
-                                           albumentation_transformations=None)
+                                           albumentation_transformations=augmentor)
 
 validation_data_set = VBD_CXR_FASTER_RCNN_Train(IMAGE_DIR,
                                                 MERGED_DIR + "/wbf_merged"
@@ -151,6 +157,10 @@ else:
 params = [p for p in model.parameters() if p.requires_grad]
 optimizer = torch.optim.Adam(params, lr=LR)
 
+# %% --------------------LR reduce on plateau
+# https://pytorch.org/docs/stable/optim.html#torch.optim.lr_scheduler.ReduceLROnPlateau
+scheduler = ReduceLROnPlateau(optimizer, 'min')
+
 # %% --------------------move to device
 model.to(device)
 
@@ -166,7 +176,7 @@ train_iter = 0
 val_iter = 0
 
 # if directory does not exist then create it
-saved_model_dir = Path(f"{SAVED_MODEL_DIR}/object_detection/")
+saved_model_dir = Path(f"{SAVED_MODEL_DIR}/object_detection/current")
 
 if not saved_model_dir.exists():
     os.makedirs(saved_model_dir)
@@ -315,6 +325,9 @@ for epoch in range(EPOCHS):
             losses = sum(loss for loss in loss_dict.values())
             loss_value = losses.item()
 
+            # Note that step should be called after validate()
+            scheduler.step(loss_value)
+
             if not math.isfinite(loss_value):
                 print("Loss is {}, stopping validation".format(loss_value))
                 print(loss_dict)
@@ -440,6 +453,7 @@ for epoch in range(EPOCHS):
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
+                'lr_scheduler': scheduler.state_dict(),
             }, saved_model_path)
 
         # other times

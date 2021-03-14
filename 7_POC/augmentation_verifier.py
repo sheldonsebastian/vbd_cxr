@@ -29,7 +29,7 @@ api = KaggleApi()
 api.authenticate()
 
 # %% --------------------
-image_id = "0b62bc6644be72ce4dfa5ea77a77f311"
+image_id = "b41de357cd8bbef33ae563b6299f802c"
 # download DICOM image using image_id
 api.competition_download_file('vinbigdata-chest-xray-abnormalities-detection',
                               f'train/{image_id}.dicom',
@@ -56,17 +56,19 @@ bounding_box_plotter(raw_img_arr, image_id, raw_img_bb_info, get_label_2_color_d
 
 # %% --------------------
 # transform image using albumentations
-transform = albumentations.Compose(
+augmentor = albumentations.Compose(
     [
-        albumentations.augmentations.transforms.ColorJitter(brightness=0.5, contrast=0.5,
-                                                            saturation=0.5, hue=0.5,
+        # augmentation operations
+        albumentations.augmentations.transforms.ColorJitter(brightness=0.3, contrast=0.3,
+                                                            saturation=0.3, hue=0.3,
                                                             always_apply=False,
-                                                            p=0.5),
-        # horizontal flipping
-        albumentations.augmentations.transforms.HorizontalFlip(p=0.5),
+                                                            p=0.4),
+        albumentations.augmentations.transforms.GlassBlur(p=0.2),
+        albumentations.augmentations.transforms.GaussNoise(p=0.2),
+        albumentations.augmentations.transforms.RandomGamma(p=0.2),
 
-        # resize the image
-        albumentations.SmallestMaxSize(max_size=1024, always_apply=True)
+        # horizontal flipping
+        albumentations.augmentations.transforms.HorizontalFlip(p=0.4)
     ],
     bbox_params=albumentations.BboxParams(format='pascal_voc')
 )
@@ -76,7 +78,7 @@ transform = albumentations.Compose(
 bboxes = get_bb_info(train_df, image_id, ["x_min", "y_min", "x_max", "y_max", "class_id"])
 
 # %% --------------------
-transformed = transform(image=raw_img_arr, bboxes=bboxes)
+transformed = augmentor(image=raw_img_arr, bboxes=bboxes)
 
 # %% --------------------
 # visualize the transformed image w/ bounding boxes

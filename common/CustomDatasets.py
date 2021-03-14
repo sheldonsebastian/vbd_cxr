@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 import torchvision.transforms as T
 from PIL import Image
-from skimage.exposure import exposure
+from skimage import exposure
 from torch.utils.data import Dataset
 
 
@@ -123,7 +123,6 @@ class VBD_CXR_2_Class_Test(Dataset):
 
         # image https://discuss.pytorch.org/t/grayscale-to-rgb-transform/18315/2 ==> Convert
         # greyscale to RGB
-        # TODO check whether it works w/o RGB
         image = Image.open(self.base_dir + "/" + image_id + ".jpeg").convert('RGB')
 
         # convert image to numpy array
@@ -146,7 +145,8 @@ class VBD_CXR_2_Class_Test(Dataset):
 # https://pytorch.org/docs/stable/data.html#map-style-datasets
 class VBD_CXR_FASTER_RCNN_Train(Dataset):
 
-    def __init__(self, image_dir, annotation_file_path, albumentation_transformations):
+    def __init__(self, image_dir, annotation_file_path, albumentation_transformations,
+                 histogram_normalization=False, clahe_normalization=False):
         super().__init__()
 
         self.base_dir = image_dir
@@ -163,6 +163,9 @@ class VBD_CXR_FASTER_RCNN_Train(Dataset):
         # https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
         self.data["class_id"] = self.data["class_id"] + 1
 
+        self.hist = histogram_normalization
+        self.clahe = clahe_normalization
+
     def __getitem__(self, index):
         """getitem should return image, target dictionary {boxes[x0,y0,x1,y1], labels, image_id,
         area, iscrowd} """
@@ -171,16 +174,27 @@ class VBD_CXR_FASTER_RCNN_Train(Dataset):
 
         # read the image as grayscale
         image = Image.open(self.base_dir + "/" + image_id + ".jpeg")
+        image = np.array(image)
+
+        # apply normalizations
+        if self.hist:
+            image = exposure.equalize_hist(image)
+            image = image.astype(np.float32)
+        elif self.clahe:
+            image = exposure.equalize_adapthist(image / np.max(image))
+            image = image.astype(np.float32)
 
         # boxes
-        boxes = image_data[['x_min', 'y_min', 'x_max', 'y_max']].values
+        # class_id needed for albumentations, remove it later since FasterRCNN does not need it
+        boxes = image_data[['x_min', 'y_min', 'x_max', 'y_max', 'class_id']].values
 
-        # TODO need to implement and verify data augmentation using albumentations
-        # # add albumentation tranformations
-        # if self.albumentation_transformations is not None:
-        #     transformed = self.albumentation_transformations(image=np.array(image), bboxes=boxes)
-        #     image = transformed["image"]
-        #     boxes = transformed["bboxes"]
+        # add albumentation tranformations
+        if self.albumentation_transformations is not None:
+            transformed = self.albumentation_transformations(image=image, bboxes=boxes)
+            image = transformed["image"]
+            boxes = transformed["bboxes"]
+
+        boxes = np.array([np.array(b) for b in boxes])[:, [0, 1, 2, 3]]
 
         area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
 

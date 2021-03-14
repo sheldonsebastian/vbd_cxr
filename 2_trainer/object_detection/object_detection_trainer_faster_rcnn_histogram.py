@@ -52,8 +52,8 @@ SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
 
 # %% --------------------TENSORBOARD DIRECTORY INITIALIZATION
-train_tensorboard_dir = f"{TENSORBOARD_DIR}/object_detection/default/train"
-validation_tensorboard_dir = f"{TENSORBOARD_DIR}/object_detection/default/validation"
+train_tensorboard_dir = f"{TENSORBOARD_DIR}/object_detection/histogram/train"
+validation_tensorboard_dir = f"{TENSORBOARD_DIR}/object_detection/histogram/validation"
 
 # if logs already exist then delete them
 train_dirpath = Path(train_tensorboard_dir)
@@ -92,13 +92,15 @@ augmentor = albumentations.Compose(
 train_data_set = VBD_CXR_FASTER_RCNN_Train(IMAGE_DIR,
                                            MERGED_DIR + "/wbf_merged"
                                                         "/object_detection/train_df_80.csv",
-                                           albumentation_transformations=augmentor)
+                                           albumentation_transformations=augmentor,
+                                           histogram_normalization=True)
 
 validation_data_set = VBD_CXR_FASTER_RCNN_Train(IMAGE_DIR,
                                                 MERGED_DIR + "/wbf_merged"
                                                              "/object_detection"
                                                              "/val_df_20.csv",
-                                                albumentation_transformations=None)
+                                                albumentation_transformations=None,
+                                                histogram_normalization=True)
 
 
 # %% --------------------COLLATE FUNCTION required since the image are not of same size
@@ -176,7 +178,7 @@ train_iter = 0
 val_iter = 0
 
 # if directory does not exist then create it
-saved_model_dir = Path(f"{SAVED_MODEL_DIR}/object_detection/default")
+saved_model_dir = Path(f"{SAVED_MODEL_DIR}/object_detection/histogram")
 
 if not saved_model_dir.exists():
     os.makedirs(saved_model_dir)

@@ -36,6 +36,7 @@ import pandas as pd
 import math
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from common.CustomErrors import TrainError, ValidationError
+import traceback
 
 # %% --------------------set seeds
 seed = 42
@@ -277,7 +278,7 @@ try:
         except Exception as e:
             image_ids_error = extract_image_id_from_batch_using_dataset(train_targets,
                                                                         train_data_loader.dataset)
-            raise TrainError(image_ids_error, e)
+            raise TrainError(image_ids_error, traceback.format_exc())
 
         # average the losses per epoch
         train_sum_train_losses_agg = running_sum_train_losses / len(train_data_loader.dataset)
@@ -358,7 +359,7 @@ try:
         except Exception as e:
             image_ids_error = extract_image_id_from_batch_using_dataset(validation_targets,
                                                                         validation_data_loader.dataset)
-            raise ValidationError(image_ids_error, e)
+            raise ValidationError(image_ids_error, traceback.format_exc())
 
         # average the losses per epoch
         validation_sum_train_losses_agg = running_sum_validation_losses / len(
@@ -496,7 +497,7 @@ try:
 
 except Exception as e:
     # print exception
-    print(e)
+    print(traceback.format_exc())
 
     # save model to resume training
     saved_model_path = f"{saved_model_dir}/faster_rcnn_error.pt"

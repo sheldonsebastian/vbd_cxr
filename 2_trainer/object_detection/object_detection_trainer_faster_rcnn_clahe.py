@@ -96,6 +96,12 @@ train_data_set = VBD_CXR_FASTER_RCNN_Train(IMAGE_DIR,
                                            albumentation_transformations=augmentor,
                                            clahe_normalization=True)
 
+train_data_set_mAP = VBD_CXR_FASTER_RCNN_Train(IMAGE_DIR,
+                                               MERGED_DIR + "/wbf_merged"
+                                                            "/object_detection/train_df_80.csv",
+                                               albumentation_transformations=None,
+                                           clahe_normalization=True)
+
 validation_data_set = VBD_CXR_FASTER_RCNN_Train(IMAGE_DIR,
                                                 MERGED_DIR + "/wbf_merged"
                                                              "/object_detection"
@@ -121,6 +127,11 @@ workers = int(os.getenv("NUM_WORKERS"))
 train_data_loader = torch.utils.data.DataLoader(train_data_set, batch_size=BATCH_SIZE,
                                                 shuffle=True, num_workers=workers,
                                                 collate_fn=collate_fn)
+
+# when computing mAP we don't want to perform augmentations
+train_data_loader_mAP = torch.utils.data.DataLoader(train_data_set_mAP, batch_size=BATCH_SIZE,
+                                                    shuffle=False, num_workers=workers,
+                                                    collate_fn=collate_fn)
 
 validation_data_loader = torch.utils.data.DataLoader(validation_data_set, batch_size=BATCH_SIZE,
                                                      shuffle=False, num_workers=workers,
@@ -391,8 +402,6 @@ try:
         validation_writer.add_scalar("rpn_loss_rpn_box_reg", val_loss_rpn_box_reg_agg,
                                      global_step=epoch)
 
-        # TODO handle exploding losses problem, early stopping
-
         # split epoch into 10 equal parts and for each part and last epoch compute mAP and save
         # model
         if (epoch % save_step_size == 0) or (epoch == (EPOCHS - 1)):
@@ -404,7 +413,7 @@ try:
 
             with torch.no_grad():
                 # get data from train loader
-                for images, targets in train_data_loader:
+                for images, targets in train_data_loader_mAP:
                     # send images to device
                     images = list(image.to(device) for image in images)
 

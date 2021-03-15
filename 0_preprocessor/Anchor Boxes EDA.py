@@ -22,6 +22,7 @@ MERGED_DIR = os.getenv("MERGED_DIR")
 # %% --------------------
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 # %% --------------------
 # find out median box height, width and square for training data
@@ -32,11 +33,20 @@ train_df["height"] = train_df["y_max"] - train_df["y_min"]
 train_df["width"] = train_df["x_max"] - train_df["x_min"]
 
 # %% --------------------
-train_df["height"].plot.hist(by="height", bins=10)
+bin_size = 20
+
+# %% --------------------
+train_df["height"].plot.hist(by="height", bins=bin_size)
+plt.title("Histogram Height")
+plt.tight_layout()
+plt.xticks(np.arange(0, int(max(train_df["height"])) + bin_size, bin_size), rotation=90)
 plt.show()
 
 # %% --------------------
-train_df["width"].plot.hist()
+train_df["width"].plot.hist(by="width", bins=bin_size)
+plt.title("Histogram Width")
+plt.tight_layout()
+plt.xticks(np.arange(0, int(max(train_df["width"])) + bin_size, bin_size), rotation=90)
 plt.show()
 
 # %% --------------------

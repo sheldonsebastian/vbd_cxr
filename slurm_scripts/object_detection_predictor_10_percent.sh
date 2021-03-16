@@ -5,7 +5,7 @@
 #SBATCH -N 1
 #SBATCH -t 24:00:00
 #SBATCH -p gpu
-#SBATCH -w node010
+#SBATCH -w node009
 #SBATCH --mail-type=all
 #SBATCH --mail-user=ssebastian94@gwu.edu
 

@@ -1,0 +1,750 @@
+cuda
+Program started
+Epoch 0/49
+----------
+Training Total Loss for Iteration 0 :: 3.5059266090393066
+Training Total Loss for Iteration 50 :: 0.6779985427856445
+Training Total Loss for Iteration 100 :: 0.6504417061805725
+Training Total Loss for Iteration 150 :: 0.8119286298751831
+Training Total Loss for Iteration 200 :: 0.5186410546302795
+Training Total Loss for Iteration 250 :: 0.8407284021377563
+Training Total Loss for Iteration 300 :: 0.588348388671875
+Training Total Loss for Iteration 350 :: 0.5408026576042175
+Training Epoch #0 Sum Loss:0.09596169190853085
+Validation Total Loss for Iteration 0 :: 1.040140151977539
+Validation Total Loss for Iteration 50 :: 0.6133309006690979
+Validation Epoch #0 Sum Loss:0.07597250285713623
+mAP for training at 0 is: 0.0
+mAP for training for all classes at 0 is: [('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('cardiomegaly', (0.0, 1828.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 0 is: 0.0
+mAP for validation for all classes at 0 is: [('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('cardiomegaly', (0.0, 455.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 1/49
+----------
+Training Total Loss for Iteration 400 :: 0.43274012207984924
+Training Total Loss for Iteration 450 :: 0.47243431210517883
+Training Total Loss for Iteration 500 :: 0.61811763048172
+Training Total Loss for Iteration 550 :: 0.6390432715415955
+Training Total Loss for Iteration 600 :: 0.8324074745178223
+Training Total Loss for Iteration 650 :: 0.8932181596755981
+Training Total Loss for Iteration 700 :: 0.5868901014328003
+Training Epoch #1 Sum Loss:0.08145912779893143
+Validation Total Loss for Iteration 100 :: 0.6747541427612305
+Validation Total Loss for Iteration 150 :: 0.5986125469207764
+Validation Epoch #1 Sum Loss:0.07593316449007641
+Epoch 2/49
+----------
+Training Total Loss for Iteration 750 :: 0.5337116122245789
+Training Total Loss for Iteration 800 :: 0.5771637558937073
+Training Total Loss for Iteration 850 :: 0.5191358327865601
+Training Total Loss for Iteration 900 :: 0.6770734786987305
+Training Total Loss for Iteration 950 :: 0.6894729137420654
+Training Total Loss for Iteration 1000 :: 0.735318660736084
+Training Total Loss for Iteration 1050 :: 0.44712793827056885
+Training Total Loss for Iteration 1100 :: 0.5234261751174927
+Training Epoch #2 Sum Loss:0.08085006517437791
+Validation Total Loss for Iteration 200 :: 0.39251086115837097
+Validation Total Loss for Iteration 250 :: 0.7747610807418823
+Validation Epoch #2 Sum Loss:0.0761515492728601
+Epoch 3/49
+----------
+Training Total Loss for Iteration 1150 :: 0.47266626358032227
+Training Total Loss for Iteration 1200 :: 0.4159427583217621
+Training Total Loss for Iteration 1250 :: 0.8059145212173462
+Training Total Loss for Iteration 1300 :: 0.4852011501789093
+Training Total Loss for Iteration 1350 :: 0.5766353607177734
+Training Total Loss for Iteration 1400 :: 0.5688530206680298
+Training Total Loss for Iteration 1450 :: 0.5400471091270447
+Training Epoch #3 Sum Loss:0.08084500868701967
+Validation Total Loss for Iteration 300 :: 0.6493586301803589
+Validation Total Loss for Iteration 350 :: 0.4562424421310425
+Validation Epoch #3 Sum Loss:0.07612257617680977
+Epoch 4/49
+----------
+Training Total Loss for Iteration 1500 :: 0.46504858136177063
+Training Total Loss for Iteration 1550 :: 0.5709815621376038
+Training Total Loss for Iteration 1600 :: 0.5387923717498779
+Training Total Loss for Iteration 1650 :: 0.8464685678482056
+Training Total Loss for Iteration 1700 :: 0.5543613433837891
+Training Total Loss for Iteration 1750 :: 0.5574809908866882
+Training Total Loss for Iteration 1800 :: 0.6208565831184387
+Training Total Loss for Iteration 1850 :: 0.5005252957344055
+Training Epoch #4 Sum Loss:0.0810021342486593
+Validation Total Loss for Iteration 400 :: 0.6225640773773193
+Validation Total Loss for Iteration 450 :: 0.5764127373695374
+Validation Epoch #4 Sum Loss:0.07604879517263423
+Epoch 5/49
+----------
+Training Total Loss for Iteration 1900 :: 0.7072844505310059
+Training Total Loss for Iteration 1950 :: 0.8331624269485474
+Training Total Loss for Iteration 2000 :: 0.4986532926559448
+Training Total Loss for Iteration 2050 :: 0.6473443508148193
+Training Total Loss for Iteration 2100 :: 0.8004216551780701
+Training Total Loss for Iteration 2150 :: 0.8115867376327515
+Training Total Loss for Iteration 2200 :: 0.6377478837966919
+Training Epoch #5 Sum Loss:0.0814192569903662
+Validation Total Loss for Iteration 500 :: 0.4580746293067932
+Validation Total Loss for Iteration 550 :: 0.7368389964103699
+Validation Epoch #5 Sum Loss:0.07619677425827831
+mAP for training at 5 is: 0.0
+mAP for training for all classes at 5 is: [('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('cardiomegaly', (0.0, 1828.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 5 is: 0.0
+mAP for validation for all classes at 5 is: [('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('cardiomegaly', (0.0, 455.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 6/49
+----------
+Training Total Loss for Iteration 2250 :: 1.147697925567627
+Training Total Loss for Iteration 2300 :: 0.5539710521697998
+Training Total Loss for Iteration 2350 :: 0.5438621640205383
+Training Total Loss for Iteration 2400 :: 0.6431055068969727
+Training Total Loss for Iteration 2450 :: 0.6172285079956055
+Training Total Loss for Iteration 2500 :: 1.0412384271621704
+Training Total Loss for Iteration 2550 :: 0.5632268190383911
+Training Total Loss for Iteration 2600 :: 0.5588404536247253
+Training Epoch #6 Sum Loss:0.08081273869034909
+Validation Total Loss for Iteration 600 :: 0.6692953109741211
+Validation Total Loss for Iteration 650 :: 0.832556426525116
+Validation Epoch #6 Sum Loss:0.07638107267363618
+Epoch 7/49
+----------
+Training Total Loss for Iteration 2650 :: 0.632337212562561
+Training Total Loss for Iteration 2700 :: 0.6805760860443115
+Training Total Loss for Iteration 2750 :: 1.041954755783081
+Training Total Loss for Iteration 2800 :: 0.7302031517028809
+Training Total Loss for Iteration 2850 :: 0.830025851726532
+Training Total Loss for Iteration 2900 :: 0.5606145858764648
+Training Total Loss for Iteration 2950 :: 0.5553960800170898
+Training Epoch #7 Sum Loss:0.08116807693884862
+Validation Total Loss for Iteration 700 :: 0.5493875741958618
+Validation Total Loss for Iteration 750 :: 0.8544504046440125
+Validation Epoch #7 Sum Loss:0.07623268353442351
+Epoch 8/49
+----------
+Training Total Loss for Iteration 3000 :: 0.8302747011184692
+Training Total Loss for Iteration 3050 :: 1.0126715898513794
+Training Total Loss for Iteration 3100 :: 0.5650123357772827
+Training Total Loss for Iteration 3150 :: 0.48538869619369507
+Training Total Loss for Iteration 3200 :: 0.564644992351532
+Training Total Loss for Iteration 3250 :: 0.6734262108802795
+Training Total Loss for Iteration 3300 :: 0.6225624084472656
+Training Total Loss for Iteration 3350 :: 0.5803673267364502
+Training Epoch #8 Sum Loss:0.08075715161057696
+Validation Total Loss for Iteration 800 :: 0.8364382386207581
+Validation Total Loss for Iteration 850 :: 0.855451226234436
+Validation Epoch #8 Sum Loss:0.07618630328215659
+Epoch 9/49
+----------
+Training Total Loss for Iteration 3400 :: 0.7438962459564209
+Training Total Loss for Iteration 3450 :: 0.41887539625167847
+Training Total Loss for Iteration 3500 :: 0.6728476881980896
+Training Total Loss for Iteration 3550 :: 0.7140269875526428
+Training Total Loss for Iteration 3600 :: 0.6803851127624512
+Training Total Loss for Iteration 3650 :: 0.7446210384368896
+Training Total Loss for Iteration 3700 :: 0.7406682968139648
+Training Epoch #9 Sum Loss:0.08114907054523621
+Validation Total Loss for Iteration 900 :: 0.5159505605697632
+Validation Total Loss for Iteration 950 :: 0.7542465329170227
+Validation Epoch #9 Sum Loss:0.07624062022659928
+Epoch 10/49
+----------
+Training Total Loss for Iteration 3750 :: 0.8103085160255432
+Training Total Loss for Iteration 3800 :: 0.516603946685791
+Training Total Loss for Iteration 3850 :: 0.5312800407409668
+Training Total Loss for Iteration 3900 :: 0.684320330619812
+Training Total Loss for Iteration 3950 :: 0.6409940719604492
+Training Total Loss for Iteration 4000 :: 0.5964919328689575
+Training Total Loss for Iteration 4050 :: 0.7941712141036987
+Training Total Loss for Iteration 4100 :: 0.9858266115188599
+Training Epoch #10 Sum Loss:0.08196839139350345
+Validation Total Loss for Iteration 1000 :: 0.559773325920105
+Validation Total Loss for Iteration 1050 :: 0.5518501996994019
+Validation Epoch #10 Sum Loss:0.07619099128836145
+mAP for training at 10 is: 0.0
+mAP for training for all classes at 10 is: [('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('cardiomegaly', (0.0, 1828.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 10 is: 0.0
+mAP for validation for all classes at 10 is: [('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('cardiomegaly', (0.0, 455.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 11/49
+----------
+Training Total Loss for Iteration 4150 :: 0.6869118213653564
+Training Total Loss for Iteration 4200 :: 0.7225042581558228
+Training Total Loss for Iteration 4250 :: 0.7747461795806885
+Training Total Loss for Iteration 4300 :: 0.35223788022994995
+Training Total Loss for Iteration 4350 :: 0.5498138070106506
+Training Total Loss for Iteration 4400 :: 0.7431328892707825
+Training Total Loss for Iteration 4450 :: 0.8636994361877441
+Training Epoch #11 Sum Loss:0.08205447206757925
+Validation Total Loss for Iteration 1100 :: 0.45075151324272156
+Validation Total Loss for Iteration 1150 :: 0.7284685969352722
+Validation Epoch #11 Sum Loss:0.07620061871906121
+Epoch 12/49
+----------
+Training Total Loss for Iteration 4500 :: 0.9164352416992188
+Training Total Loss for Iteration 4550 :: 0.5218358039855957
+Training Total Loss for Iteration 4600 :: 0.5985541939735413
+Training Total Loss for Iteration 4650 :: 0.5536686182022095
+Training Total Loss for Iteration 4700 :: 1.0420262813568115
+Training Total Loss for Iteration 4750 :: 0.5071903467178345
+Training Total Loss for Iteration 4800 :: 0.41392233967781067
+Training Epoch #12 Sum Loss:0.08228217159809982
+Validation Total Loss for Iteration 1200 :: 0.5741497278213501
+Validation Epoch #12 Sum Loss:0.07627313250365357
+Epoch 13/49
+----------
+Training Total Loss for Iteration 4850 :: 0.7130900025367737
+Training Total Loss for Iteration 4900 :: 0.9334317445755005
+Training Total Loss for Iteration 4950 :: 0.8663614988327026
+Training Total Loss for Iteration 5000 :: 0.4835991859436035
+Training Total Loss for Iteration 5050 :: 0.4645308554172516
+Training Total Loss for Iteration 5100 :: 0.6457408666610718
+Training Total Loss for Iteration 5150 :: 1.0190579891204834
+Training Total Loss for Iteration 5200 :: 0.674747109413147
+Training Epoch #13 Sum Loss:0.08306984442946336
+Validation Total Loss for Iteration 1250 :: 0.5373294353485107
+Validation Total Loss for Iteration 1300 :: 0.6300435066223145
+Validation Epoch #13 Sum Loss:0.07638188335113227
+Epoch 14/49
+----------
+Training Total Loss for Iteration 5250 :: 0.6198220252990723
+Training Total Loss for Iteration 5300 :: 0.8141241073608398
+Training Total Loss for Iteration 5350 :: 0.48389142751693726
+Training Total Loss for Iteration 5400 :: 0.5683525800704956
+Training Total Loss for Iteration 5450 :: 0.5306296944618225
+Training Total Loss for Iteration 5500 :: 0.5554125905036926
+Training Total Loss for Iteration 5550 :: 0.7367119789123535
+Training Epoch #14 Sum Loss:0.0832893697158157
+Validation Total Loss for Iteration 1350 :: 0.48482924699783325
+Validation Total Loss for Iteration 1400 :: 0.46166592836380005
+Validation Epoch #14 Sum Loss:0.07644472550600767
+Epoch 15/49
+----------
+Training Total Loss for Iteration 5600 :: 0.6479371190071106
+Training Total Loss for Iteration 5650 :: 0.8614652752876282
+Training Total Loss for Iteration 5700 :: 0.7012660503387451
+Training Total Loss for Iteration 5750 :: 0.5282131433486938
+Training Total Loss for Iteration 5800 :: 0.6688661575317383
+Training Total Loss for Iteration 5850 :: 0.7483450174331665
+Training Total Loss for Iteration 5900 :: 0.7149460315704346
+Training Total Loss for Iteration 5950 :: 0.6130968928337097
+Training Epoch #15 Sum Loss:0.08403774708039566
+Validation Total Loss for Iteration 1450 :: 0.564996600151062
+Validation Total Loss for Iteration 1500 :: 0.7006685733795166
+Validation Epoch #15 Sum Loss:0.07633897964842618
+mAP for training at 15 is: 0.0
+mAP for training for all classes at 15 is: [('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('cardiomegaly', (0.0, 1828.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 15 is: 0.0
+mAP for validation for all classes at 15 is: [('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('cardiomegaly', (0.0, 455.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 16/49
+----------
+Training Total Loss for Iteration 6000 :: 0.5584973096847534
+Training Total Loss for Iteration 6050 :: 0.7175730466842651
+Training Total Loss for Iteration 6100 :: 0.675304651260376
+Training Total Loss for Iteration 6150 :: 0.6879788637161255
+Training Total Loss for Iteration 6200 :: 0.7411319017410278
+Training Total Loss for Iteration 6250 :: 0.6963478922843933
+Training Total Loss for Iteration 6300 :: 0.6009775400161743
+Training Epoch #16 Sum Loss:0.08391828976474085
+Validation Total Loss for Iteration 1550 :: 0.7285196781158447
+Validation Total Loss for Iteration 1600 :: 0.6517279148101807
+Validation Epoch #16 Sum Loss:0.07648879592306912
+Epoch 17/49
+----------
+Training Total Loss for Iteration 6350 :: 0.9410949349403381
+Training Total Loss for Iteration 6400 :: 0.7592095136642456
+Training Total Loss for Iteration 6450 :: 1.0328181982040405
+Training Total Loss for Iteration 6500 :: 0.896836519241333
+Training Total Loss for Iteration 6550 :: 0.7868009209632874
+Training Total Loss for Iteration 6600 :: 0.6481205224990845
+Training Total Loss for Iteration 6650 :: 0.70427006483078
+Training Total Loss for Iteration 6700 :: 0.5734834671020508
+Training Epoch #17 Sum Loss:0.08396493245874703
+Validation Total Loss for Iteration 1650 :: 0.5426357984542847
+Validation Total Loss for Iteration 1700 :: 0.49866169691085815
+Validation Epoch #17 Sum Loss:0.07646322758713116
+Epoch 18/49
+----------
+Training Total Loss for Iteration 6750 :: 0.43260902166366577
+Training Total Loss for Iteration 6800 :: 0.6958973407745361
+Training Total Loss for Iteration 6850 :: 0.5445547103881836
+Training Total Loss for Iteration 6900 :: 0.5509606003761292
+Training Total Loss for Iteration 6950 :: 0.5693281888961792
+Training Total Loss for Iteration 7000 :: 0.6161288022994995
+Training Total Loss for Iteration 7050 :: 0.6731441020965576
+Training Epoch #18 Sum Loss:0.0841403025802611
+Validation Total Loss for Iteration 1750 :: 0.5645614266395569
+Validation Total Loss for Iteration 1800 :: 0.4975031316280365
+Validation Epoch #18 Sum Loss:0.07655919661434989
+Epoch 19/49
+----------
+Training Total Loss for Iteration 7100 :: 0.7373794317245483
+Training Total Loss for Iteration 7150 :: 0.6197624206542969
+Training Total Loss for Iteration 7200 :: 0.7506484985351562
+Training Total Loss for Iteration 7250 :: 0.8456403017044067
+Training Total Loss for Iteration 7300 :: 0.4320726990699768
+Training Total Loss for Iteration 7350 :: 0.9621456265449524
+Training Total Loss for Iteration 7400 :: 0.5611875653266907
+Training Total Loss for Iteration 7450 :: 0.45598411560058594
+Training Epoch #19 Sum Loss:0.08431299370193353
+Validation Total Loss for Iteration 1850 :: 0.47368454933166504
+Validation Total Loss for Iteration 1900 :: 0.42178958654403687
+Validation Epoch #19 Sum Loss:0.07650613055254023
+Epoch 20/49
+----------
+Training Total Loss for Iteration 7500 :: 0.6588104367256165
+Training Total Loss for Iteration 7550 :: 0.6339501142501831
+Training Total Loss for Iteration 7600 :: 0.7874044179916382
+Training Total Loss for Iteration 7650 :: 0.5075705051422119
+Training Total Loss for Iteration 7700 :: 0.5876011252403259
+Training Total Loss for Iteration 7750 :: 0.7119213938713074
+Training Total Loss for Iteration 7800 :: 0.5579641461372375
+Training Epoch #20 Sum Loss:0.08409766751381824
+Validation Total Loss for Iteration 1950 :: 0.5487813353538513
+Validation Total Loss for Iteration 2000 :: 0.5481555461883545
+Validation Epoch #20 Sum Loss:0.07666551535173009
+mAP for training at 20 is: 0.0
+mAP for training for all classes at 20 is: [('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('cardiomegaly', (0.0, 1828.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 20 is: 0.0
+mAP for validation for all classes at 20 is: [('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('cardiomegaly', (0.0, 455.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 21/49
+----------
+Training Total Loss for Iteration 7850 :: 0.428117036819458
+Training Total Loss for Iteration 7900 :: 0.4430812895298004
+Training Total Loss for Iteration 7950 :: 0.5984783172607422
+Training Total Loss for Iteration 8000 :: 0.5136058330535889
+Training Total Loss for Iteration 8050 :: 0.3647712171077728
+Training Total Loss for Iteration 8100 :: 0.5341009497642517
+Training Total Loss for Iteration 8150 :: 0.4946589767932892
+Training Total Loss for Iteration 8200 :: 0.9437183737754822
+Training Epoch #21 Sum Loss:0.08407333791155977
+Validation Total Loss for Iteration 2050 :: 0.47940361499786377
+Validation Total Loss for Iteration 2100 :: 0.8351881504058838
+Validation Epoch #21 Sum Loss:0.07645037405503292
+Epoch 22/49
+----------
+Training Total Loss for Iteration 8250 :: 0.5416799187660217
+Training Total Loss for Iteration 8300 :: 1.0255974531173706
+Training Total Loss for Iteration 8350 :: 0.6165342926979065
+Training Total Loss for Iteration 8400 :: 0.5375791192054749
+Training Total Loss for Iteration 8450 :: 0.5404035449028015
+Training Total Loss for Iteration 8500 :: 0.9298929572105408
+Training Total Loss for Iteration 8550 :: 0.5896791219711304
+Training Epoch #22 Sum Loss:0.0840688256639956
+Validation Total Loss for Iteration 2150 :: 0.3811802268028259
+Validation Total Loss for Iteration 2200 :: 0.716201663017273
+Validation Epoch #22 Sum Loss:0.07665043281546484
+Epoch 23/49
+----------
+Training Total Loss for Iteration 8600 :: 0.65311598777771
+Training Total Loss for Iteration 8650 :: 0.6224995851516724
+Training Total Loss for Iteration 8700 :: 0.5353700518608093
+Training Total Loss for Iteration 8750 :: 0.8590320944786072
+Training Total Loss for Iteration 8800 :: 0.5158873796463013
+Training Total Loss for Iteration 8850 :: 0.8882207870483398
+Training Total Loss for Iteration 8900 :: 0.7340580224990845
+Training Total Loss for Iteration 8950 :: 0.40659305453300476
+Training Epoch #23 Sum Loss:0.08412331667613439
+Validation Total Loss for Iteration 2250 :: 0.6791446208953857
+Validation Total Loss for Iteration 2300 :: 0.608329176902771
+Validation Epoch #23 Sum Loss:0.07654433499556035
+Epoch 24/49
+----------
+Training Total Loss for Iteration 9000 :: 0.7184349298477173
+Training Total Loss for Iteration 9050 :: 0.42793169617652893
+Training Total Loss for Iteration 9100 :: 0.441144198179245
+Training Total Loss for Iteration 9150 :: 0.5497788190841675
+Training Total Loss for Iteration 9200 :: 0.6919352412223816
+Training Total Loss for Iteration 9250 :: 0.7480275630950928
+Training Total Loss for Iteration 9300 :: 0.48515015840530396
+Training Epoch #24 Sum Loss:0.08441362354788193
+Validation Total Loss for Iteration 2350 :: 0.5401028394699097
+Validation Epoch #24 Sum Loss:0.07655511753788839
+Epoch 25/49
+----------
+Training Total Loss for Iteration 9350 :: 0.9139869213104248
+Training Total Loss for Iteration 9400 :: 0.7720978856086731
+Training Total Loss for Iteration 9450 :: 0.5634319186210632
+Training Total Loss for Iteration 9500 :: 0.41705313324928284
+Training Total Loss for Iteration 9550 :: 0.7255121469497681
+Training Total Loss for Iteration 9600 :: 0.6671551465988159
+Training Total Loss for Iteration 9650 :: 0.6825968027114868
+Training Epoch #25 Sum Loss:0.08378631025502763
+Validation Total Loss for Iteration 2400 :: 1.0552895069122314
+Validation Total Loss for Iteration 2450 :: 0.6108143925666809
+Validation Epoch #25 Sum Loss:0.07659162243362516
+mAP for training at 25 is: 0.0
+mAP for training for all classes at 25 is: [('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('cardiomegaly', (0.0, 1828.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 25 is: 0.0
+mAP for validation for all classes at 25 is: [('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('cardiomegaly', (0.0, 455.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 26/49
+----------
+Training Total Loss for Iteration 9700 :: 0.5142647624015808
+Training Total Loss for Iteration 9750 :: 0.8460992574691772
+Training Total Loss for Iteration 9800 :: 0.5419066548347473
+Training Total Loss for Iteration 9850 :: 0.4299249053001404
+Training Total Loss for Iteration 9900 :: 0.6573731899261475
+Training Total Loss for Iteration 9950 :: 0.6827893257141113
+Training Total Loss for Iteration 10000 :: 0.7942065000534058
+Training Total Loss for Iteration 10050 :: 0.5261820554733276
+Training Epoch #26 Sum Loss:0.08382273166222046
+Validation Total Loss for Iteration 2500 :: 0.6955327987670898
+Validation Total Loss for Iteration 2550 :: 0.6183120608329773
+Validation Epoch #26 Sum Loss:0.07665987894870341
+Epoch 27/49
+----------
+Training Total Loss for Iteration 10100 :: 0.5519037842750549
+Training Total Loss for Iteration 10150 :: 0.7378920316696167
+Training Total Loss for Iteration 10200 :: 0.5787075757980347
+Training Total Loss for Iteration 10250 :: 0.5897567272186279
+Training Total Loss for Iteration 10300 :: 0.5865330100059509
+Training Total Loss for Iteration 10350 :: 0.5050916075706482
+Training Total Loss for Iteration 10400 :: 0.5852161049842834
+Training Epoch #27 Sum Loss:0.08424806004000845
+Validation Total Loss for Iteration 2600 :: 0.41084471344947815
+Validation Total Loss for Iteration 2650 :: 0.7359961271286011
+Validation Epoch #27 Sum Loss:0.07671315114324291
+Epoch 28/49
+----------
+Training Total Loss for Iteration 10450 :: 0.851352870464325
+Training Total Loss for Iteration 10500 :: 0.4476052224636078
+Training Total Loss for Iteration 10550 :: 1.2241313457489014
+Training Total Loss for Iteration 10600 :: 0.4650537371635437
+Training Total Loss for Iteration 10650 :: 0.5229848027229309
+Training Total Loss for Iteration 10700 :: 0.7775004506111145
+Training Total Loss for Iteration 10750 :: 0.7483367323875427
+Training Total Loss for Iteration 10800 :: 0.412412166595459
+Training Epoch #28 Sum Loss:0.08375240802884862
+Validation Total Loss for Iteration 2700 :: 0.6492792367935181
+Validation Total Loss for Iteration 2750 :: 0.4558482766151428
+Validation Epoch #28 Sum Loss:0.07656989603613813
+Epoch 29/49
+----------
+Training Total Loss for Iteration 10850 :: 0.9627860188484192
+Training Total Loss for Iteration 10900 :: 1.148497223854065
+Training Total Loss for Iteration 10950 :: 0.7464486360549927
+Training Total Loss for Iteration 11000 :: 0.4621259272098541
+Training Total Loss for Iteration 11050 :: 0.8059605360031128
+Training Total Loss for Iteration 11100 :: 0.6099914908409119
+Training Total Loss for Iteration 11150 :: 0.683128833770752
+Training Epoch #29 Sum Loss:0.08376876238567323
+Validation Total Loss for Iteration 2800 :: 0.6136107444763184
+Validation Total Loss for Iteration 2850 :: 0.5754523873329163
+Validation Epoch #29 Sum Loss:0.07665517580850671
+Epoch 30/49
+----------
+Training Total Loss for Iteration 11200 :: 0.6093970537185669
+Training Total Loss for Iteration 11250 :: 0.6504369974136353
+Training Total Loss for Iteration 11300 :: 0.6590024828910828
+Training Total Loss for Iteration 11350 :: 0.8193045258522034
+Training Total Loss for Iteration 11400 :: 0.6660236120223999
+Training Total Loss for Iteration 11450 :: 0.7474014759063721
+Training Total Loss for Iteration 11500 :: 0.5734882950782776
+Training Total Loss for Iteration 11550 :: 0.4825926125049591
+Training Epoch #30 Sum Loss:0.08389887530625327
+Validation Total Loss for Iteration 2900 :: 0.47406166791915894
+Validation Total Loss for Iteration 2950 :: 0.7692273855209351
+Validation Epoch #30 Sum Loss:0.0764868954817454
+mAP for training at 30 is: 6.251953735542357e-05
+mAP for training for all classes at 30 is: [('cardiomegaly', (0.00087527352297593, 1828.0)), ('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 30 is: 0.0
+mAP for validation for all classes at 30 is: [('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('cardiomegaly', (0.0, 455.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 31/49
+----------
+Training Total Loss for Iteration 11600 :: 0.5894583463668823
+Training Total Loss for Iteration 11650 :: 0.8944635391235352
+Training Total Loss for Iteration 11700 :: 0.5457953214645386
+Training Total Loss for Iteration 11750 :: 0.6070423126220703
+Training Total Loss for Iteration 11800 :: 0.607783854007721
+Training Total Loss for Iteration 11850 :: 0.689597487449646
+Training Total Loss for Iteration 11900 :: 0.7107625603675842
+Training Epoch #31 Sum Loss:0.0833663129738536
+Validation Total Loss for Iteration 3000 :: 0.6844304203987122
+Validation Total Loss for Iteration 3050 :: 0.8309171199798584
+Validation Epoch #31 Sum Loss:0.07668462287013729
+Epoch 32/49
+----------
+Training Total Loss for Iteration 11950 :: 0.5658493041992188
+Training Total Loss for Iteration 12000 :: 0.5508660078048706
+Training Total Loss for Iteration 12050 :: 0.6093895435333252
+Training Total Loss for Iteration 12100 :: 0.5018635988235474
+Training Total Loss for Iteration 12150 :: 0.5672152042388916
+Training Total Loss for Iteration 12200 :: 0.47598347067832947
+Training Total Loss for Iteration 12250 :: 0.5882625579833984
+Training Total Loss for Iteration 12300 :: 0.8239759206771851
+Training Epoch #32 Sum Loss:0.08320996466198051
+Validation Total Loss for Iteration 3100 :: 0.5570816397666931
+Validation Total Loss for Iteration 3150 :: 0.8541408181190491
+Validation Epoch #32 Sum Loss:0.07654452160932124
+Epoch 33/49
+----------
+Training Total Loss for Iteration 12350 :: 0.5080791115760803
+Training Total Loss for Iteration 12400 :: 0.7339867353439331
+Training Total Loss for Iteration 12450 :: 0.6746509075164795
+Training Total Loss for Iteration 12500 :: 0.6939040422439575
+Training Total Loss for Iteration 12550 :: 0.7090421915054321
+Training Total Loss for Iteration 12600 :: 0.4970380663871765
+Training Total Loss for Iteration 12650 :: 0.72349613904953
+Training Epoch #33 Sum Loss:0.08395103477903838
+Validation Total Loss for Iteration 3200 :: 0.8606444001197815
+Validation Total Loss for Iteration 3250 :: 0.8547551035881042
+Validation Epoch #33 Sum Loss:0.0765479738280798
+Epoch 34/49
+----------
+Training Total Loss for Iteration 12700 :: 0.3995460569858551
+Training Total Loss for Iteration 12750 :: 0.5088005065917969
+Training Total Loss for Iteration 12800 :: 0.8167188763618469
+Training Total Loss for Iteration 12850 :: 0.9232608079910278
+Training Total Loss for Iteration 12900 :: 0.6761321425437927
+Training Total Loss for Iteration 12950 :: 0.8225986957550049
+Training Total Loss for Iteration 13000 :: 0.5738486051559448
+Training Total Loss for Iteration 13050 :: 0.6758631467819214
+Training Epoch #34 Sum Loss:0.08347400101148535
+Validation Total Loss for Iteration 3300 :: 0.5199960470199585
+Validation Total Loss for Iteration 3350 :: 0.7374704480171204
+Validation Epoch #34 Sum Loss:0.07652576853676389
+Epoch 35/49
+----------
+Training Total Loss for Iteration 13100 :: 0.6601479053497314
+Training Total Loss for Iteration 13150 :: 0.5781164765357971
+Training Total Loss for Iteration 13200 :: 0.9162606000900269
+Training Total Loss for Iteration 13250 :: 0.4753788113594055
+Training Total Loss for Iteration 13300 :: 0.49799880385398865
+Training Total Loss for Iteration 13350 :: 1.1436752080917358
+Training Total Loss for Iteration 13400 :: 0.6501606702804565
+Training Epoch #35 Sum Loss:0.08346623922106165
+Validation Total Loss for Iteration 3400 :: 0.5456075072288513
+Validation Total Loss for Iteration 3450 :: 0.5699939131736755
+Validation Epoch #35 Sum Loss:0.0764638022131597
+mAP for training at 35 is: 0.0002034431528228932
+mAP for training for all classes at 35 is: [('cardiomegaly', (0.002848204139520505, 1828.0)), ('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 35 is: 0.0001794124243103835
+mAP for validation for all classes at 35 is: [('cardiomegaly', (0.002511773940345369, 455.0)), ('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 36/49
+----------
+Training Total Loss for Iteration 13450 :: 0.869784951210022
+Training Total Loss for Iteration 13500 :: 0.6405829787254333
+Training Total Loss for Iteration 13550 :: 0.5597894191741943
+Training Total Loss for Iteration 13600 :: 0.53879714012146
+Training Total Loss for Iteration 13650 :: 0.49563759565353394
+Training Total Loss for Iteration 13700 :: 0.9714025259017944
+Training Total Loss for Iteration 13750 :: 0.5244216918945312
+Training Total Loss for Iteration 13800 :: 0.639306902885437
+Training Epoch #36 Sum Loss:0.08357129235749115
+Validation Total Loss for Iteration 3500 :: 0.4485713839530945
+Validation Total Loss for Iteration 3550 :: 0.7291715145111084
+Validation Epoch #36 Sum Loss:0.07639643487830956
+Epoch 37/49
+----------
+Training Total Loss for Iteration 13850 :: 0.6891705393791199
+Training Total Loss for Iteration 13900 :: 0.5941826105117798
+Training Total Loss for Iteration 13950 :: 0.6316320896148682
+Training Total Loss for Iteration 14000 :: 0.6542261242866516
+Training Total Loss for Iteration 14050 :: 0.8694895505905151
+Training Total Loss for Iteration 14100 :: 0.7004543542861938
+Training Total Loss for Iteration 14150 :: 0.5073490142822266
+Training Epoch #37 Sum Loss:0.08310371342420338
+Validation Total Loss for Iteration 3600 :: 0.5755935311317444
+Validation Epoch #37 Sum Loss:0.07660568369707714
+Epoch 38/49
+----------
+Training Total Loss for Iteration 14200 :: 0.4874652624130249
+Training Total Loss for Iteration 14250 :: 0.642871081829071
+Training Total Loss for Iteration 14300 :: 0.8158152103424072
+Training Total Loss for Iteration 14350 :: 1.107116460800171
+Training Total Loss for Iteration 14400 :: 0.7521982789039612
+Training Total Loss for Iteration 14450 :: 1.0266395807266235
+Training Total Loss for Iteration 14500 :: 0.5843871235847473
+Training Epoch #38 Sum Loss:0.08315590469879577
+Validation Total Loss for Iteration 3650 :: 0.5753563046455383
+Validation Total Loss for Iteration 3700 :: 0.6130831837654114
+Validation Epoch #38 Sum Loss:0.07637979198868076
+Epoch 39/49
+----------
+Training Total Loss for Iteration 14550 :: 0.5441184639930725
+Training Total Loss for Iteration 14600 :: 0.6872036457061768
+Training Total Loss for Iteration 14650 :: 0.4202077388763428
+Training Total Loss for Iteration 14700 :: 0.5274484157562256
+Training Total Loss for Iteration 14750 :: 0.6663806438446045
+Training Total Loss for Iteration 14800 :: 0.6521208882331848
+Training Total Loss for Iteration 14850 :: 0.9367026090621948
+Training Total Loss for Iteration 14900 :: 0.46018120646476746
+Training Epoch #39 Sum Loss:0.08362413747364225
+Validation Total Loss for Iteration 3750 :: 0.48371371626853943
+Validation Total Loss for Iteration 3800 :: 0.45915141701698303
+Validation Epoch #39 Sum Loss:0.07659287409236033
+Epoch 40/49
+----------
+Training Total Loss for Iteration 14950 :: 1.1078917980194092
+Training Total Loss for Iteration 15000 :: 0.5198990106582642
+Training Total Loss for Iteration 15050 :: 0.6851219534873962
+Training Total Loss for Iteration 15100 :: 0.6077103614807129
+Training Total Loss for Iteration 15150 :: 0.8433184623718262
+Training Total Loss for Iteration 15200 :: 0.8126345872879028
+Training Total Loss for Iteration 15250 :: 0.667016863822937
+Training Epoch #40 Sum Loss:0.08390821477023998
+Validation Total Loss for Iteration 3850 :: 0.5635685324668884
+Validation Total Loss for Iteration 3900 :: 0.7125340104103088
+Validation Epoch #40 Sum Loss:0.07639576129925747
+mAP for training at 40 is: 0.00024480009840235873
+mAP for training for all classes at 40 is: [('cardiomegaly', (0.0034272013776330225, 1828.0)), ('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 40 is: 0.0006002150023889154
+mAP for validation for all classes at 40 is: [('cardiomegaly', (0.008403010033444815, 455.0)), ('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 41/49
+----------
+Training Total Loss for Iteration 15300 :: 0.6532934904098511
+Training Total Loss for Iteration 15350 :: 0.5679609775543213
+Training Total Loss for Iteration 15400 :: 0.577499508857727
+Training Total Loss for Iteration 15450 :: 0.9367144703865051
+Training Total Loss for Iteration 15500 :: 0.5380446314811707
+Training Total Loss for Iteration 15550 :: 0.9471650123596191
+Training Total Loss for Iteration 15600 :: 1.168987512588501
+Training Total Loss for Iteration 15650 :: 0.6067976951599121
+Training Epoch #41 Sum Loss:0.08286456354349822
+Validation Total Loss for Iteration 3950 :: 0.7117664217948914
+Validation Total Loss for Iteration 4000 :: 0.6621266603469849
+Validation Epoch #41 Sum Loss:0.07623622760487099
+Epoch 42/49
+----------
+Training Total Loss for Iteration 15700 :: 0.9171327352523804
+Training Total Loss for Iteration 15750 :: 0.606734573841095
+Training Total Loss for Iteration 15800 :: 0.6049930453300476
+Training Total Loss for Iteration 15850 :: 0.8160710334777832
+Training Total Loss for Iteration 15900 :: 0.5525097250938416
+Training Total Loss for Iteration 15950 :: 0.7586601376533508
+Training Total Loss for Iteration 16000 :: 0.7978630065917969
+Training Epoch #42 Sum Loss:0.08342600792536436
+Validation Total Loss for Iteration 4050 :: 0.5332362055778503
+Validation Total Loss for Iteration 4100 :: 0.49643391370773315
+Validation Epoch #42 Sum Loss:0.07642484378690521
+Epoch 43/49
+----------
+Training Total Loss for Iteration 16050 :: 0.8684031963348389
+Training Total Loss for Iteration 16100 :: 0.49374598264694214
+Training Total Loss for Iteration 16150 :: 0.6335364580154419
+Training Total Loss for Iteration 16200 :: 0.47757095098495483
+Training Total Loss for Iteration 16250 :: 0.45308414101600647
+Training Total Loss for Iteration 16300 :: 0.7029387950897217
+Training Total Loss for Iteration 16350 :: 0.5239866971969604
+Training Total Loss for Iteration 16400 :: 0.5350466370582581
+Training Epoch #43 Sum Loss:0.08329109464144395
+Validation Total Loss for Iteration 4150 :: 0.5493154525756836
+Validation Total Loss for Iteration 4200 :: 0.472873717546463
+Validation Epoch #43 Sum Loss:0.07639849395491183
+Epoch 44/49
+----------
+Training Total Loss for Iteration 16450 :: 0.6687160134315491
+Training Total Loss for Iteration 16500 :: 0.48798537254333496
+Training Total Loss for Iteration 16550 :: 0.6619155406951904
+Training Total Loss for Iteration 16600 :: 0.5169200301170349
+Training Total Loss for Iteration 16650 :: 0.7984906435012817
+Training Total Loss for Iteration 16700 :: 0.6188406944274902
+Training Total Loss for Iteration 16750 :: 0.5426956415176392
+Training Epoch #44 Sum Loss:0.08277064344899761
+Validation Total Loss for Iteration 4250 :: 0.469804584980011
+Validation Total Loss for Iteration 4300 :: 0.4240484833717346
+Validation Epoch #44 Sum Loss:0.07647228978263836
+Epoch 45/49
+----------
+Training Total Loss for Iteration 16800 :: 0.5967226624488831
+Training Total Loss for Iteration 16850 :: 0.6470373868942261
+Training Total Loss for Iteration 16900 :: 0.522006630897522
+Training Total Loss for Iteration 16950 :: 0.5786093473434448
+Training Total Loss for Iteration 17000 :: 0.7329246997833252
+Training Total Loss for Iteration 17050 :: 0.8338230848312378
+Training Total Loss for Iteration 17100 :: 1.0625483989715576
+Training Total Loss for Iteration 17150 :: 0.4712645709514618
+Training Epoch #45 Sum Loss:0.08309414587897448
+Validation Total Loss for Iteration 4350 :: 0.5476216077804565
+Validation Total Loss for Iteration 4400 :: 0.5723169445991516
+Validation Epoch #45 Sum Loss:0.07631901077305277
+mAP for training at 45 is: 0.0004241244042750648
+mAP for training for all classes at 45 is: [('cardiomegaly', (0.005937741659850907, 1828.0)), ('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 45 is: 0.0008983964854919136
+mAP for validation for all classes at 45 is: [('cardiomegaly', (0.01257755079688679, 455.0)), ('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+Epoch 46/49
+----------
+Training Total Loss for Iteration 17200 :: 0.5750578045845032
+Training Total Loss for Iteration 17250 :: 0.5629859566688538
+Training Total Loss for Iteration 17300 :: 0.8480840921401978
+Training Total Loss for Iteration 17350 :: 0.4073086977005005
+Training Total Loss for Iteration 17400 :: 0.6349246501922607
+Training Total Loss for Iteration 17450 :: 0.6569104790687561
+Training Total Loss for Iteration 17500 :: 0.9560348391532898
+Training Epoch #46 Sum Loss:0.08314054247637956
+Validation Total Loss for Iteration 4450 :: 0.4827767610549927
+Validation Total Loss for Iteration 4500 :: 0.8579779863357544
+Validation Epoch #46 Sum Loss:0.07630820316262543
+Epoch 47/49
+----------
+Training Total Loss for Iteration 17550 :: 0.49797260761260986
+Training Total Loss for Iteration 17600 :: 0.44909462332725525
+Training Total Loss for Iteration 17650 :: 0.7630748152732849
+Training Total Loss for Iteration 17700 :: 0.5893411040306091
+Training Total Loss for Iteration 17750 :: 0.6877760887145996
+Training Total Loss for Iteration 17800 :: 0.5578334331512451
+Training Total Loss for Iteration 17850 :: 0.6632479429244995
+Training Total Loss for Iteration 17900 :: 0.7462273240089417
+Training Epoch #47 Sum Loss:0.08249576914154495
+Validation Total Loss for Iteration 4550 :: 0.40133893489837646
+Validation Total Loss for Iteration 4600 :: 0.7284364700317383
+Validation Epoch #47 Sum Loss:0.07631451143727948
+Epoch 48/49
+----------
+Training Total Loss for Iteration 17950 :: 0.612953782081604
+Training Total Loss for Iteration 18000 :: 0.9120555520057678
+Training Total Loss for Iteration 18050 :: 0.6325637102127075
+Training Total Loss for Iteration 18100 :: 0.47069135308265686
+Training Total Loss for Iteration 18150 :: 0.5534305572509766
+Training Total Loss for Iteration 18200 :: 0.7614363431930542
+Training Total Loss for Iteration 18250 :: 0.6878278255462646
+Training Epoch #48 Sum Loss:0.08291513084645481
+Validation Total Loss for Iteration 4650 :: 0.6589566469192505
+Validation Total Loss for Iteration 4700 :: 0.5703965425491333
+Validation Epoch #48 Sum Loss:0.07635239445759605
+Epoch 49/49
+----------
+Training Total Loss for Iteration 18300 :: 0.46063971519470215
+Training Total Loss for Iteration 18350 :: 0.6243435144424438
+Training Total Loss for Iteration 18400 :: 0.5078876614570618
+Training Total Loss for Iteration 18450 :: 0.5400995016098022
+Training Total Loss for Iteration 18500 :: 0.8350615501403809
+Training Total Loss for Iteration 18550 :: 1.340864658355713
+Training Total Loss for Iteration 18600 :: 0.7842555046081543
+Training Epoch #49 Sum Loss:0.08332673957866936
+Validation Total Loss for Iteration 4750 :: 0.5365149974822998
+Validation Epoch #49 Sum Loss:0.07628046643609802
+mAP for training at 49 is: 0.000607639294599606
+mAP for training for all classes at 49 is: [('cardiomegaly', (0.008506950124394484, 1828.0)), ('pleural thickening', (0.0, 2963.0)), ('aortic enlargement', (0.0, 2644.0)), ('pulmonary fibrosis', (0.0, 2522.0)), ('lung opacity', (0.0, 1455.0)), ('nodule/mass', (0.0, 1391.0)), ('pleural effusion', (0.0, 1385.0)), ('other lesion', (0.0, 1297.0)), ('infiltration', (0.0, 717.0)), ('calcification', (0.0, 545.0)), ('ild', (0.0, 523.0)), ('consolidation', (0.0, 311.0)), ('atelectasis', (0.0, 173.0)), ('pneumothorax', (0.0, 102.0))]
+
+mAP for validation at 49 is: 0.000983328155981834
+mAP for validation for all classes at 49 is: [('cardiomegaly', (0.013766594183745675, 455.0)), ('pleural thickening', (0.0, 743.0)), ('pulmonary fibrosis', (0.0, 654.0)), ('aortic enlargement', (0.0, 653.0)), ('lung opacity', (0.0, 372.0)), ('other lesion', (0.0, 364.0)), ('pleural effusion', (0.0, 335.0)), ('nodule/mass', (0.0, 295.0)), ('infiltration', (0.0, 159.0)), ('ild', (0.0, 157.0)), ('calcification', (0.0, 133.0)), ('consolidation', (0.0, 81.0)), ('atelectasis', (0.0, 39.0)), ('pneumothorax', (0.0, 20.0))]
+
+End time:5:04:54.666578
+Program Complete
+-------------------------
+Train: Average: Sum Loss: 0.08329344418455953
+Train: Average: Loss Classifier: 0.028930619190959708
+Train: Average: Loss Box Reg: 0.0063338550884663725
+Train: Average: RPN Loss Objectness: 0.03416719441264318
+Train: Average: Loss RPN Box Reg: 0.013861775489405911
+Validation: Average: Sum Loss: 0.07640199589310213
+Validation: Average: Loss Classifier: 0.024897816904704093
+Validation: Average: Loss Box Reg: 0.005502673559676623
+Validation: Average: RPN Loss Objectness: 0.03254079732617053
+Validation: Average: Loss RPN Box Reg: 0.013460708154161694

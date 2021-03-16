@@ -29,7 +29,7 @@ from common.utilities import confusion_matrix_plotter, plot_roc_cur
 print("Holdout 10% data")
 # read the predicted csv files for 10% holdout set
 holdout_pred = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/holdout.csv")
+    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/holdout_resnet50_vanilla.csv")
 holdout_pred["ground_truth"] = -1
 
 holdout_gt = pd.read_csv(MERGED_DIR + f"/wbf_merged/holdout_df.csv")

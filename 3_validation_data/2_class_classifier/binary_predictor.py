@@ -37,7 +37,7 @@ random.seed(seed)
 torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
-IMAGE_DIR = os.getenv("IMAGE_DIR") + "/original/transformed_data/train"
+IMAGE_DIR = os.getenv("IMAGE_DIR")
 MERGED_DIR = os.getenv("MERGED_DIR")
 SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
@@ -58,7 +58,9 @@ validation_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
                                             MERGED_DIR + "/wbf_merged"
                                                          "/2_class_classifier"
                                                          "/validation_df_20.csv",
-                                            majority_transformations=generic_transformer)
+                                            majority_transformations=generic_transformer,
+                                            clahe_normalize=False,
+                                            histogram_normalize=False)
 
 # create holdout dataset
 # holdout does not have fold, thus use all data
@@ -67,7 +69,9 @@ holdout_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
                                          MERGED_DIR + "/wbf_merged"
                                                       "/2_class_classifier"
                                                       "/holdout_df.csv",
-                                         majority_transformations=generic_transformer)
+                                         majority_transformations=generic_transformer,
+                                         clahe_normalize=False,
+                                         histogram_normalize=False)
 
 # %% --------------------DATALOADER
 BATCH_SIZE = 32
@@ -103,8 +107,9 @@ num_classes = 1
 model, input_size = initialize_model(model_name, num_classes, feature_extract_param,
                                      use_pretrained=True)
 
+saved_model_name = "resnet50_vanilla"
 # load model weights
-saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/{model_name}.pt"
+saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/{saved_model_name}.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
@@ -122,10 +127,11 @@ print("Validation predictions started")
 # start time
 start = datetime.now()
 
-# TODO save probabilities instead of targets
 # arrays
 image_id_arr = []
 pred_label_arr = []
+# save probabilities and targets
+pred_prob_arr = []
 # ground truth
 target_label_arr = []
 
@@ -142,16 +148,18 @@ with torch.no_grad():
         with torch.set_grad_enabled(False):
             # make prediction
             outputs = model(images)
+            probabilities = torch.sigmoid(outputs.view(-1))
 
             # converting logits to probabilities and keeping threshold of 0.5
             # https://discuss.pytorch.org/t/multilabel-classification-how-to-binarize-scores-how-to-learn-thresholds/25396
-            preds = (torch.sigmoid(outputs.view(-1)) > 0.5).to(torch.float32)
+            preds = (probabilities > 0.5).to(torch.float32)
 
-        # iterate preds, image_ids, and targets and add them to the csv file
-        for img_id, t, p in zip(image_ids, targets, preds):
+        # iterate image_ids, targets, predictions and probabilities and add them to the csv file
+        for img_id, t, p, prob in zip(image_ids, targets, preds, probabilities):
             image_id_arr.append(img_id)
             pred_label_arr.append(p.item())
             target_label_arr.append(t.item())
+            pred_prob_arr.append(prob.item())
 
         if val_iter % 50 == 0:
             print(f"Iteration #: {val_iter}")
@@ -163,7 +171,8 @@ print("End time:" + str(datetime.now() - start))
 
 val_predictions = pd.DataFrame({"image_id": image_id_arr,
                                 "target": pred_label_arr,
-                                "prediction": target_label_arr})
+                                "prediction": target_label_arr,
+                                "probabilities": pred_prob_arr})
 
 # %% --------------------
 # validation path
@@ -173,7 +182,8 @@ if not Path(validation_path).exists():
     os.makedirs(validation_path)
 
 # write csv file
-val_predictions.to_csv(validation_path + f"/validation_predictions.csv", index=False)
+val_predictions.to_csv(validation_path + f"/validation_predictions_{saved_model_name}.csv",
+                       index=False)
 
 # %% --------------------
 # make predictions for holdout data
@@ -184,6 +194,8 @@ start = datetime.now()
 # arrays
 image_id_arr = []
 pred_label_arr = []
+# save probabilities instead of targets
+pred_prob_arr = []
 # ground truth
 target_label_arr = []
 
@@ -200,16 +212,18 @@ with torch.no_grad():
         with torch.set_grad_enabled(False):
             # make prediction
             outputs = model(images)
+            probabilities = torch.sigmoid(outputs.view(-1))
 
             # converting logits to probabilities and keeping threshold of 0.5
             # https://discuss.pytorch.org/t/multilabel-classification-how-to-binarize-scores-how-to-learn-thresholds/25396
-            preds = (torch.sigmoid(outputs.view(-1)) > 0.5).to(torch.float32)
+            preds = (probabilities > 0.5).to(torch.float32)
 
         # iterate preds, image_ids, and targets and add them to the csv file
-        for img_id, t, p in zip(image_ids, targets, preds):
+        for img_id, t, p, prob in zip(image_ids, targets, preds, probabilities):
             image_id_arr.append(img_id)
             pred_label_arr.append(p.item())
             target_label_arr.append(t.item())
+            pred_prob_arr.append(prob.item())
 
         if holdout_iter % 50 == 0:
             print(f"Iteration #: {holdout_iter}")
@@ -221,7 +235,8 @@ print("End time:" + str(datetime.now() - start))
 
 holdout_predictions = pd.DataFrame({"image_id": image_id_arr,
                                     "target": pred_label_arr,
-                                    "prediction": target_label_arr})
+                                    "prediction": target_label_arr,
+                                    "probabilities": pred_prob_arr})
 
 # %% --------------------
 # holdout path
@@ -231,4 +246,4 @@ if not Path(validation_path).exists():
     os.makedirs(holdout_path)
 
 # write csv file
-holdout_predictions.to_csv(holdout_path + f"/holdout.csv", index=False)
+holdout_predictions.to_csv(holdout_path + f"/holdout_{saved_model_name}.csv", index=False)

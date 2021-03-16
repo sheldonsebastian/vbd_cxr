@@ -26,9 +26,9 @@ from common.utilities import confusion_matrix_plotter, plot_roc_cur
 # %% --------------------
 # read the predicted csv files for validation and holdout set
 validation_fold = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/validation_predictions.csv")
+    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/validation_predictions_resnet50_vanilla.csv")
 holdout_fold = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/holdout.csv")
+    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/holdout_resnet50_vanilla.csv")
 
 # --------------------VALIDATION
 # Accuracy

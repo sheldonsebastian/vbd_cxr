@@ -102,13 +102,15 @@ validation_transformer = albumentations.Compose([
 train_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
                                        MERGED_DIR + "/wbf_merged/2_class_classifier"
                                                     "/train_df_80.csv",
-                                       majority_transformations=train_transformer)
+                                       majority_transformations=train_transformer,
+                                       clahe_normalize=True)
 
 validation_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
                                             MERGED_DIR + "/wbf_merged"
                                                          "/2_class_classifier"
                                                          "/validation_df_20.csv",
-                                            majority_transformations=validation_transformer)
+                                            majority_transformations=validation_transformer,
+                                            clahe_normalize=True)
 
 # %% --------------------WEIGHTED RANDOM SAMPLER
 # weighted random sampler to handle class imbalance

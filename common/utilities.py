@@ -132,6 +132,21 @@ def resize_image(df, img_arr, image_id, columns, smallest_max_size=1024):
 
 
 # %% --------------------
+def resize_image_w_h(df, img_arr, image_id, columns, width, height):
+    # create resize transform pipeline
+    transform = albumentations.Compose([
+        albumentations.Resize(width=width, height=height, always_apply=True)
+    ], bbox_params=albumentations.BboxParams(format='pascal_voc'))
+
+    # each row in bounding boxes will contain 'x_min', 'y_min', 'x_max', 'y_max', "class_id"
+    bboxes = get_bb_info(df, image_id, columns)
+
+    transformed = transform(image=img_arr, bboxes=bboxes)
+
+    return transformed
+
+
+# %% --------------------
 def read_text_literal(file_path):
     file_content_string = open(file_path, "r").read()
 

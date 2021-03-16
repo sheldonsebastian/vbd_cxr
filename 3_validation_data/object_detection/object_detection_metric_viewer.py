@@ -31,9 +31,12 @@ val_gt_df = pd.read_csv(
 val_gt_df["class_id"] += 1
 
 # %% --------------------
+surname = "_anchor_sgd"
+
+# %% --------------------
 # read the predicted validation csv
 val_predictions = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + f"/object_detection/predictions/validation_predictions.csv")
+    VALIDATION_PREDICTION_DIR + f"/object_detection/predictions/validation_predictions{surname}.csv")
 
 # %% --------------------
 # read ground truth csv
@@ -44,10 +47,10 @@ holdout_gt_df["class_id"] += 1
 # %% --------------------
 # read the predicted validation csv
 holdout_predictions = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + f"/object_detection/predictions/holdout_predictions.csv")
+    VALIDATION_PREDICTION_DIR + f"/object_detection/predictions/holdout_predictions{surname}.csv")
 
 # %% --------------------
-confidence_filter_thr = 0.5
+confidence_filter_thr = 0.15
 iou_thr = 0.4
 id_to_label = get_id_to_label_mAP()
 

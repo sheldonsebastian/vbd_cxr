@@ -74,10 +74,12 @@ class VBD_CXR_2_Class_Train(Dataset):
 
         # https://www.kaggle.com/raddar/popular-x-ray-image-normalization-techniques
         # apply either hist or clahe but not both
-        if self.hist:
+        if False:
             image = exposure.equalize_hist(image)
-        elif self.clahe:
+            image = image.astype(np.float32)
+        elif False:
             image = exposure.equalize_adapthist(image / np.max(image))
+            image = image.astype(np.float32)
 
         # apply transformations
         transformed = transformations(image=image)
@@ -96,12 +98,15 @@ class VBD_CXR_2_Class_Train(Dataset):
 # https://pytorch.org/docs/stable/data.html#map-style-datasets
 class VBD_CXR_2_Class_Test(Dataset):
 
-    def __init__(self, image_dir, annotation_file_path, majority_transformations):
+    def __init__(self, image_dir, annotation_file_path, majority_transformations,
+                 histogram_normalize=False, clahe_normalize=False):
         """
         :image_dir: The path where all the images are present
         :annotation_file_path: csv file which contains image_id and label. 1 row = 1 image,
         not bounding box data, so drop duplicates
         :majority_transformations: albumentation transformations to perform on majority class
+        :histogram_normalize: To perform histogram normalization
+        :clahe_normalize: To perform clahe normalization
         """
         super().__init__()
         self.base_dir = image_dir
@@ -113,6 +118,9 @@ class VBD_CXR_2_Class_Test(Dataset):
 
         # majority transformations
         self.majority_transformations = majority_transformations
+
+        self.hist = histogram_normalize
+        self.clahe = clahe_normalize
 
     def __getitem__(self, index):
         """getitem should return image and label"""
@@ -127,6 +135,15 @@ class VBD_CXR_2_Class_Test(Dataset):
 
         # convert image to numpy array
         image = np.asarray(image)
+
+        # https://www.kaggle.com/raddar/popular-x-ray-image-normalization-techniques
+        # apply either hist or clahe but not both
+        if False:
+            image = exposure.equalize_hist(image)
+            image = image.astype(np.float32)
+        elif False:
+            image = exposure.equalize_adapthist(image / np.max(image))
+            image = image.astype(np.float32)
 
         # apply transformations
         transformed = transformations(image=image)
@@ -177,10 +194,10 @@ class VBD_CXR_FASTER_RCNN_Train(Dataset):
         image = np.array(image)
 
         # apply normalizations
-        if self.hist:
+        if False:
             image = exposure.equalize_hist(image)
             image = image.astype(np.float32)
-        elif self.clahe:
+        elif False:
             image = exposure.equalize_adapthist(image / np.max(image))
             image = image.astype(np.float32)
 
@@ -246,7 +263,8 @@ class VBD_CXR_FASTER_RCNN_Train(Dataset):
 # https://pytorch.org/docs/stable/data.html#map-style-datasets
 class VBD_CXR_FASTER_RCNN_Test(Dataset):
 
-    def __init__(self, image_dir, annotation_file_path, albumentation_transformations):
+    def __init__(self, image_dir, annotation_file_path, albumentation_transformations,
+                 histogram_normalization=False, clahe_normalization=False):
         super().__init__()
 
         self.base_dir = image_dir
@@ -259,11 +277,23 @@ class VBD_CXR_FASTER_RCNN_Test(Dataset):
         # albumentation transformations
         self.albumentation_transformations = albumentation_transformations
 
+        self.histogram = histogram_normalization
+        self.clahe = clahe_normalization
+
     def __getitem__(self, index):
         image_id = self.image_ids[index]
 
         # read the image as grayscale
         image = Image.open(self.base_dir + "/" + image_id + ".jpeg")
+        image = np.array(image)
+
+        # apply normalizations
+        if False:
+            image = exposure.equalize_hist(image)
+            image = image.astype(np.float32)
+        elif False:
+            image = exposure.equalize_adapthist(image / np.max(image))
+            image = image.astype(np.float32)
 
         # transform image to tensor
         image = T.ToTensor()(image)

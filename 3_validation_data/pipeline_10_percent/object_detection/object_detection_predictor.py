@@ -37,7 +37,7 @@ random.seed(42)
 torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and variables
-IMAGE_DIR = os.getenv("IMAGE_DIR") + "/original/transformed_data/train"
+IMAGE_DIR = os.getenv("IMAGE_DIR")
 MERGED_DIR = os.getenv("MERGED_DIR")
 SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
@@ -45,10 +45,13 @@ VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
 # %% --------------------DATASET
 # NOTE THE DATASET IS GRAY SCALE AND HAS MIN SIDE 512 AND IS NORMALIZED BY FASTER RCNN
 # use 10% holdout set
+# DYNAMIC
 holdout_data_set = VBD_CXR_FASTER_RCNN_Test(IMAGE_DIR,
                                             MERGED_DIR + "/wbf_merged"
                                                          "/holdout_df.csv",
-                                            albumentation_transformations=None)
+                                            albumentation_transformations=None,
+                                            histogram_normalization=False,
+                                            clahe_normalization=False)
 
 
 # %% --------------------COLLATE FUNCTION required since the image are not of same size
@@ -81,12 +84,12 @@ num_classes = 15
 
 # initializing a pretrained model of Faster RCNN with ResNet50-FPN as Backbone
 # NOTE:: FASTER RCNN PyTorch implementation performs normalization based on ImageNet
-model = get_faster_rcnn_model_instance(num_classes)
+model = get_faster_rcnn_model_instance(num_classes, min_size=512)
 
 # %% --------------------
 # load saved model state to appropriate device
-# using model saved at epoch 25
-saved_model_path = f"{SAVED_MODEL_DIR}/object_detection/faster_rcnn_5.pt"
+# DYNAMIC
+saved_model_path = f"{SAVED_MODEL_DIR}/object_detection/faster_rcnn_anchor_sgd.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
@@ -156,4 +159,5 @@ if not Path(holdout_path).exists():
     os.makedirs(holdout_path)
 
 # write csv file
-holdout_predictions.to_csv(holdout_path + f"/holdout_predictions.csv", index=False)
+# DYNAMIC
+holdout_predictions.to_csv(holdout_path + f"/holdout_predictions_anchor_sgd.csv", index=False)

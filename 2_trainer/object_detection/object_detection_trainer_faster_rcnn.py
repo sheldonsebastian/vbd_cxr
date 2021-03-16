@@ -118,7 +118,7 @@ def collate_fn(batch):
 
 
 # %% --------------------DATALOADER
-BATCH_SIZE = 8
+BATCH_SIZE = 16
 workers = int(os.getenv("NUM_WORKERS"))
 
 train_data_loader = torch.utils.data.DataLoader(train_data_set, batch_size=BATCH_SIZE,
@@ -154,7 +154,7 @@ num_classes = 15
 model = get_faster_rcnn_model_instance(num_classes, 512)
 
 # %% --------------------HYPER-PARAMETERS
-LR = 1e-3
+LR = 0.005
 EPOCHS = 50
 
 # %% --------------------
@@ -166,11 +166,11 @@ else:
 # %% --------------------OPTIMIZER
 # freeze the params for pretrained model
 params = [p for p in model.parameters() if p.requires_grad]
-optimizer = torch.optim.Adam(params, lr=LR)
+optimizer = torch.optim.SGD(params=params, momentum=0.9, lr=LR, weight_decay=0.0005)
 
 # %% --------------------LR reduce on plateau
 # https://pytorch.org/docs/stable/optim.html#torch.optim.lr_scheduler.ReduceLROnPlateau
-scheduler = ReduceLROnPlateau(optimizer, 'min')
+# scheduler = ReduceLROnPlateau(optimizer, 'min')
 
 # %% --------------------move to device
 model.to(device)
@@ -347,8 +347,8 @@ try:
                     losses = sum(loss for loss in loss_dict.values())
                     loss_value = losses.item()
 
-                    # Note that step should be called after validate()
-                    scheduler.step(loss_value)
+                    # # Note that step should be called after validate()
+                    # scheduler.step(loss_value)
 
                     if not math.isfinite(loss_value):
                         print("Loss is {}, stopping validation".format(loss_value))
@@ -481,7 +481,7 @@ try:
                     'epoch': epoch,
                     'model_state_dict': model.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
-                    'lr_scheduler': scheduler.state_dict(),
+                    # 'lr_scheduler': scheduler.state_dict(),
                 }, saved_model_path)
 
             # other times
@@ -515,7 +515,7 @@ except Exception as e:
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
-        'lr_scheduler': scheduler.state_dict(),
+        # 'lr_scheduler': scheduler.state_dict(),
     }, saved_model_path)
 
 # %% --------------------

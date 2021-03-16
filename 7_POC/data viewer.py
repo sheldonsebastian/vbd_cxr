@@ -41,7 +41,7 @@ train_data.columns
 
 # %% --------------------
 # for img in train_data2[train_data2["class_id"] != 14]["image_id"].unique()[:10]:
-for img in ["000d68e42b71d3eac10ccc077aba07c1"]:
+for img in ["28381c8323917ac88d571e1213a2d382"]:
     img_array = get_image_as_array(f"{train_dir_path}/{img}.jpeg")
 
     # %% --------------------

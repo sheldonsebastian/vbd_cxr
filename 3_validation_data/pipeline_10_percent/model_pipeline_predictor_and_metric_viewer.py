@@ -26,15 +26,15 @@ VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
 MERGED_DIR = os.getenv("MERGED_DIR")
 
 # %% --------------------
-confidence_threshold = 0.5
+confidence_threshold = 0.15
 iou_threshold = 0.4
 
 # %% --------------------read the predictions
 binary_prediction = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/holdout.csv")
+    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/holdout_resnet50_vanilla.csv")
 
 object_detection_prediction = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/object_detection/predictions/holdout_predictions.csv")
+    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/object_detection/predictions/holdout_predictions_anchor_sgd_50.csv")
 
 # %% --------------------
 # get all image ids in original dataset

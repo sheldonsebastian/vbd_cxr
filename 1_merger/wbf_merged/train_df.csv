@@ -1,4 +1,4 @@
-image_id,x_min,y_min,x_max,y_max,class_id,original_width,original_height,transformed_width,transformed_height
+image_id,x_min,y_min,x_max,y_max,class_id,original_height,original_width,transformed_width,transformed_height
 000434271f63a053c4128a0ba6352c7f,0.0,0.0,1.0,1.0,14.0,2836,2336,512,622
 00053190460d56c53cc3e57321387478,0.0,0.0,1.0,1.0,14.0,2430,1994,512,624
 0005e8e3701dfb1dd93d53e2ff537b6e,150.41665649414062,97.5,200.6666717529297,148.16665649414062,7.0,3072,3072,512,512

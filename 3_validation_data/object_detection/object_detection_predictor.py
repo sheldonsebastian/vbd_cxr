@@ -102,7 +102,7 @@ model = get_faster_rcnn_model_instance(num_classes, min_size=512)
 
 # %% --------------------
 # DYNAMIC
-saved_model_full_path = "/object_detection/faster_rcnn_anchor_sgd.pt"
+saved_model_full_path = "/object_detection/faster_rcnn_anchor_sgd_50.pt"
 
 # load saved model state to appropriate device
 saved_model_path = SAVED_MODEL_DIR + saved_model_full_path
@@ -183,7 +183,7 @@ if not Path(validation_path).exists():
 
 # write csv file
 # DYNAMIC
-val_predictions.to_csv(validation_path + f"/validation_predictions_anchor_sgd.csv", index=False)
+val_predictions.to_csv(validation_path + f"/validation_predictions_anchor_sgd_50.csv", index=False)
 
 # %% --------------------HOLDOUT DATA
 # make predictions for holdout data
@@ -251,4 +251,4 @@ if not Path(holdout_path).exists():
 
 # write csv file
 # DYNAMIC
-holdout_predictions.to_csv(holdout_path + f"/holdout_predictions_anchor_sgd.csv", index=False)
+holdout_predictions.to_csv(holdout_path + f"/holdout_predictions_anchor_sgd_50.csv", index=False)

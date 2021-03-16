@@ -33,10 +33,10 @@ holdout_gt_df["class_id"] += 1
 # read the predicted validation csv
 holdout_predictions = pd.read_csv(
     VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/object_detection/predictions"
-                                "/holdout_predictions.csv")
+                                "/holdout_predictions_anchor_sgd_50.csv")
 
 # %% --------------------
-confidence_filter_thr = 0.5
+confidence_filter_thr = 0.15
 iou_thr = 0.4
 id_to_label = get_id_to_label_mAP()
 

@@ -31,7 +31,7 @@ val_gt_df = pd.read_csv(
 val_gt_df["class_id"] += 1
 
 # %% --------------------
-surname = "_anchor_sgd"
+surname = "_anchor_sgd_50"
 
 # %% --------------------
 # read the predicted validation csv

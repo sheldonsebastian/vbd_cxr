@@ -24,9 +24,15 @@ def extract_files(source, destination, delete_source=False):
 train_df = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
                        "Workspace/vbd_cxr/7_POC/train_original_competition_dimension.csv")
 
+# train_transformed_df = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
+#                                    "Workspace/vbd_cxr/9_data/512/transformed_data/train"
+#                                    "/transformed_train.csv")
+
+# train_transformed_df = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
+#                                    "Workspace/vbd_cxr/1_merger/wbf_merged/train_df.csv")
+
 train_transformed_df = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-                                   "Workspace/vbd_cxr/9_data/512/transformed_data/train"
-                                   "/transformed_train.csv")
+                                   "Workspace/vbd_cxr/1_merger/wbf_merged/holdout_df.csv")
 
 # %% --------------------
 api = KaggleApi()
@@ -36,7 +42,7 @@ api.authenticate()
 #                  "013893a5fa90241c65c3efcdbdd2cec1", "01ee6e560f083255a630c41bba779405"
 
 # %% --------------------
-for image_id in ["009d4c31ebf87e51c5c8c160a4bd8006"]:
+for image_id in ["0061cf6d35e253b6e7f03940592cc35e"]:
     # download DICOM image using image_id
     api.competition_download_file('vinbigdata-chest-xray-abnormalities-detection',
                                   f'train/{image_id}.dicom',
@@ -99,7 +105,7 @@ for image_id in ["009d4c31ebf87e51c5c8c160a4bd8006"]:
                          get_label_2_color_dict(), False)
 
     # %% --------------------
-    print("\nUPSCALED IMAGE")
+    print("\nCORRECTED UPSCALED IMAGE")
 
     o_width, o_height = train_transformed_df[train_transformed_df["image_id"] == image_id][
         ["original_width", "original_height"]].values[0]
@@ -126,11 +132,11 @@ for image_id in ["009d4c31ebf87e51c5c8c160a4bd8006"]:
                          get_label_2_color_dict(), False)
 
     # %% --------------------
-    print("\nCORRECTED UPSCALED IMAGE")
+    print("\nBEFORE FIX UPSCALED IMAGE")
 
     o_width, o_height = train_transformed_df[train_transformed_df["image_id"] == image_id][
         ["original_width", "original_height"]].values[0]
-    print(f"\nStored in CSV as wxh:{o_width}x{o_height}")
+    print(f"\nStored in CSV as wxh:{o_height}x{o_width}")
 
     # %% --------------------
     # transform image using albumentations

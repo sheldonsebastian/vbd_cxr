@@ -37,14 +37,13 @@ random.seed(42)
 torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and variables
-IMAGE_DIR = os.getenv("IMAGE_DIR") + "/original/transformed_data/test"
 TEST_DIR = os.getenv("TEST_DIR")
 SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
 
 # %% --------------------DATASET
 # NOTE THE DATASET IS GRAY SCALE AND HAS MIN SIDE 512 AND IS NORMALIZED BY FASTER RCNN
-test_data_set = VBD_CXR_FASTER_RCNN_Test(IMAGE_DIR,
+test_data_set = VBD_CXR_FASTER_RCNN_Test(KAGGLE_TEST_DIR,
                                          KAGGLE_TEST_DIR + "/test_original_dimension.csv",
                                          albumentation_transformations=None)
 
@@ -60,7 +59,7 @@ def collate_fn(batch):
 
 
 # %% --------------------
-BATCH_SIZE = 8
+BATCH_SIZE = 16
 workers = int(os.getenv("NUM_WORKERS"))
 
 holdout_data_loader = torch.utils.data.DataLoader(test_data_set, batch_size=BATCH_SIZE,
@@ -79,12 +78,11 @@ num_classes = 15
 
 # initializing a pretrained model of Faster RCNN with ResNet50-FPN as Backbone
 # NOTE:: FASTER RCNN PyTorch implementation performs normalization based on ImageNet
-model = get_faster_rcnn_model_instance(num_classes)
+model = get_faster_rcnn_model_instance(num_classes, min_size=512)
 
 # %% --------------------
 # load saved model state to appropriate device
-# using model saved at epoch 25
-saved_model_path = f"{SAVED_MODEL_DIR}/object_detection/faster_rcnn_5.pt"
+saved_model_path = f"{SAVED_MODEL_DIR}/object_detection/faster_rcnn_anchor_sgd_50.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 

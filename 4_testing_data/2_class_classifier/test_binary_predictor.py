@@ -37,7 +37,6 @@ random.seed(seed)
 torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
-IMAGE_DIR = os.getenv("IMAGE_DIR") + "/original/transformed_data/test"
 TEST_DIR = os.getenv("TEST_DIR")
 SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
@@ -54,7 +53,7 @@ generic_transformer = albumentations.Compose([
 
 # %% --------------------DATASET
 # use kaggle test set
-test_data_set = VBD_CXR_2_Class_Test(IMAGE_DIR,
+test_data_set = VBD_CXR_2_Class_Test(KAGGLE_TEST_DIR,
                                      KAGGLE_TEST_DIR + "/test_original_dimension.csv",
                                      majority_transformations=generic_transformer)
 
@@ -89,8 +88,9 @@ num_classes = 1
 model, input_size = initialize_model(model_name, num_classes, feature_extract_param,
                                      use_pretrained=True)
 
+# DYNAMIC
 # load model weights
-saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/{model_name}.pt"
+saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/resnet50_vanilla.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
@@ -153,4 +153,4 @@ if not Path(test_path).exists():
     os.makedirs(test_path)
 
 # write csv file
-test_predictions.to_csv(test_path + f"/test_2_class.csv", index=False)
+test_predictions.to_csv(test_path + f"/test_2_class_resnet50_vanilla.csv", index=False)

@@ -19,6 +19,7 @@ sys.path.append(os.getenv("home_dir"))
 from common.kaggle_utils import up_scaler, submission_file_creator
 import pandas as pd
 from common.post_processing_utils import post_process_conf_filter_nms, post_process_conf_filter_wbf
+import numpy as np
 
 # %% --------------------directories
 TEST_DIR = os.getenv("TEST_DIR")
@@ -34,11 +35,7 @@ test_predictions = pd.read_csv(
 original_dimension = pd.read_csv(KAGGLE_TEST_DIR + "/test_original_dimension.csv")
 
 # %% --------------------
-# adjust labels
-test_predictions["label"] -= 1
-
-# %% --------------------
-confidence_threshold = 0.5
+confidence_threshold = 0.15
 iou_threshold = 0.4
 
 # %% --------------------CONFIDENCE INTERVAL + NMS
@@ -47,6 +44,46 @@ nms_filtered = post_process_conf_filter_nms(test_predictions, confidence_thresho
 # %% --------------------CONFIDENCE INTERVAL + WBF
 wbf_filtered = post_process_conf_filter_wbf(test_predictions, confidence_threshold, iou_threshold,
                                             original_dimension)
+
+# %% --------------------
+# adjust labels
+nms_filtered["label"] -= 1
+wbf_filtered["label"] -= 1
+
+# %% --------------------
+# check difference in original v/s predictions and add the missing images as no findings class
+nms_missing_ids = np.setdiff1d(original_dimension["image_id"], nms_filtered["image_id"])
+
+for missing_id in nms_missing_ids:
+    # nms addon
+    nms_filtered = nms_filtered.append(pd.DataFrame({
+        "image_id": [missing_id],
+        "x_min": [0],
+        "y_min": [0],
+        "x_max": [1],
+        "y_max": [1],
+        # class 14 is no findings class
+        "label": [14],
+        "confidence_score": [1]
+    }), ignore_index=True)
+
+# %% --------------------
+# check difference in original v/s predictions and add the missing images as no findings class
+wbf_missing_ids = np.setdiff1d(original_dimension["image_id"], wbf_filtered["image_id"])
+
+for missing_id in wbf_missing_ids:
+    # wbf addon
+    wbf_filtered = wbf_filtered.append(pd.DataFrame({
+        "image_id": [missing_id],
+        "x_min": [0],
+        "y_min": [0],
+        "x_max": [1],
+        "y_max": [1],
+        # class 14 is no findings class
+        "label": [14],
+        "confidence_score": [1]
+    }), ignore_index=True)
+
 # %% --------------------
 nms_filtered.to_csv(TEST_DIR + "/object_detection/object_detection_post_processed/nms_filtered.csv",
                     index=False)

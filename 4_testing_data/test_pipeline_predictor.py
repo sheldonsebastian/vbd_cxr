@@ -19,24 +19,22 @@ sys.path.append(os.getenv("HOME_DIR"))
 import pandas as pd
 from common.post_processing_utils import post_process_conf_filter_nms, post_process_conf_filter_wbf
 from common.kaggle_utils import up_scaler, submission_file_creator
+import numpy as np
 
 # %% --------------------directories
 TEST_DIR = os.getenv("TEST_DIR")
 KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
 
 # %% --------------------
-confidence_threshold = 0.5
+confidence_threshold = 0.15
 iou_threshold = 0.4
 
 # %% --------------------read the predictions
-binary_prediction = pd.read_csv(TEST_DIR + "/2_class_classifier/predictions/test_2_class.csv")
+binary_prediction = pd.read_csv(
+    TEST_DIR + "/2_class_classifier/predictions/test_2_class_resnet50_vanilla.csv")
 
 object_detection_prediction = pd.read_csv(
     TEST_DIR + "/object_detection/predictions/test_object_detection_prediction.csv")
-
-# %% --------------------
-# adjust object detection classes
-object_detection_prediction["label"] -= 1
 
 # %% --------------------
 # get all image ids in original dataset
@@ -66,6 +64,46 @@ nms_predictions = post_process_conf_filter_nms(object_detection_prediction_subse
 wbf_predictions = post_process_conf_filter_wbf(object_detection_prediction_subset,
                                                confidence_threshold, iou_threshold,
                                                original_dataset, normal_ids)
+
+# %% --------------------
+# adjust predictions
+nms_predictions["label"] -= 1
+wbf_predictions["label"] -= 1
+
+# %% --------------------
+# check difference in original v/s predictions and add the missing images as no findings class
+nms_missing_ids = np.setdiff1d(original_dataset["image_id"], nms_predictions["image_id"])
+
+for missing_id in nms_missing_ids:
+    # nms addon
+    nms_predictions = nms_predictions.append(pd.DataFrame({
+        "image_id": [missing_id],
+        "x_min": [0],
+        "y_min": [0],
+        "x_max": [1],
+        "y_max": [1],
+        # class 14 is no findings class
+        "label": [14],
+        "confidence_score": [1]
+    }), ignore_index=True)
+
+# %% --------------------
+# check difference in original v/s predictions and add the missing images as no findings class
+wbf_missing_ids = np.setdiff1d(original_dataset["image_id"], wbf_predictions["image_id"])
+
+for missing_id in wbf_missing_ids:
+    # wbf addon
+    wbf_predictions = wbf_predictions.append(pd.DataFrame({
+        "image_id": [missing_id],
+        "x_min": [0],
+        "y_min": [0],
+        "x_max": [1],
+        "y_max": [1],
+        # class 14 is no findings class
+        "label": [14],
+        "confidence_score": [1]
+    }), ignore_index=True)
+
 # %% --------------------
 nms_predictions.to_csv(
     TEST_DIR + "/pipeline_predictions/nms_filtered.csv",

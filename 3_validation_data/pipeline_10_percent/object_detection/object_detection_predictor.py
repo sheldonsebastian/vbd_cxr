@@ -89,7 +89,7 @@ model = get_faster_rcnn_model_instance(num_classes, min_size=512)
 # %% --------------------
 # load saved model state to appropriate device
 # DYNAMIC
-saved_model_path = f"{SAVED_MODEL_DIR}/object_detection/faster_rcnn_anchor_sgd.pt"
+saved_model_path = f"{SAVED_MODEL_DIR}/object_detection/faster_rcnn_anchor_sgd_50.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
@@ -160,4 +160,4 @@ if not Path(holdout_path).exists():
 
 # write csv file
 # DYNAMIC
-holdout_predictions.to_csv(holdout_path + f"/holdout_predictions_anchor_sgd.csv", index=False)
+holdout_predictions.to_csv(holdout_path + f"/holdout_predictions_anchor_sgd_50.csv", index=False)

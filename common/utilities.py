@@ -487,7 +487,7 @@ def get_label_2_color_dict():
     label2color = {
         0: ("Aortic enlargement", "#2a52be"),
         1: ("Atelectasis", "#ffa812"),
-        2: ("Calcification", "#ff8243w"),
+        2: ("Calcification", "#ff8243"),
         3: ("Cardiomegaly", "#4682b4"),
         4: ("Consolidation", "#ddadaf"),
         5: ("ILD", "#a3c1ad"),

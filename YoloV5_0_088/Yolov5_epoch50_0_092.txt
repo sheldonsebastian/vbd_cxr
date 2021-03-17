@@ -1,0 +1,21 @@
+Leaderboard Score:   0.092 (for submission.csv) whereas 0.072 (for submission2.csv)
+
+Link to Notebooks in this folder:
+
+
+Train model
+
+Version2
+https://www.kaggle.com/guluna/at-yolov5/
+
+Datasets as inputs:
+https://www.kaggle.com/guluna/cxr-512-grayimages
+https://www.kaggle.com/guluna/yaml-file
+
+Predictions
+
+Version1 
+https://www.kaggle.com/guluna/at-yolov5-inference2
+
+Datasets as inputs: 
+(output of Train model notebook mentioned above)

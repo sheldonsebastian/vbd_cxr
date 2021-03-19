@@ -1,0 +1,28 @@
+Leaderboard Score:   0.079
+
+
+
+Link to Notebooks in this folder:
+
+
+Train model
+
+Version4
+https://www.kaggle.com/guluna/at-yolov5/
+
+Datasets as inputs:
+https://www.kaggle.com/guluna/cxr-512-grayimages
+https://www.kaggle.com/guluna/yaml-file
+
+
+Predictions
+
+Version2 
+https://www.kaggle.com/guluna/at-yolov5-inference4
+
+Datasets as inputs: 
+(output of Train model notebook mentioned above)
+
+
+Dataset for submission file (output of Predictions model notebook mentioned above)
+https://www.kaggle.com/guluna/atyolov5inference4output

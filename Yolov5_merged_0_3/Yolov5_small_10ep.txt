@@ -1,0 +1,55 @@
+Used fused_train_0_3.csv instead of transformed_train.csv
+
+!WANDB_MODE="dryrun" python train.py --batch 8 --epochs 10 --data cxr_kaggle.yaml --cfg models/yolov5s.yaml --name cxr_model --weights ''
+
+Leaderboard Score:   0.044
+
+24 min + 2 min
+
+Link to Notebooks in this folder:
+
+
+Train model
+
+Version6
+https://www.kaggle.com/guluna/at-yolov5/
+
+
+Datasets as inputs:
+https://www.kaggle.com/guluna/cxr-512-grayimages
+https://www.kaggle.com/guluna/yaml-file
+https://www.kaggle.com/guluna/fused-train-0-3-csv
+
+
+Predictions
+
+Version2 
+https://www.kaggle.com/guluna/at-yolov5-inference5
+
+Datasets as inputs: 
+(output of Train model notebook mentioned above)
+
+
+__________________________________________________________________________
+
+
+Everything is same as above except that I changed batch size (while training) from 8 to 2
+
+Leaderboard Score:   0.038
+
+Train model
+
+Version7
+https://www.kaggle.com/guluna/at-yolov5/
+
+
+Datasets as inputs:
+https://www.kaggle.com/guluna/cxr-512-grayimages
+https://www.kaggle.com/guluna/yaml-file
+https://www.kaggle.com/guluna/fused-train-0-3-csv
+
+
+Predictions
+
+Version1
+https://www.kaggle.com/guluna/at-yolov5-inference6

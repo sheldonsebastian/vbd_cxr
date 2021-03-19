@@ -26,15 +26,17 @@ TEST_DIR = os.getenv("TEST_DIR")
 KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
 
 # %% --------------------
-confidence_threshold = 0.15
+confidence_threshold = 0.50
 iou_threshold = 0.4
 
 # %% --------------------read the predictions
 binary_prediction = pd.read_csv(
-    TEST_DIR + "/2_class_classifier/predictions/test_2_class_resnet50_vanilla.csv")
+    TEST_DIR + "/2_class_classifier/predictions/archives/resnet50_augmentations"
+               "/test_2_class_resnet50_vanilla.csv")
 
 object_detection_prediction = pd.read_csv(
-    TEST_DIR + "/object_detection/predictions/test_object_detection_prediction.csv")
+    TEST_DIR + "/object_detection/predictions/archives/faster_rcnn_sgd_anchor_50"
+               "/test_object_detection_prediction.csv")
 
 # %% --------------------
 # get all image ids in original dataset
@@ -106,10 +108,10 @@ for missing_id in wbf_missing_ids:
 
 # %% --------------------
 nms_predictions.to_csv(
-    TEST_DIR + "/pipeline_predictions/nms_filtered.csv",
+    TEST_DIR + "/pipeline_predictions/nms_filtered_conf_50.csv",
     index=False)
 wbf_predictions.to_csv(
-    TEST_DIR + "/pipeline_predictions/wbf_filtered.csv",
+    TEST_DIR + "/pipeline_predictions/wbf_filtered_conf_50.csv",
     index=False)
 
 # %% --------------------submission prepper
@@ -125,5 +127,5 @@ formatted_wbf = submission_file_creator(upscaled_wbf, "x_min", "y_min", "x_max",
                                         "confidence_score")
 
 # %% --------------------
-formatted_nms.to_csv(TEST_DIR + "/submissions/nms_pipeline.csv", index=False)
-formatted_wbf.to_csv(TEST_DIR + "/submissions/wbf_pipeline.csv", index=False)
+formatted_nms.to_csv(TEST_DIR + "/submissions/nms_pipeline_conf_50.csv", index=False)
+formatted_wbf.to_csv(TEST_DIR + "/submissions/wbf_pipeline_conf_50.csv", index=False)

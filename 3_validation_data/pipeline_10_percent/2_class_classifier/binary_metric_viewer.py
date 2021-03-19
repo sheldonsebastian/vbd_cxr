@@ -21,7 +21,8 @@ VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
 MERGED_DIR = os.getenv("MERGED_DIR")
 
 # %% --------------------START HERE
-from sklearn.metrics import confusion_matrix, f1_score, roc_auc_score, roc_curve, accuracy_score
+from sklearn.metrics import confusion_matrix, f1_score, roc_auc_score, roc_curve, accuracy_score, \
+    precision_score, recall_score
 import pandas as pd
 from common.utilities import confusion_matrix_plotter, plot_roc_cur
 
@@ -29,7 +30,8 @@ from common.utilities import confusion_matrix_plotter, plot_roc_cur
 print("Holdout 10% data")
 # read the predicted csv files for 10% holdout set
 holdout_pred = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/holdout_resnet50_vanilla.csv")
+    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/archives"
+                                "/resnet_50_augmentations/holdout_resnet50_vanilla.csv")
 holdout_pred["ground_truth"] = -1
 
 holdout_gt = pd.read_csv(MERGED_DIR + f"/wbf_merged/holdout_df.csv")
@@ -50,6 +52,16 @@ print(f"Accuracy score holdout :" + str(accuracy_score_holdout))
 confusion_matrix_holdout = confusion_matrix(holdout_pred["ground_truth"],
                                             holdout_pred["target"])
 confusion_matrix_plotter(confusion_matrix_holdout, f"Confusion Matrix Holdout")
+
+# --------------------Precision Score
+precision_holdout = precision_score(holdout_pred["ground_truth"],
+                                    holdout_pred["target"])
+print(f"Precision score holdout :" + str(precision_holdout))
+
+# --------------------Recall Score
+recall_holdout = recall_score(holdout_pred["ground_truth"],
+                              holdout_pred["target"])
+print(f"Recall score holdout :" + str(recall_holdout))
 
 # --------------------F1 Score
 f1_holdout = f1_score(holdout_pred["ground_truth"],

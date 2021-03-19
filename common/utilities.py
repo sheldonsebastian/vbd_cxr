@@ -68,7 +68,7 @@ def view_dicom_metadata(image_path, dicom_file_name):
 # code to plot image with bounding boxes
 # bounding_boxes_info as [{'x_min':.., 'y_min':.., 'x_max':.., 'y_max':.., "class_id":..},{...}]
 def bounding_box_plotter(img_as_arr, img_id, bounding_boxes_info, label2color,
-                         label_annotations=True):
+                         label_annotations=True, save_title_or_plot="plot"):
     fig = plt.figure(figsize=(7, 7))
     ax = fig.add_subplot()
 
@@ -97,8 +97,13 @@ def bounding_box_plotter(img_as_arr, img_id, bounding_boxes_info, label2color,
         rect = patches.Rectangle((xmin, ymin), width, height, edgecolor=edgecolor, facecolor='none')
 
         ax.add_patch(rect)
-
-    plt.show()
+    plt.tight_layout()
+    if save_title_or_plot.lower() == "plot":
+        plt.show()
+        plt.close(fig)
+    else:
+        plt.savefig(save_title_or_plot)
+        plt.close(fig)
 
 
 # %% --------------------
@@ -226,6 +231,7 @@ def bounding_box_plotter_side_to_side(img_as_arr, img_id, bounding_boxes_left,
         ax.set_title(title + "::" + img_id)
 
     fig.set_size_inches(20, 10)
+    plt.tight_layout()
 
     if save_title_or_plot.lower() == "plot":
         plt.show()
@@ -247,7 +253,7 @@ def filter_df_based_on_confidence_threshold(df, confidence_col, confidence_thres
 # https://www.kaggle.com/quillio/vindr-bounding-box-fusion/notebook
 # iou_thr=0 means, if we have iou>0 for same labels, then those bb will be fused together
 def merge_bb_wbf(im_x_axis_size, im_y_axis_size, bb_df, label_column, x_min_col, y_min_col,
-                 x_max_col, y_max_col, iou_thr=0, scores_col=None):
+                 x_max_col, y_max_col, iou_thr, scores_col=None):
     """this function uses zfturbos implementation of weighted boxes fusion"""
     dimensions = [im_x_axis_size, im_y_axis_size, im_x_axis_size, im_y_axis_size]
 
@@ -285,7 +291,7 @@ def merge_bb_wbf(im_x_axis_size, im_y_axis_size, bb_df, label_column, x_min_col,
 
 
 # %% --------------------
-def merge_bb_nms(bb_arr, x_min_col, y_min_col, x_max_col, y_max_col, class_col, iou_thr=0,
+def merge_bb_nms(bb_arr, x_min_col, y_min_col, x_max_col, y_max_col, class_col, iou_thr,
                  scores_col=None):
     result = []
     for class_label in list(set(bb_arr[:, [class_col]].flatten())):
@@ -296,7 +302,7 @@ def merge_bb_nms(bb_arr, x_min_col, y_min_col, x_max_col, y_max_col, class_col, 
 
         if scores_col is None:
             # each bb has equal confidence score
-            scores = [[1] * bb_arr_class.shape[0]]
+            scores = np.ones(shape=(1, bb_arr_class.shape[0])).flatten()
         else:
             scores = bb_arr_class[:, scores_col]
 
@@ -304,14 +310,13 @@ def merge_bb_nms(bb_arr, x_min_col, y_min_col, x_max_col, y_max_col, class_col, 
         boxes = torch.from_numpy(boxes)
         scores = torch.from_numpy(scores)
 
-        # indices to keep
         keep_indices = torchvision.ops.nms(boxes, scores, iou_thr)
 
         # add the filtered boxes to results
         for idx in keep_indices:
             result.append(bb_arr_class[idx, :])
 
-    return result
+    return np.array(result)
 
 
 # %% --------------------

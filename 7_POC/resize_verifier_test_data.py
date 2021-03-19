@@ -6,7 +6,7 @@ import pandas as pd
 from PIL import Image
 from kaggle.api.kaggle_api_extended import KaggleApi
 
-from common.utilities import bounding_box_plotter, dicom2array, get_label_2_color_dict
+from common.utilities import dicom2array
 
 
 # %% --------------------
@@ -21,9 +21,8 @@ def extract_files(source, destination, delete_source=False):
 
 
 # %% --------------------
-test_original_dimension = pd.read_csv(
-    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-    "Workspace/vbd_cxr/9_data/512/transformed_data/test/test_original_dimension.csv")
+test_original_dimension = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
+                                      "Workspace/vbd_cxr/7_POC/test_original_dimension_1024_sample.csv")
 
 # %% --------------------
 api = KaggleApi()
@@ -34,7 +33,7 @@ api.authenticate()
 #                  "013893a5fa90241c65c3efcdbdd2cec1", "01ee6e560f083255a630c41bba779405"
 
 # %% --------------------
-def resize_image_test(img_arr, smallest_max_size=512):
+def resize_image_test(img_arr, smallest_max_size):
     # create resize transform pipeline
     transform = albumentations.Compose([
         albumentations.SmallestMaxSize(max_size=smallest_max_size, always_apply=True)
@@ -53,7 +52,7 @@ def resize_image_w_h(img_arr, width, height):
 
 
 # %% --------------------
-for image_id in ["016bc723c3ceedb78e27ebfe7032498e"]:
+for image_id in sorted(test_original_dimension["image_id"].unique()[:3]):
     # download DICOM image using image_id
     api.competition_download_file('vinbigdata-chest-xray-abnormalities-detection',
                                   f'test/{image_id}.dicom',
@@ -85,11 +84,11 @@ for image_id in ["016bc723c3ceedb78e27ebfe7032498e"]:
     print(im.size)
 
     # %% --------------------
-    print("\n512 IMAGE")
+    print("\n1024 IMAGE")
 
     # %% --------------------
     # transform image using albumentations
-    transformed = resize_image_test(raw_img_arr, smallest_max_size=512)
+    transformed = resize_image_test(raw_img_arr, smallest_max_size=1024)
 
     print("Numpy shape")
     print(transformed["image"].shape)
@@ -101,7 +100,7 @@ for image_id in ["016bc723c3ceedb78e27ebfe7032498e"]:
     print(im.size)
 
     # %% --------------------
-    print("\nUPSCALED IMAGE")
+    print("\nCORRECT UPSCALED IMAGE")
 
     o_width, o_height = test_original_dimension[test_original_dimension["image_id"] == image_id][
         ["original_width", "original_height"]].values[0]
@@ -121,7 +120,7 @@ for image_id in ["016bc723c3ceedb78e27ebfe7032498e"]:
     print(im.size)
 
     # %% --------------------
-    print("\nCORRECTED UPSCALED IMAGE")
+    print("\nOLD TECHNIQUE UPSCALED IMAGE")
 
     o_width, o_height = test_original_dimension[test_original_dimension["image_id"] == image_id][
         ["original_width", "original_height"]].values[0]

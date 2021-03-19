@@ -1,11 +1,10 @@
 # %% --------------------
 # handle imports
+import random
+
 import pandas as pd
 
-from common.utilities import plot_img, get_image_as_array, get_bb_info, bounding_box_plotter
-
-# %% --------------------
-train_dir_path = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr/transformed_data/train"
+from common.utilities import get_image_as_array, get_bb_info, bounding_box_plotter
 
 # %% --------------------
 label2color = {0: ("Aortic enlargement", "#2a52be"),
@@ -26,35 +25,25 @@ label2color = {0: ("Aortic enlargement", "#2a52be"),
                }
 
 # %% --------------------
-train_data2 = pd.read_csv(
-    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-    "Workspace/vbd_cxr/transformed_data/transformed_train.csv")
-train_data = pd.read_csv(
-    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-    "Workspace/vbd_cxr/1_merger/wbf_merged/fused_train_0_6.csv")
+# IMAGE DIR
+img_dir = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
+          "Workspace/vbd_cxr/9_data/512/transformed_data/train"
 
 # %% --------------------
-train_data.head()
+# ANNOTATION DIR
+train_data = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
+                         "Workspace/vbd_cxr/9_data/512/transformed_data/train/transformed_train.csv")
 
 # %% --------------------
-train_data.columns
+image_ids = train_data["image_id"].unique()
+# shuffle is inplace operation
+random.shuffle(image_ids)
 
-# %% --------------------
-# for img in train_data2[train_data2["class_id"] != 14]["image_id"].unique()[:10]:
-for img in ["28381c8323917ac88d571e1213a2d382"]:
-    img_array = get_image_as_array(f"{train_dir_path}/{img}.jpeg")
+for img in image_ids[:10]:
+    img_array = get_image_as_array(f"{img_dir}/{img}.jpeg")
 
-    # %% --------------------
-    # plot original image
-    plot_img(img_array, "Original")
-
-    # %% --------------------
     # get bounding box info
     img_bb_info = get_bb_info(train_data, img, ['x_min', 'y_min', 'x_max', 'y_max', "class_id"])
 
-    # %% --------------------
     # plot image with bounding boxes
-    bounding_box_plotter(img_array, img, img_bb_info, label2color)
-
-    img_bb_info2 = get_bb_info(train_data2, img, ['x_min', 'y_min', 'x_max', 'y_max', "class_id"])
-    bounding_box_plotter(img_array, img, img_bb_info2, label2color)
+    bounding_box_plotter(img_array, img, img_bb_info, label2color, save_title_or_plot="plot")

@@ -28,14 +28,15 @@ KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
 # %% --------------------
 # read the predicted test csv
 test_predictions = pd.read_csv(
-    TEST_DIR + "/object_detection/predictions/test_object_detection_prediction.csv")
+    TEST_DIR + "/object_detection/predictions/archives/faster_rcnn_sgd_anchor_50"
+               "/test_object_detection_prediction.csv")
 
 # %% --------------------
 # original dimensions
 original_dimension = pd.read_csv(KAGGLE_TEST_DIR + "/test_original_dimension.csv")
 
 # %% --------------------
-confidence_threshold = 0.15
+confidence_threshold = 0.50
 iou_threshold = 0.4
 
 # %% --------------------CONFIDENCE INTERVAL + NMS
@@ -85,9 +86,9 @@ for missing_id in wbf_missing_ids:
     }), ignore_index=True)
 
 # %% --------------------
-nms_filtered.to_csv(TEST_DIR + "/object_detection/object_detection_post_processed/nms_filtered.csv",
+nms_filtered.to_csv(TEST_DIR + "/object_detection/object_detection_post_processed/nms_filtered_conf_50.csv",
                     index=False)
-wbf_filtered.to_csv(TEST_DIR + "/object_detection/object_detection_post_processed/wbf_filtered.csv",
+wbf_filtered.to_csv(TEST_DIR + "/object_detection/object_detection_post_processed/wbf_filtered_conf_50.csv",
                     index=False)
 
 # %% --------------------submission prepper
@@ -102,5 +103,5 @@ formatted_nms = submission_file_creator(upscaled_nms, "x_min", "y_min", "x_max",
 formatted_wbf = submission_file_creator(upscaled_wbf, "x_min", "y_min", "x_max", "y_max", "label",
                                         "confidence_score")
 # %% --------------------
-formatted_nms.to_csv(TEST_DIR + "/submissions/nms_object_detection.csv", index=False)
-formatted_wbf.to_csv(TEST_DIR + "/submissions/wbf_object_detection.csv", index=False)
+formatted_nms.to_csv(TEST_DIR + "/submissions/nms_object_detection_conf_50.csv", index=False)
+formatted_wbf.to_csv(TEST_DIR + "/submissions/wbf_object_detection_conf_50.csv", index=False)

@@ -19,16 +19,19 @@ sys.path.append(os.getenv("HOME_DIR"))
 VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
 
 # %% --------------------START HERE
-from sklearn.metrics import confusion_matrix, f1_score, roc_auc_score, roc_curve, accuracy_score
+from sklearn.metrics import confusion_matrix, f1_score, roc_auc_score, roc_curve, accuracy_score, \
+    recall_score, precision_score
 import pandas as pd
 from common.utilities import confusion_matrix_plotter, plot_roc_cur
 
 # %% --------------------
 # read the predicted csv files for validation and holdout set
 validation_fold = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/validation_predictions_resnet50_vanilla.csv")
+    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/archives/resnet_50_augmentations"
+                                f"/validation_predictions_resnet50_vanilla.csv")
 holdout_fold = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/holdout_resnet50_vanilla.csv")
+    VALIDATION_PREDICTION_DIR + f"/2_class_classifier/predictions/archives/resnet_50_augmentations"
+                                f"/holdout_resnet50_vanilla.csv")
 
 # --------------------VALIDATION
 # Accuracy
@@ -53,6 +56,30 @@ confusion_matrix_plotter(confusion_matrix_val, f"Confusion Matrix Validation")
 confusion_matrix_holdout = confusion_matrix(holdout_fold["target"],
                                             holdout_fold["prediction"])
 confusion_matrix_plotter(confusion_matrix_holdout, f"Confusion Matrix Holdout")
+
+# --------------------VALIDATION
+# Precision
+precision_val = precision_score(validation_fold["target"],
+                                validation_fold["prediction"])
+print(f"Precision score validation :" + str(precision_val))
+
+# --------------------HOLDOUT
+# Precision
+precision_hold = precision_score(holdout_fold["target"],
+                                 holdout_fold["prediction"])
+print(f"Precision score holdout :" + str(precision_hold))
+
+# --------------------VALIDATION
+# Recall
+recall_val = recall_score(validation_fold["target"],
+                          validation_fold["prediction"])
+print(f"Recall score validation :" + str(recall_val))
+
+# --------------------HOLDOUT
+# Recall
+recall_holdout = recall_score(holdout_fold["target"],
+                              holdout_fold["prediction"])
+print(f"Recall score holdout :" + str(recall_holdout))
 
 # --------------------VALIDATION
 # F1 Score

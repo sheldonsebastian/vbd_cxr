@@ -23,16 +23,14 @@ def extract_files(source, destination, delete_source=False):
 # %% --------------------
 train_df = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
                        "Workspace/vbd_cxr/7_POC/train_original_competition_dimension.csv")
-
-# train_transformed_df = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-#                                    "Workspace/vbd_cxr/9_data/512/transformed_data/train"
-#                                    "/transformed_train.csv")
-
-# train_transformed_df = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-#                                    "Workspace/vbd_cxr/1_merger/wbf_merged/train_df.csv")
+train_df.loc[train_df["class_id"] == 14, "x_min"] = 0
+train_df.loc[train_df["class_id"] == 14, "y_min"] = 0
+train_df.loc[train_df["class_id"] == 14, "x_max"] = 1
+train_df.loc[train_df["class_id"] == 14, "y_max"] = 1
 
 train_transformed_df = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-                                   "Workspace/vbd_cxr/1_merger/wbf_merged/holdout_df.csv")
+                                   "Workspace/vbd_cxr/9_data/1024/transformed_data/train"
+                                   "/transformed_train.csv")
 
 # %% --------------------
 api = KaggleApi()
@@ -42,7 +40,7 @@ api.authenticate()
 #                  "013893a5fa90241c65c3efcdbdd2cec1", "01ee6e560f083255a630c41bba779405"
 
 # %% --------------------
-for image_id in ["0061cf6d35e253b6e7f03940592cc35e"]:
+for image_id in sorted(train_transformed_df["image_id"].unique()[:3]):
     # download DICOM image using image_id
     api.competition_download_file('vinbigdata-chest-xray-abnormalities-detection',
                                   f'train/{image_id}.dicom',
@@ -88,7 +86,7 @@ for image_id in ["0061cf6d35e253b6e7f03940592cc35e"]:
     # transform image using albumentations
     transformed = resize_image(train_df, raw_img_arr, image_id,
                                ["x_min", "y_min", "x_max", "y_max", "class_id"],
-                               smallest_max_size=512)
+                               smallest_max_size=1024)
 
     print("Numpy shape")
     print(transformed["image"].shape)

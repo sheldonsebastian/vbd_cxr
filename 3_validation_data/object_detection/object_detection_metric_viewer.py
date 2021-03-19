@@ -36,7 +36,8 @@ surname = "_anchor_sgd_50"
 # %% --------------------
 # read the predicted validation csv
 val_predictions = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + f"/object_detection/predictions/validation_predictions{surname}.csv")
+    VALIDATION_PREDICTION_DIR + f"/object_detection/predictions/archives"
+                                f"/faster_rcnn_sgd_anchor_50/validation_predictions{surname}.csv")
 
 # %% --------------------
 # read ground truth csv
@@ -47,10 +48,11 @@ holdout_gt_df["class_id"] += 1
 # %% --------------------
 # read the predicted validation csv
 holdout_predictions = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + f"/object_detection/predictions/holdout_predictions{surname}.csv")
+    VALIDATION_PREDICTION_DIR + f"/object_detection/predictions/archives"
+                                f"/faster_rcnn_sgd_anchor_50/holdout_predictions{surname}.csv")
 
 # %% --------------------
-confidence_filter_thr = 0.15
+confidence_filter_thr = 0.50
 iou_thr = 0.4
 id_to_label = get_id_to_label_mAP()
 

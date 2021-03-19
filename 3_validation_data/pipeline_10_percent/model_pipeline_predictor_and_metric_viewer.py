@@ -26,15 +26,15 @@ VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
 MERGED_DIR = os.getenv("MERGED_DIR")
 
 # %% --------------------
-confidence_threshold = 0.15
+confidence_threshold = 0.50
 iou_threshold = 0.4
 
 # %% --------------------read the predictions
 binary_prediction = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/holdout_resnet50_vanilla.csv")
+    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/archives/resnet_50_augmentations/holdout_resnet50_vanilla.csv")
 
 object_detection_prediction = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/object_detection/predictions/holdout_predictions_anchor_sgd_50.csv")
+    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/object_detection/predictions/faster_rcnn_sgd_anchor_50/holdout_predictions_anchor_sgd_50.csv")
 
 # %% --------------------
 # get all image ids in original dataset
@@ -69,8 +69,9 @@ nms_final_df = post_process_conf_filter_nms(object_detection_prediction_subset,
                                             confidence_threshold, iou_threshold, normal_ids)
 
 # save as csv output
-nms_final_df.to_csv(VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/predictions/nms_final.csv",
-                    index=False)
+nms_final_df.to_csv(
+    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/predictions/nms_final_conf_50.csv",
+    index=False)
 
 # normalize
 nms_normalized = normalize_bb(nms_final_df, original_dataset, "transformed_height",
@@ -87,8 +88,9 @@ wbf_final_df = post_process_conf_filter_wbf(object_detection_prediction_subset,
                                             normal_ids)
 
 # save as csv output
-wbf_final_df.to_csv(VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/predictions/wbf_final.csv",
-                    index=False)
+wbf_final_df.to_csv(
+    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/predictions/wbf_final_conf_50.csv",
+    index=False)
 
 # normalize
 wbf_normalized = normalize_bb(wbf_final_df, original_dataset, "transformed_height",

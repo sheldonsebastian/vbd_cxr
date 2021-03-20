@@ -1,0 +1,35 @@
+Corrected the nc in yolo5s.yaml & saved it in cxr_yolo5s.yaml
+
+!WANDB_MODE="dryrun" python train.py --batch 8 --epochs 10 --data cxr_kaggle.yaml --cfg models/cxr_yolov5s.yaml --name cxr_model --weights ''
+
+Leaderboard Score:  0.067
+
+
+Link to Notebooks in this folder:
+
+
+Train model
+
+Version8
+https://www.kaggle.com/guluna/at-yolov5/
+
+
+Datasets as inputs:
+https://www.kaggle.com/guluna/cxr-512-grayimages
+https://www.kaggle.com/guluna/yaml-file
+https://www.kaggle.com/guluna/cxr-yolov5s-yaml
+
+
+Predictions
+
+Version2 
+https://www.kaggle.com/guluna/at-yolov5-inference7
+
+Datasets as inputs: 
+(output of Train model notebook mentioned above)
+
+
+
+
+
+

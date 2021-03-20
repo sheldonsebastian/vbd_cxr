@@ -127,3 +127,5 @@ dmypy.json
 *.jpeg
 .idea/
 /8_tensorboard_logs/
+environment.yml
+/detectron2_codes/detectron2-windows/

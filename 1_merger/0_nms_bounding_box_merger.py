@@ -224,6 +224,9 @@ for img_id in sorted(combined_df_iou_0["image_id"].unique())[:20]:
                                                              f"nms/{img_id}_{iou_thr}.jpeg")
 
 # %% --------------------
+os.makedirs("./nms_merged/100_percent_train/", exist_ok=True)
+
+# %% --------------------
 combined_df_iou_0.to_csv("./nms_merged/100_percent_train/fused_train_0.csv", index=False)
 combined_df_iou_0_3.to_csv("./nms_merged/100_percent_train/fused_train_0_3.csv", index=False)
 combined_df_iou_0_6.to_csv("./nms_merged/100_percent_train/fused_train_0_6.csv", index=False)

@@ -31,11 +31,14 @@ img_dir = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
 
 # %% --------------------
 # ANNOTATION DIR
-train_data = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-                         "Workspace/vbd_cxr/9_data/512/transformed_data/train/transformed_train.csv")
+train_data = pd.read_csv(
+    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
+    "Workspace/vbd_cxr/1_merger/wbf_merged/90_percent_train/object_detection/95_percent"
+    "/80_percent/train_df_0.csv")
 
 # %% --------------------
-image_ids = train_data["image_id"].unique()
+# image_ids = train_data["image_id"].unique()
+image_ids = ["e1a4353d3e747a7150cb06cac73f4d6f"]
 # shuffle is inplace operation
 random.shuffle(image_ids)
 

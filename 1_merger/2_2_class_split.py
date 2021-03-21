@@ -47,8 +47,8 @@ merged_wbf = merged_wbf[["image_id", "class_id"]].drop_duplicates()
 print(merged_wbf["class_id"].value_counts())
 
 # %% --------------------
-# perform 95-5 stratified split
-train_df, holdout_df = multi_label_split_based_on_percentage(merged_wbf, 1, 0.05, "image_id",
+# perform 90-10 stratified split
+train_df, holdout_df = multi_label_split_based_on_percentage(merged_wbf, 1, 0.10, "image_id",
                                                              "class_id", seed=42)
 
 # %% --------------------
@@ -60,24 +60,12 @@ train_df = train_df.drop(["fold"], axis=1)
 holdout_df = holdout_df.drop(["fold"], axis=1)
 
 # %% --------------------
+os.makedirs(MERGED_DIR + f"/{mode}/90_percent_train/2_class_classifier/90_percent", exist_ok=True)
+os.makedirs(MERGED_DIR + f"/{mode}/90_percent_train/2_class_classifier/10_percent", exist_ok=True)
+
+# %% --------------------
 # save in csv
-train_df.to_csv(MERGED_DIR + f"/{mode}/90_percent_train/2_class_classifier/95_percent/train_df"
+train_df.to_csv(MERGED_DIR + f"/{mode}/90_percent_train/2_class_classifier/90_percent/train_df"
                              f".csv", index=False)
-holdout_df.to_csv(MERGED_DIR + f"/{mode}/90_percent_train/2_class_classifier/5_percent"
+holdout_df.to_csv(MERGED_DIR + f"/{mode}/90_percent_train/2_class_classifier/10_percent"
                                "/holdout_df.csv", index=False)
-
-# %% --------------------
-# save as 80-20% train-validation
-train_df_80, val_df_20 = multi_label_split_based_on_percentage(train_df, 1, 0.20, "image_id",
-                                                               "class_id", seed=42)
-
-# %% --------------------
-# visualize the split
-display_fold_distribution(train_df_80, val_df_20, "class_id", color=list('rgbkymc'))
-
-# %% --------------------
-# save in csv
-train_df_80.to_csv(MERGED_DIR + f"/{mode}/90_percent_train/2_class_classifier/95_percent"
-                                "/80_percent/train_df.csv", index=False)
-val_df_20.to_csv(MERGED_DIR + f"/{mode}/90_percent_train/2_class_classifier/95_percent"
-                              "/20_percent/validation_df.csv", index=False)

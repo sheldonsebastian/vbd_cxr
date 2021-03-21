@@ -100,14 +100,14 @@ validation_transformer = albumentations.Compose([
 # 1 = abnormal
 # 0 = normal
 train_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                       MERGED_DIR + "/wbf_merged/2_class_classifier"
-                                                    "/train_df_80.csv",
+                                       MERGED_DIR + "/wbf_merged/90_percent_train"
+                                                    "/2_class_classifier/90_percent/train_df.csv",
                                        majority_transformations=train_transformer)
 
 validation_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                            MERGED_DIR + "/wbf_merged"
-                                                         "/2_class_classifier"
-                                                         "/validation_df_20.csv",
+                                            MERGED_DIR + "/wbf_merged/90_percent_train"
+                                                         "/2_class_classifier/10_percent"
+                                                         "/holdout_df.csv",
                                             majority_transformations=validation_transformer)
 
 # %% --------------------WEIGHTED RANDOM SAMPLER

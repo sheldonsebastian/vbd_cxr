@@ -48,6 +48,10 @@ for iou_thr in ["0", "0_3", "0_6", "0_9"]:
     holdout_df = holdout_df.drop(["fold"], axis=1)
 
     # %% --------------------
+    os.makedirs(MERGED_DIR + f"/{mode}/90_percent_train", exist_ok=True)
+    os.makedirs(MERGED_DIR + f"/{mode}/10_percent_holdout", exist_ok=True)
+
+    # %% --------------------
     # save in csv
     train_df.to_csv(MERGED_DIR + f"/{mode}/90_percent_train/train_df_{iou_thr}.csv",
                     index=False)

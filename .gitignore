@@ -129,3 +129,4 @@ dmypy.json
 /8_tensorboard_logs/
 environment.yml
 /detectron2_codes/detectron2-windows/
+/detectron2_codes/faster_rcnn/archives/

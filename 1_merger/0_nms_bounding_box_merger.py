@@ -220,7 +220,7 @@ for img_id in sorted(combined_df_iou_0["image_id"].unique())[:20]:
                                           save_title_or_plot=f"D:/GWU/4 Spring 2021/6501 "
                                                              f"Capstone/VBD CXR/PyCharm "
                                                              f"Workspace/vbd_cxr"
-                                                             f"/10_annotated_images/512 merged "
+                                                             f"/10_annotated_images/1024 merged "
                                                              f"nms/{img_id}_{iou_thr}.jpeg")
 
 # %% --------------------

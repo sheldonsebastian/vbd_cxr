@@ -114,7 +114,6 @@ def get_bb_info(df, img_id, columns):
     for _, row in bounding_boxes_info.iterrows():
         bboxes.append(list(row))
 
-    # todo convert the return type to be dataframe with column names
     return np.array(bboxes)
 
 

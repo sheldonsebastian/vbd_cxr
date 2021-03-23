@@ -1,0 +1,27 @@
+# BASE RCNN YAML: https://github.com/facebookresearch/detectron2/blob/master/configs/Base-RCNN-FPN.yaml
+# FASTER RCNN: https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md#faster-r-cnn
+
+# AUGMENTATION
+aug_kwargs:
+  ColorJitter:
+    brightness: 0.3
+    contrast: 0.3
+    saturation: 0.3
+    hue: 0.3
+    always_apply: False
+    p: 0.4
+  GlassBlur:
+    p: 0.2
+  GaussNoise:
+    p: 0.2
+  RandomGamma:
+    p: 0.2
+  HorizontalFlip:
+    p: 0.4
+
+# OPTIMIZER
+batch_size: 16
+lr_scheduler_name: WarmupCosineLR
+base_lr: 0.005
+epoch: 10
+eval_period_epoch: 3

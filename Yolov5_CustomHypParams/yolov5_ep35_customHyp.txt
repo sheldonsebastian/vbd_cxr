@@ -1,0 +1,80 @@
+Dim = 512
+
+!WANDB_MODE="dryrun" python train.py --img 512 --batch 16 --epochs 35 --hyp hyp.custom.yaml --data /kaggle/working/vinbigdata.yaml --weights yolov5x.pt --cache
+
+wandb:         train/box_loss 0.0221
+wandb:         train/obj_loss 0.00983
+wandb:         train/cls_loss 0.01146
+wandb:      metrics/precision 0.34856
+wandb:         metrics/recall 0.25831
+wandb:        metrics/mAP_0.5 0.22875
+wandb:   metrics/mAP_0.5:0.95 0.0931
+wandb:           val/box_loss 0.03318
+wandb:           val/obj_loss 0.01412
+wandb:           val/cls_loss 0.01738
+wandb:                  x/lr0 0.00041
+
+Leaderboard Score (for pred_conf = 0.01): 0.086
+
+
+Link to Notebooks in this folder:
+
+
+Train model (took 2 hours)
+
+Version8
+https://www.kaggle.com/guluna/vinbigdata-cxr-ad-yolov5-14-class-train
+
+
+Datasets as inputs:
+Default ones + customyamlhypyolov5 dataset
+
+
+Predictions
+
+!python detect.py --weights $weights_dir\
+--img 512\
+--conf 0.01\
+--iou 0.4\
+
+Version5
+https://www.kaggle.com/guluna/vinbigdata-cxr-ad-yolov5-14-class-infer
+
+Datasets as inputs: 
+(Custom_hyp_model dataset + Default ones)
+
+
+
+- - - - - - - 
+
+Everything same as above except Version6 for infer file
+
+Leaderboard Score (for pred_conf = 0.15):   didn't submit bc 2500+ abnormal images
+
+
+
+- - - - - - - 
+
+Everything same as above except Version8 for infer file
+
+Leaderboard Score (for pred_conf = 0.20):   didn't submit bc 2400+ abnormal images
+
+- - - - - - - 
+
+Everything same as above except Version8 for infer file
+
+Leaderboard Score (for pred_conf = 0.30):   didn't submit bc 2200+ abnormal images
+
+- - - - - - - 
+
+Everything same as above except Version9 for infer file
+
+Leaderboard Score (for pred_conf = 0.35):   didn't submit bc 2100+ abnormal images
+
+- - - - - - - 
+
+Everything same as above except Version10 for infer file
+
+Leaderboard Score (for pred_conf = 0.40):   0.082
+
+

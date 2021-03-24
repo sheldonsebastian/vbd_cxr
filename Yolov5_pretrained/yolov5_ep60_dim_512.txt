@@ -1,0 +1,32 @@
+Dim = 512
+
+!WANDB_MODE="dryrun" python train.py --img 640 --batch 16 --epochs 60 --data /kaggle/working/vinbigdata.yaml --weights yolov5x.pt --cache
+
+
+Leaderboard Score: 0.124
+Train Val mAP = 0.29011
+
+
+Link to Notebooks in this folder:
+
+
+Train model
+
+Version7
+https://www.kaggle.com/guluna/vinbigdata-cxr-ad-yolov5-14-class-train
+
+
+Datasets as inputs:
+Default ones
+
+
+Predictions
+
+Version4
+conf 0.1
+https://www.kaggle.com/guluna/vinbigdata-cxr-ad-yolov5-14-class-infer
+
+Datasets as inputs: 
+(img512ep60 dataset + Default ones)
+
+

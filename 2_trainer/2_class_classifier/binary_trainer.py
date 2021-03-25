@@ -18,7 +18,7 @@ load_dotenv(env_file)
 sys.path.append(os.getenv("HOME_DIR"))
 
 # %% --------------------START HERE
-# Resnet50 default parameters + Adam optimizer
+# https://www.kaggle.com/corochann/vinbigdata-2-class-classifier-complete-pipeline
 import random
 import albumentations
 from common.classifier_models import initialize_model
@@ -47,9 +47,14 @@ MERGED_DIR = os.getenv("MERGED_DIR")
 SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
 
+# model name
+# model_name = "alexnet"
+# model_name = "vgg19"
+model_name = "resnet152"
+
 # %% --------------------TENSORBOARD DIRECTORY INITIALIZATION
-train_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/current/train"
-validation_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/current/validation"
+train_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/{model_name}/train"
+validation_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/{model_name}/validation"
 
 # if logs already exist then delete them
 train_dirpath = Path(train_tensorboard_dir)
@@ -68,16 +73,17 @@ validation_writer = tensorboard.SummaryWriter(validation_tensorboard_dir)
 # https://albumentations.ai/docs/api_reference/augmentations/transforms/
 train_transformer = albumentations.Compose([
     # augmentation operations
-    albumentations.augmentations.transforms.ColorJitter(brightness=0.3, contrast=0.3,
-                                                        saturation=0.3, hue=0.3, always_apply=False,
-                                                        p=0.4),
-    albumentations.augmentations.transforms.GlassBlur(p=0.2),
-    albumentations.augmentations.transforms.GaussNoise(p=0.2),
-    albumentations.augmentations.transforms.RandomGamma(p=0.2),
-    albumentations.augmentations.transforms.ShiftScaleRotate(rotate_limit=20, p=0.2),
+    albumentations.augmentations.transforms.RandomBrightnessContrast(p=0.5),
+    albumentations.augmentations.transforms.CoarseDropout(max_holes=8, max_height=25, max_width=25,
+                                                          p=0.5),
+    albumentations.augmentations.transforms.Blur(p=0.5, blur_limit=[3, 7]),
+    albumentations.augmentations.transforms.RandomGamma(p=0.6, gamma_limit=[80, 120]),
+    albumentations.augmentations.transforms.ShiftScaleRotate(scale_limit=0.15, rotate_limit=10,
+                                                             p=0.5),
+    albumentations.augmentations.transforms.Downscale(scale_min=0.25, scale_max=0.9, p=0.3),
 
     # horizontal flipping
-    albumentations.augmentations.transforms.HorizontalFlip(p=0.4),
+    albumentations.augmentations.transforms.HorizontalFlip(p=0.5),
 
     # resize operation
     albumentations.Resize(height=512, width=512, always_apply=True),
@@ -100,14 +106,15 @@ validation_transformer = albumentations.Compose([
 # 1 = abnormal
 # 0 = normal
 train_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                       MERGED_DIR + "/wbf_merged/2_class_classifier"
-                                                    "/train_df_80.csv",
+                                       MERGED_DIR + "/512/wbf_merged/90_percent_train"
+                                                    "/2_class_classifier"
+                                                    "/90_percent/train_df.csv",
                                        majority_transformations=train_transformer)
 
 validation_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                            MERGED_DIR + "/wbf_merged"
+                                            MERGED_DIR + "/512/wbf_merged/90_percent_train"
                                                          "/2_class_classifier"
-                                                         "/validation_df_20.csv",
+                                                         "/10_percent/holdout_df.csv",
                                             majority_transformations=validation_transformer)
 
 # %% --------------------WEIGHTED RANDOM SAMPLER
@@ -148,9 +155,6 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 print(device)
 
 # %% --------------------MODEL INSTANCE
-# model name
-model_name = "resnet50"
-
 # feature_extract_param = True means all layers frozen except the last user added layers
 # feature_extract_param = False means all layers unfrozen and entire network learns new weights
 # and biases
@@ -161,12 +165,12 @@ feature_extract_param = True
 num_classes = 1
 
 # input_size is minimum constraint
-model, input_size = initialize_model(model_name, num_classes, feature_extract_param,
-                                     use_pretrained=True)
+model = initialize_model(model_name, num_classes, feature_extract_param,
+                         use_pretrained=True)
 
 # %% --------------------HYPER-PARAMETERS
 LR = 1e-3
-EPOCHS = 100
+EPOCHS = 50
 
 # %% --------------------OPTIMIZER
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
@@ -219,7 +223,7 @@ valid_loss_arr = []
 best_acc = 0.0
 
 # if directory does not exist then create it
-saved_model_dir = Path(f"{SAVED_MODEL_DIR}/2_class_classifier/current")
+saved_model_dir = Path(f"{SAVED_MODEL_DIR}/2_class_classifier/{model_name}")
 
 if not saved_model_dir.exists():
     os.makedirs(saved_model_dir)

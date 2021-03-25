@@ -47,26 +47,17 @@ SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
 DETECTRON2_DIR = os.getenv("DETECTRON2_DIR")
 WORKERS = int(os.getenv("NUM_WORKERS"))
-
-# %% --------------------
-merge_iou_thr = ["0", "0_3", "0_6", "0_9"]
-
-idx = 0
-if "SLURM_ARRAY_TASK_ID" in os.environ.keys():
-    idx = int(os.environ["SLURM_ARRAY_TASK_ID"])
-
-surname = merge_iou_thr[idx]
-print(f"Running for WBF {surname}")
+EXTERNAL_DIR = os.getenv("EXTERNAL_DIR")
 
 # %% --------------------
 # DYNAMIC
-train_gt_dataframe = MERGED_DIR + f"/512/wbf_merged/90_percent_train/object_detection/90_percent" \
-                                  f"/train_df_{surname}.csv"
-val_gt_dataframe = MERGED_DIR + f"/512/wbf_merged/90_percent_train/object_detection/10_percent" \
-                                f"/holdout_df_{surname}.csv"
-
-flag_path = DETECTRON2_DIR + "/faster_rcnn/configurations/v2.yaml"
-output_dir = DETECTRON2_DIR + f"/faster_rcnn/output/wbf/{surname}"
+train_gt_dataframe = MERGED_DIR + f"/512/unmerged/90_percent_train/object_detection/90_percent" \
+                                  f"/train_df.csv"
+val_gt_dataframe = MERGED_DIR + f"/512/unmerged/90_percent_train/object_detection/10_percent" \
+                                f"/holdout_df.csv"
+external_gt_dataframe = EXTERNAL_DIR + "/transformed_train.csv"
+flag_path = DETECTRON2_DIR + "/faster_rcnn/configurations/v3.yaml"
+output_dir = DETECTRON2_DIR + f"/faster_rcnn/train/unmerged_external/"
 
 # %% --------------------READ FLAGS
 flag = Flags().load_yaml(flag_path)
@@ -82,7 +73,9 @@ thing_classes = ["Aortic enlargement", "Atelectasis", "Calcification", "Cardiome
 
 # lambda is anonymous function
 # train dataset
-DatasetCatalog.register("train", lambda: get_train_detectron_dataset(IMAGE_DIR, train_gt_dataframe))
+DatasetCatalog.register("train", lambda: get_train_detectron_dataset(IMAGE_DIR, train_gt_dataframe,
+                                                                     EXTERNAL_DIR,
+                                                                     external_gt_dataframe))
 MetadataCatalog.get("train").set(thing_classes=thing_classes)
 
 # validation dataset
@@ -101,7 +94,7 @@ cfg.OUTPUT_DIR = output_dir
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
 # %% --------------------MODEL CONFIGURATION
-config_name = "COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml"
+config_name = "COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml"
 cfg.merge_from_file(model_zoo.get_config_file(config_name))
 # use pretrained model
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(config_name)
@@ -109,10 +102,10 @@ cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # update model anchor sizes and aspect ratio
 # https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection/discussion/220295
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[2], [4], [8], [16], [32], [64], [128], [256], [512], [1024]]
-cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.33, 0.5, 1.0, 2.0, 3.0]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8], [16], [32], [64], [128], [256], [512]]
 # TODO dont know what is p2, ....p6
-cfg.MODEL.RPN.IN_FEATURES = ['p2', 'p2', 'p2', 'p2', 'p3', 'p4', 'p5', 'p6', 'p6', 'p6']
+cfg.MODEL.RPN.IN_FEATURES = ['p2', 'p2', 'p3', 'p4', 'p5', 'p6', 'p6']
+cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.33, 0.5, 1.0, 2.0, 3.0]]
 
 # update the number of classes
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(thing_classes)
@@ -153,7 +146,7 @@ cfg.TEST.EVAL_PERIOD = validation_iteration
 cfg.DATALOADER.NUM_WORKERS = WORKERS
 
 # %% --------------------EVALUATION PARAMETER
-cfg.mAP_conf_thr = 0.15
+cfg.mAP_conf_thr = 0.10
 
 # %% --------------------TRAINING
 # define training loop

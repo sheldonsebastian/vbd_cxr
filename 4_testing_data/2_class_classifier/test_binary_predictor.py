@@ -73,7 +73,7 @@ print(device)
 # %% --------------------MODEL INSTANCE
 # create model instance
 # model name
-model_name = "resnet50"
+model_name = "resnet152"
 
 # feature_extract_param = True means all layers frozen except the last user added layers
 # feature_extract_param = False means all layers unfrozen and entire network learns new weights
@@ -85,12 +85,12 @@ feature_extract_param = True
 num_classes = 1
 
 # initializing model
-model, input_size = initialize_model(model_name, num_classes, feature_extract_param,
-                                     use_pretrained=True)
+model = initialize_model(model_name, num_classes, feature_extract_param,
+                         use_pretrained=True)
 
-# DYNAMIC
+saved_model_name = "resnet152"
 # load model weights
-saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/resnet50_vanilla.pt"
+saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/resnet152/{saved_model_name}.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
@@ -111,7 +111,8 @@ start = datetime.now()
 # arrays
 image_id_arr = []
 pred_label_arr = []
-
+# save probabilities and targets
+pred_prob_arr = []
 holdout_iter = 0
 
 with torch.no_grad():
@@ -124,15 +125,17 @@ with torch.no_grad():
         with torch.set_grad_enabled(False):
             # make prediction
             outputs = model(images)
+            probabilities = torch.sigmoid(outputs.view(-1))
 
             # converting logits to probabilities and keeping threshold of 0.5
             # https://discuss.pytorch.org/t/multilabel-classification-how-to-binarize-scores-how-to-learn-thresholds/25396
-            preds = (torch.sigmoid(outputs.view(-1)) > 0.5).to(torch.float32)
+            preds = (probabilities > 0.5).to(torch.float32)
 
         # iterate preds, image_ids and add them to the csv file
-        for img_id, p in zip(image_ids, preds):
+        for img_id, p, prob in zip(image_ids, preds, probabilities):
             image_id_arr.append(img_id)
             pred_label_arr.append(p.item())
+            pred_prob_arr.append(prob.item())
 
         if holdout_iter % 50 == 0:
             print(f"Iteration #: {holdout_iter}")
@@ -143,7 +146,8 @@ print("Predictions Complete")
 print("End time:" + str(datetime.now() - start))
 
 test_predictions = pd.DataFrame({"image_id": image_id_arr,
-                                 "target": pred_label_arr})
+                                 "target": pred_label_arr,
+                                 "probabilities": pred_prob_arr})
 
 # %% --------------------
 # holdout path
@@ -153,4 +157,4 @@ if not Path(test_path).exists():
     os.makedirs(test_path)
 
 # write csv file
-test_predictions.to_csv(test_path + f"/test_2_class_resnet50_vanilla.csv", index=False)
+test_predictions.to_csv(test_path + f"/test_2_class_{saved_model_name}.csv", index=False)

@@ -46,7 +46,7 @@ def up_scaler(predicted_df, df_with_original_dimension):
                 x_max_arr.append(1)
                 y_max_arr.append(1)
                 label_arr.append(bounding_boxes_info[i][4])
-                score_arr.append(1)
+                score_arr.append(bounding_boxes_info[i][5])
             else:
                 image_id_arr.append(img)
                 x_min_arr.append(bounding_boxes_info[i][0])

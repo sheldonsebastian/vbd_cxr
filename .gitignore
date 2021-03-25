@@ -130,3 +130,5 @@ dmypy.json
 environment.yml
 /detectron2_codes/detectron2-windows/
 /detectron2_codes/faster_rcnn/archives/
+/5_models/object_detection/archives/
+/detectron2_codes/faster_rcnn/train/archives/

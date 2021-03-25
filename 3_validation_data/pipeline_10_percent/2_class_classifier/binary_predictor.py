@@ -57,8 +57,8 @@ generic_transformer = albumentations.Compose([
 # holdout does not have fold, thus use all data
 # holdout was 10% split
 holdout_data_set = VBD_CXR_2_Class_Test(IMAGE_DIR,
-                                        MERGED_DIR + "/wbf_merged"
-                                                     "/holdout_df.csv",
+                                        MERGED_DIR + "/512/unmerged/10_percent_holdout/holdout_df"
+                                                     ".csv",
                                         majority_transformations=generic_transformer,
                                         clahe_normalize=False,
                                         histogram_normalize=False)
@@ -79,7 +79,7 @@ print(device)
 # %% --------------------MODEL INSTANCE
 # create model instance
 # model name
-model_name = "resnet50"
+model_name = "resnet152"
 
 # feature_extract_param = True means all layers frozen except the last user added layers
 # feature_extract_param = False means all layers unfrozen and entire network learns new weights
@@ -91,12 +91,12 @@ feature_extract_param = True
 num_classes = 1
 
 # initializing model
-model, input_size = initialize_model(model_name, num_classes, feature_extract_param,
-                                     use_pretrained=True)
+model = initialize_model(model_name, num_classes, feature_extract_param,
+                         use_pretrained=True)
 
-saved_model_name = "resnet50_vanilla"
+saved_model_name = "resnet152"
 # load model weights
-saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/{saved_model_name}.pt"
+saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/resnet152/{saved_model_name}.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
@@ -137,7 +137,7 @@ with torch.no_grad():
             # https://discuss.pytorch.org/t/multilabel-classification-how-to-binarize-scores-how-to-learn-thresholds/25396
             preds = (probabilities > 0.5).to(torch.float32)
 
-        # iterate preds, image_ids, and targets and add them to the csv file
+        # iterate preds, image_ids and add them to the csv file
         for img_id, p, prob in zip(image_ids, preds, probabilities):
             image_id_arr.append(img_id)
             pred_label_arr.append(p.item())

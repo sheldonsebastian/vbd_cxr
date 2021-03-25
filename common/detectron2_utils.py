@@ -72,6 +72,38 @@ def get_train_detectron_dataset(img_dir, annot_path, external_dir=None, external
         # append record to dataset
         dataset_dicts.append(record)
 
+    # EXTERNAL OBJECT DETECTION DATA
+    if (external_dir is not None) and (external_annot_path is not None):
+        # read GT annotations
+        external_df = pd.read_csv(external_annot_path)
+
+        # get unique image_ids
+        external_uids = sorted(list(external_df["image_id"].unique()))
+
+        # https://www.stackabuse.com/how-to-iterate-over-rows-in-a-pandas-dataframe/
+        for uid in external_uids:
+
+            img_data = external_df[external_df["image_id"] == uid]
+
+            record = {"file_name": os.path.join(external_dir, uid + ".jpeg"), "image_id": uid,
+                      "height": int(img_data.transformed_height.values[0]),
+                      "width": int(img_data.transformed_width.values[0])}
+
+            objs = []
+
+            for _, row in img_data[["x_min", "y_min", "x_max", "y_max", "class_id"]].iterrows():
+                obj = {
+                    "bbox": [row.x_min, row.y_min, row.x_max, row.y_max],
+                    "bbox_mode": BoxMode.XYXY_ABS,
+                    "category_id": int(row.class_id)
+                }
+                objs.append(obj)
+
+            record["annotations"] = objs
+
+            # append record to dataset
+            dataset_dicts.append(record)
+
     return dataset_dicts
 
 

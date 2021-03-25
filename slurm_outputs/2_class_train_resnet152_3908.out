@@ -1,0 +1,632 @@
+cuda
+Program started
+Epoch 0/49
+----------
+Train Iteration #0:: 1.213390827178955 Acc: 0.375
+Train Iteration #50:: 0.9938592314720154 Acc: 0.5625
+Train Iteration #100:: 0.87254399061203 Acc: 0.59375
+Train Iteration #150:: 0.8735994696617126 Acc: 0.59375
+Train Iteration #200:: 0.9762572050094604 Acc: 0.59375
+Train Iteration #250:: 1.0238409042358398 Acc: 0.5
+Train Iteration #300:: 0.8356789350509644 Acc: 0.46875
+Train Iteration #350:: 0.9182065725326538 Acc: 0.4375
+Training:: Loss: 0.9411 Acc: 0.5544
+Validation Iteration #0:: 0.8512799739837646 Acc: 0.5625
+Validation:: Loss: 0.8895 Acc: 0.4448
+Epoch 1/49
+----------
+Train Iteration #400:: 0.8261128664016724 Acc: 0.71875
+Train Iteration #450:: 0.7855987548828125 Acc: 0.8125
+Train Iteration #500:: 0.8212133646011353 Acc: 0.625
+Train Iteration #550:: 0.8594837188720703 Acc: 0.59375
+Train Iteration #600:: 0.7853158116340637 Acc: 0.625
+Train Iteration #650:: 0.8254098296165466 Acc: 0.78125
+Train Iteration #700:: 0.9122576117515564 Acc: 0.65625
+Train Iteration #750:: 0.8644330501556396 Acc: 0.65625
+Training:: Loss: 0.8390 Acc: 0.6343
+Validation Iteration #50:: 0.7895340919494629 Acc: 0.65625
+Validation:: Loss: 0.7674 Acc: 0.6042
+Epoch 2/49
+----------
+Train Iteration #800:: 0.8854017853736877 Acc: 0.5
+Train Iteration #850:: 0.8282922506332397 Acc: 0.5625
+Train Iteration #900:: 0.7958561182022095 Acc: 0.5625
+Train Iteration #950:: 0.6720840334892273 Acc: 0.75
+Train Iteration #1000:: 0.5941240191459656 Acc: 0.78125
+Train Iteration #1050:: 0.8296738266944885 Acc: 0.5625
+Train Iteration #1100:: 0.730078935623169 Acc: 0.6875
+Training:: Loss: 0.8015 Acc: 0.6661
+Validation Iteration #100:: 0.5207053422927856 Acc: 0.8125
+Validation:: Loss: 0.7014 Acc: 0.6761
+Epoch 3/49
+----------
+Train Iteration #1150:: 0.8954941034317017 Acc: 0.5625
+Train Iteration #1200:: 0.8230306506156921 Acc: 0.71875
+Train Iteration #1250:: 0.7285728454589844 Acc: 0.8125
+Train Iteration #1300:: 0.7548214197158813 Acc: 0.75
+Train Iteration #1350:: 0.8015919327735901 Acc: 0.6875
+Train Iteration #1400:: 0.7377322912216187 Acc: 0.625
+Train Iteration #1450:: 0.7860285043716431 Acc: 0.59375
+Train Iteration #1500:: 0.8746596574783325 Acc: 0.53125
+Training:: Loss: 0.7879 Acc: 0.6785
+Validation Iteration #150:: 0.8250176906585693 Acc: 0.6875
+Validation:: Loss: 0.6383 Acc: 0.7450
+Epoch 4/49
+----------
+Train Iteration #1550:: 0.727684736251831 Acc: 0.75
+Train Iteration #1600:: 0.8973167538642883 Acc: 0.625
+Train Iteration #1650:: 0.7517294883728027 Acc: 0.625
+Train Iteration #1700:: 0.5498331785202026 Acc: 0.78125
+Train Iteration #1750:: 0.978451132774353 Acc: 0.46875
+Train Iteration #1800:: 0.7149622440338135 Acc: 0.6875
+Train Iteration #1850:: 0.7103487253189087 Acc: 0.8125
+Training:: Loss: 0.7625 Acc: 0.6957
+Validation Iteration #200:: 0.7653417587280273 Acc: 0.625
+Validation:: Loss: 0.8112 Acc: 0.5767
+Epoch 5/49
+----------
+Train Iteration #1900:: 0.7347025871276855 Acc: 0.65625
+Train Iteration #1950:: 0.843998372554779 Acc: 0.625
+Train Iteration #2000:: 0.8966556191444397 Acc: 0.8125
+Train Iteration #2050:: 0.7706897854804993 Acc: 0.75
+Train Iteration #2100:: 0.7637244462966919 Acc: 0.5625
+Train Iteration #2150:: 0.7973945140838623 Acc: 0.5625
+Train Iteration #2200:: 0.697396993637085 Acc: 0.75
+Train Iteration #2250:: 0.7861862778663635 Acc: 0.5625
+Training:: Loss: 0.7554 Acc: 0.7055
+Validation Iteration #250:: 0.5790140628814697 Acc: 0.6875
+Validation:: Loss: 0.7085 Acc: 0.6664
+Epoch 6/49
+----------
+Train Iteration #2300:: 0.8635905981063843 Acc: 0.65625
+Train Iteration #2350:: 0.6728909015655518 Acc: 0.84375
+Train Iteration #2400:: 0.5611734986305237 Acc: 0.84375
+Train Iteration #2450:: 0.6317933797836304 Acc: 0.6875
+Train Iteration #2500:: 0.8130703568458557 Acc: 0.625
+Train Iteration #2550:: 0.8443338871002197 Acc: 0.59375
+Train Iteration #2600:: 0.8153996467590332 Acc: 0.78125
+Train Iteration #2650:: 0.6679525375366211 Acc: 0.84375
+Training:: Loss: 0.7513 Acc: 0.7061
+Validation Iteration #300:: 0.4235975742340088 Acc: 0.8
+Validation:: Loss: 0.7019 Acc: 0.6738
+Epoch 7/49
+----------
+Train Iteration #2700:: 0.6896381378173828 Acc: 0.625
+Train Iteration #2750:: 0.6282061338424683 Acc: 0.75
+Train Iteration #2800:: 0.5995128154754639 Acc: 0.78125
+Train Iteration #2850:: 0.8859996795654297 Acc: 0.78125
+Train Iteration #2900:: 0.8780571818351746 Acc: 0.6875
+Train Iteration #2950:: 0.6439609527587891 Acc: 0.6875
+Train Iteration #3000:: 0.9274473786354065 Acc: 0.5
+Training:: Loss: 0.7366 Acc: 0.7157
+Validation:: Loss: 0.5666 Acc: 0.8391
+Epoch 8/49
+----------
+Train Iteration #3050:: 0.6534016728401184 Acc: 0.65625
+Train Iteration #3100:: 0.676178514957428 Acc: 0.75
+Train Iteration #3150:: 0.6725187301635742 Acc: 0.8125
+Train Iteration #3200:: 0.8056540489196777 Acc: 0.6875
+Train Iteration #3250:: 0.5962362289428711 Acc: 0.75
+Train Iteration #3300:: 0.8540962934494019 Acc: 0.71875
+Train Iteration #3350:: 0.7756444811820984 Acc: 0.75
+Train Iteration #3400:: 0.8040307760238647 Acc: 0.75
+Training:: Loss: 0.7234 Acc: 0.7286
+Validation Iteration #350:: 0.8078162670135498 Acc: 0.6875
+Validation:: Loss: 0.7221 Acc: 0.6605
+Epoch 9/49
+----------
+Train Iteration #3450:: 0.6209909319877625 Acc: 0.71875
+Train Iteration #3500:: 0.7882617712020874 Acc: 0.625
+Train Iteration #3550:: 0.5524929165840149 Acc: 0.65625
+Train Iteration #3600:: 0.6886506080627441 Acc: 0.65625
+Train Iteration #3650:: 0.7304619550704956 Acc: 0.625
+Train Iteration #3700:: 0.5937918424606323 Acc: 0.875
+Train Iteration #3750:: 0.6324448585510254 Acc: 0.65625
+Training:: Loss: 0.7273 Acc: 0.7199
+Validation Iteration #400:: 0.6658260226249695 Acc: 0.71875
+Validation:: Loss: 0.5678 Acc: 0.7887
+Epoch 10/49
+----------
+Train Iteration #3800:: 1.044007420539856 Acc: 0.5625
+Train Iteration #3850:: 0.7374649047851562 Acc: 0.65625
+Train Iteration #3900:: 0.5490484237670898 Acc: 0.84375
+Train Iteration #3950:: 0.8714239001274109 Acc: 0.5625
+Train Iteration #4000:: 0.8900672197341919 Acc: 0.625
+Train Iteration #4050:: 0.8059730529785156 Acc: 0.8125
+Train Iteration #4100:: 0.8675347566604614 Acc: 0.65625
+Train Iteration #4150:: 0.8092677593231201 Acc: 0.71875
+Training:: Loss: 0.7206 Acc: 0.7219
+Validation Iteration #450:: 0.4427962303161621 Acc: 0.8125
+Validation:: Loss: 0.5531 Acc: 0.8087
+Epoch 11/49
+----------
+Train Iteration #4200:: 0.6104570627212524 Acc: 0.78125
+Train Iteration #4250:: 0.8933237791061401 Acc: 0.6875
+Train Iteration #4300:: 0.6333236694335938 Acc: 0.625
+Train Iteration #4350:: 0.7996886968612671 Acc: 0.65625
+Train Iteration #4400:: 0.7253860831260681 Acc: 0.84375
+Train Iteration #4450:: 0.9158352613449097 Acc: 0.78125
+Train Iteration #4500:: 0.8540381193161011 Acc: 0.5625
+Train Iteration #4550:: 0.8757593035697937 Acc: 0.75
+Training:: Loss: 0.7166 Acc: 0.7253
+Validation Iteration #500:: 0.7074083089828491 Acc: 0.65625
+Validation:: Loss: 0.5891 Acc: 0.7643
+Epoch 12/49
+----------
+Train Iteration #4600:: 0.8526771068572998 Acc: 0.6875
+Train Iteration #4650:: 0.6752157211303711 Acc: 0.6875
+Train Iteration #4700:: 0.6942511796951294 Acc: 0.71875
+Train Iteration #4750:: 0.7361085414886475 Acc: 0.8125
+Train Iteration #4800:: 0.6424534916877747 Acc: 0.75
+Train Iteration #4850:: 0.7098337411880493 Acc: 0.78125
+Train Iteration #4900:: 0.5994963645935059 Acc: 0.71875
+Training:: Loss: 0.6998 Acc: 0.7345
+Validation Iteration #550:: 0.6252925395965576 Acc: 0.65625
+Validation:: Loss: 0.6576 Acc: 0.7116
+Epoch 13/49
+----------
+Train Iteration #4950:: 0.797105610370636 Acc: 0.6875
+Train Iteration #5000:: 0.7321890592575073 Acc: 0.6875
+Train Iteration #5050:: 0.7008486986160278 Acc: 0.6875
+Train Iteration #5100:: 0.71815025806427 Acc: 0.75
+Train Iteration #5150:: 0.5715386271476746 Acc: 0.75
+Train Iteration #5200:: 0.9412578344345093 Acc: 0.5
+Train Iteration #5250:: 0.6944657564163208 Acc: 0.71875
+Train Iteration #5300:: 0.5859314203262329 Acc: 0.78125
+Training:: Loss: 0.7217 Acc: 0.7297
+Validation Iteration #600:: 0.5915665030479431 Acc: 0.78125
+Validation:: Loss: 0.6388 Acc: 0.7198
+Epoch 14/49
+----------
+Train Iteration #5350:: 0.7506430149078369 Acc: 0.59375
+Train Iteration #5400:: 0.6074880361557007 Acc: 0.78125
+Train Iteration #5450:: 0.7190732359886169 Acc: 0.6875
+Train Iteration #5500:: 0.7277693152427673 Acc: 0.625
+Train Iteration #5550:: 0.4519258439540863 Acc: 0.78125
+Train Iteration #5600:: 0.5838700532913208 Acc: 0.8125
+Train Iteration #5650:: 0.5244475603103638 Acc: 0.875
+Training:: Loss: 0.6920 Acc: 0.7363
+Validation:: Loss: 0.5325 Acc: 0.8391
+Epoch 15/49
+----------
+Train Iteration #5700:: 1.2671334743499756 Acc: 0.75
+Train Iteration #5750:: 0.6145879030227661 Acc: 0.71875
+Train Iteration #5800:: 0.5775514245033264 Acc: 0.75
+Train Iteration #5850:: 0.5876981019973755 Acc: 0.8125
+Train Iteration #5900:: 0.6088176369667053 Acc: 0.84375
+Train Iteration #5950:: 0.6021324396133423 Acc: 0.78125
+Train Iteration #6000:: 0.4489646553993225 Acc: 0.84375
+Train Iteration #6050:: 0.6083701848983765 Acc: 0.75
+Training:: Loss: 0.6961 Acc: 0.7421
+Validation Iteration #650:: 0.44998612999916077 Acc: 0.8125
+Validation:: Loss: 0.5762 Acc: 0.7635
+Epoch 16/49
+----------
+Train Iteration #6100:: 0.5817909240722656 Acc: 0.71875
+Train Iteration #6150:: 0.8333258628845215 Acc: 0.78125
+Train Iteration #6200:: 0.660256564617157 Acc: 0.71875
+Train Iteration #6250:: 0.6339518427848816 Acc: 0.625
+Train Iteration #6300:: 1.0253360271453857 Acc: 0.59375
+Train Iteration #6350:: 0.7498281598091125 Acc: 0.65625
+Train Iteration #6400:: 0.6139031052589417 Acc: 0.78125
+Train Iteration #6450:: 0.5353208780288696 Acc: 0.75
+Training:: Loss: 0.6883 Acc: 0.7456
+Validation Iteration #700:: 0.4177089035511017 Acc: 0.84375
+Validation:: Loss: 0.6364 Acc: 0.7213
+Epoch 17/49
+----------
+Train Iteration #6500:: 0.6197677254676819 Acc: 0.84375
+Train Iteration #6550:: 0.7732069492340088 Acc: 0.5625
+Train Iteration #6600:: 0.6182899475097656 Acc: 0.71875
+Train Iteration #6650:: 0.6585369110107422 Acc: 0.6875
+Train Iteration #6700:: 0.6147414445877075 Acc: 0.8125
+Train Iteration #6750:: 0.6006062030792236 Acc: 0.90625
+Train Iteration #6800:: 0.6381188631057739 Acc: 0.78125
+Training:: Loss: 0.6857 Acc: 0.7474
+Validation Iteration #750:: 0.6740436553955078 Acc: 0.6875
+Validation:: Loss: 0.5655 Acc: 0.7776
+Epoch 18/49
+----------
+Train Iteration #6850:: 0.6865953207015991 Acc: 0.78125
+Train Iteration #6900:: 0.5878545045852661 Acc: 0.78125
+Train Iteration #6950:: 0.6104262471199036 Acc: 0.65625
+Train Iteration #7000:: 0.4307463765144348 Acc: 0.875
+Train Iteration #7050:: 0.6962026357650757 Acc: 0.84375
+Train Iteration #7100:: 0.6392654180526733 Acc: 0.8125
+Train Iteration #7150:: 0.4877051115036011 Acc: 0.90625
+Train Iteration #7200:: 0.7063437700271606 Acc: 0.59375
+Training:: Loss: 0.6818 Acc: 0.7456
+Validation Iteration #800:: 0.7492446899414062 Acc: 0.75
+Validation:: Loss: 0.5875 Acc: 0.7591
+Epoch 19/49
+----------
+Train Iteration #7250:: 0.9620497226715088 Acc: 0.59375
+Train Iteration #7300:: 0.6249468922615051 Acc: 0.78125
+Train Iteration #7350:: 0.6833937764167786 Acc: 0.65625
+Train Iteration #7400:: 0.5429176092147827 Acc: 0.75
+Train Iteration #7450:: 0.6910308599472046 Acc: 0.71875
+Train Iteration #7500:: 0.6271172761917114 Acc: 0.75
+Train Iteration #7550:: 0.8534934520721436 Acc: 0.75
+Training:: Loss: 0.6875 Acc: 0.7489
+Validation Iteration #850:: 0.589606523513794 Acc: 0.75
+Validation:: Loss: 0.5716 Acc: 0.7665
+Epoch 20/49
+----------
+Train Iteration #7600:: 0.7247713804244995 Acc: 0.75
+Train Iteration #7650:: 0.556545615196228 Acc: 0.65625
+Train Iteration #7700:: 0.6843793988227844 Acc: 0.75
+Train Iteration #7750:: 0.520524263381958 Acc: 0.8125
+Train Iteration #7800:: 0.7827950716018677 Acc: 0.65625
+Train Iteration #7850:: 0.5148640871047974 Acc: 0.875
+Train Iteration #7900:: 0.6696991920471191 Acc: 0.71875
+Train Iteration #7950:: 0.4243920147418976 Acc: 0.90625
+Training:: Loss: 0.6867 Acc: 0.7405
+Validation Iteration #900:: 0.6053587198257446 Acc: 0.78125
+Validation:: Loss: 0.6623 Acc: 0.7094
+Epoch 21/49
+----------
+Train Iteration #8000:: 0.6355996131896973 Acc: 0.59375
+Train Iteration #8050:: 0.643603503704071 Acc: 0.6875
+Train Iteration #8100:: 1.1187071800231934 Acc: 0.6875
+Train Iteration #8150:: 0.5145696401596069 Acc: 0.875
+Train Iteration #8200:: 0.8367754220962524 Acc: 0.71875
+Train Iteration #8250:: 0.753241777420044 Acc: 0.8125
+Train Iteration #8300:: 0.5995992422103882 Acc: 0.96875
+Train Iteration #8350:: 0.7925487756729126 Acc: 0.6875
+Training:: Loss: 0.6860 Acc: 0.7443
+Validation:: Loss: 0.5339 Acc: 0.8080
+Epoch 22/49
+----------
+Train Iteration #8400:: 0.6894171237945557 Acc: 0.78125
+Train Iteration #8450:: 0.5250400304794312 Acc: 0.875
+Train Iteration #8500:: 0.4989112615585327 Acc: 0.875
+Train Iteration #8550:: 0.6033809185028076 Acc: 0.8125
+Train Iteration #8600:: 0.6096173524856567 Acc: 0.78125
+Train Iteration #8650:: 0.8135025501251221 Acc: 0.75
+Train Iteration #8700:: 0.6279757022857666 Acc: 0.875
+Training:: Loss: 0.6741 Acc: 0.7536
+Validation Iteration #950:: 0.6021748781204224 Acc: 0.71875
+Validation:: Loss: 0.5514 Acc: 0.7880
+Epoch 23/49
+----------
+Train Iteration #8750:: 0.6879708766937256 Acc: 0.71875
+Train Iteration #8800:: 0.8652938008308411 Acc: 0.625
+Train Iteration #8850:: 0.7546092867851257 Acc: 0.71875
+Train Iteration #8900:: 0.6591897010803223 Acc: 0.78125
+Train Iteration #8950:: 0.7014617919921875 Acc: 0.78125
+Train Iteration #9000:: 0.7985712885856628 Acc: 0.8125
+Train Iteration #9050:: 0.5336153507232666 Acc: 0.875
+Train Iteration #9100:: 0.6511014699935913 Acc: 0.625
+Training:: Loss: 0.6658 Acc: 0.7549
+Validation Iteration #1000:: 0.693845272064209 Acc: 0.65625
+Validation:: Loss: 0.6323 Acc: 0.7228
+Epoch 24/49
+----------
+Train Iteration #9150:: 0.8439297676086426 Acc: 0.5625
+Train Iteration #9200:: 0.5223522186279297 Acc: 0.84375
+Train Iteration #9250:: 0.6022286415100098 Acc: 0.71875
+Train Iteration #9300:: 0.5698190927505493 Acc: 0.78125
+Train Iteration #9350:: 0.6204605102539062 Acc: 0.78125
+Train Iteration #9400:: 0.5958361625671387 Acc: 0.9375
+Train Iteration #9450:: 0.5451878905296326 Acc: 0.9375
+Training:: Loss: 0.6680 Acc: 0.7534
+Validation Iteration #1050:: 0.6542006731033325 Acc: 0.875
+Validation:: Loss: 0.5276 Acc: 0.8080
+Epoch 25/49
+----------
+Train Iteration #9500:: 0.7680423259735107 Acc: 0.78125
+Train Iteration #9550:: 0.7020766735076904 Acc: 0.6875
+Train Iteration #9600:: 0.7097576260566711 Acc: 0.78125
+Train Iteration #9650:: 0.5440731644630432 Acc: 0.75
+Train Iteration #9700:: 0.6782024502754211 Acc: 0.6875
+Train Iteration #9750:: 0.9181605577468872 Acc: 0.65625
+Train Iteration #9800:: 0.4057852625846863 Acc: 0.90625
+Train Iteration #9850:: 0.677409291267395 Acc: 0.75
+Training:: Loss: 0.6815 Acc: 0.7518
+Validation Iteration #1100:: 0.6192514896392822 Acc: 0.875
+Validation:: Loss: 0.5401 Acc: 0.7865
+Epoch 26/49
+----------
+Train Iteration #9900:: 0.8302374482154846 Acc: 0.78125
+Train Iteration #9950:: 0.5554733276367188 Acc: 0.6875
+Train Iteration #10000:: 0.7355046272277832 Acc: 0.8125
+Train Iteration #10050:: 0.5894850492477417 Acc: 0.6875
+Train Iteration #10100:: 0.8553720116615295 Acc: 0.59375
+Train Iteration #10150:: 0.7778765559196472 Acc: 0.65625
+Train Iteration #10200:: 0.36755040287971497 Acc: 0.9375
+Train Iteration #10250:: 0.7570552825927734 Acc: 0.78125
+Training:: Loss: 0.6758 Acc: 0.7530
+Validation Iteration #1150:: 0.633113443851471 Acc: 0.75
+Validation:: Loss: 0.6377 Acc: 0.7220
+Epoch 27/49
+----------
+Train Iteration #10300:: 0.6384854316711426 Acc: 0.75
+Train Iteration #10350:: 0.9253554344177246 Acc: 0.5625
+Train Iteration #10400:: 0.6107662320137024 Acc: 0.75
+Train Iteration #10450:: 0.7041587829589844 Acc: 0.6875
+Train Iteration #10500:: 0.6415320634841919 Acc: 0.78125
+Train Iteration #10550:: 0.6721212863922119 Acc: 0.6875
+Train Iteration #10600:: 0.4043539762496948 Acc: 0.78125
+Training:: Loss: 0.6527 Acc: 0.7646
+Validation Iteration #1200:: 0.7316693663597107 Acc: 0.71875
+Validation:: Loss: 0.5566 Acc: 0.7754
+Epoch 28/49
+----------
+Train Iteration #10650:: 0.5160653591156006 Acc: 0.8125
+Train Iteration #10700:: 0.5710108280181885 Acc: 0.65625
+Train Iteration #10750:: 0.5513536930084229 Acc: 0.78125
+Train Iteration #10800:: 0.7267893552780151 Acc: 0.625
+Train Iteration #10850:: 0.7812153697013855 Acc: 0.8125
+Train Iteration #10900:: 0.5932407379150391 Acc: 0.84375
+Train Iteration #10950:: 0.5994280576705933 Acc: 0.6875
+Train Iteration #11000:: 0.6136534214019775 Acc: 0.71875
+Training:: Loss: 0.6519 Acc: 0.7676
+Validation:: Loss: 0.6393 Acc: 0.7198
+Epoch 29/49
+----------
+Train Iteration #11050:: 0.6412447690963745 Acc: 0.6875
+Train Iteration #11100:: 0.8635463714599609 Acc: 0.71875
+Train Iteration #11150:: 0.6553342342376709 Acc: 0.71875
+Train Iteration #11200:: 0.5431869029998779 Acc: 0.875
+Train Iteration #11250:: 0.5832045674324036 Acc: 0.71875
+Train Iteration #11300:: 1.0747137069702148 Acc: 0.46875
+Train Iteration #11350:: 0.8420113325119019 Acc: 0.625
+Training:: Loss: 0.6768 Acc: 0.7533
+Validation Iteration #1250:: 0.5270069241523743 Acc: 0.84375
+Validation:: Loss: 0.5177 Acc: 0.8199
+Epoch 30/49
+----------
+Train Iteration #11400:: 0.83883136510849 Acc: 0.75
+Train Iteration #11450:: 0.5946721434593201 Acc: 0.8125
+Train Iteration #11500:: 0.5554121732711792 Acc: 0.6875
+Train Iteration #11550:: 0.6601927280426025 Acc: 0.8125
+Train Iteration #11600:: 0.4887467622756958 Acc: 0.84375
+Train Iteration #11650:: 0.6112353801727295 Acc: 0.8125
+Train Iteration #11700:: 0.6984438300132751 Acc: 0.71875
+Train Iteration #11750:: 0.5606722831726074 Acc: 0.75
+Training:: Loss: 0.6639 Acc: 0.7535
+Validation Iteration #1300:: 0.5821424722671509 Acc: 0.75
+Validation:: Loss: 0.6253 Acc: 0.7324
+Epoch 31/49
+----------
+Train Iteration #11800:: 0.8219031095504761 Acc: 0.65625
+Train Iteration #11850:: 0.7986235618591309 Acc: 0.65625
+Train Iteration #11900:: 0.605069637298584 Acc: 0.78125
+Train Iteration #11950:: 0.5514479875564575 Acc: 0.8125
+Train Iteration #12000:: 0.654415488243103 Acc: 0.75
+Train Iteration #12050:: 0.6558747291564941 Acc: 0.8125
+Train Iteration #12100:: 0.7049400806427002 Acc: 0.78125
+Train Iteration #12150:: 0.7340471148490906 Acc: 0.75
+Training:: Loss: 0.6692 Acc: 0.7551
+Validation Iteration #1350:: 0.5627478957176208 Acc: 0.8125
+Validation:: Loss: 0.4981 Acc: 0.8503
+Epoch 32/49
+----------
+Train Iteration #12200:: 0.5813170671463013 Acc: 0.71875
+Train Iteration #12250:: 0.78699791431427 Acc: 0.71875
+Train Iteration #12300:: 0.6049668788909912 Acc: 0.78125
+Train Iteration #12350:: 0.3699644207954407 Acc: 0.875
+Train Iteration #12400:: 0.4473918080329895 Acc: 0.78125
+Train Iteration #12450:: 0.7647374868392944 Acc: 0.71875
+Train Iteration #12500:: 0.5097097158432007 Acc: 0.875
+Training:: Loss: 0.6667 Acc: 0.7564
+Validation Iteration #1400:: 0.5128366947174072 Acc: 0.84375
+Validation:: Loss: 0.6164 Acc: 0.7354
+Epoch 33/49
+----------
+Train Iteration #12550:: 0.7357609868049622 Acc: 0.8125
+Train Iteration #12600:: 0.5918630361557007 Acc: 0.78125
+Train Iteration #12650:: 0.6395553946495056 Acc: 0.9375
+Train Iteration #12700:: 0.6516193151473999 Acc: 0.6875
+Train Iteration #12750:: 0.7138208746910095 Acc: 0.75
+Train Iteration #12800:: 0.6734464764595032 Acc: 0.71875
+Train Iteration #12850:: 0.6008772850036621 Acc: 0.8125
+Train Iteration #12900:: 0.7890663146972656 Acc: 0.78125
+Training:: Loss: 0.6521 Acc: 0.7653
+Validation Iteration #1450:: 0.7257977724075317 Acc: 0.625
+Validation:: Loss: 0.5795 Acc: 0.7576
+Epoch 34/49
+----------
+Train Iteration #12950:: 0.7450606822967529 Acc: 0.71875
+Train Iteration #13000:: 0.6938856840133667 Acc: 0.8125
+Train Iteration #13050:: 0.8520361185073853 Acc: 0.625
+Train Iteration #13100:: 0.6986745595932007 Acc: 0.71875
+Train Iteration #13150:: 0.7344732880592346 Acc: 0.65625
+Train Iteration #13200:: 0.5496457815170288 Acc: 0.96875
+Train Iteration #13250:: 0.5951134562492371 Acc: 0.8125
+Training:: Loss: 0.6507 Acc: 0.7667
+Validation Iteration #1500:: 0.5539608597755432 Acc: 0.75
+Validation:: Loss: 0.7730 Acc: 0.6538
+Epoch 35/49
+----------
+Train Iteration #13300:: 0.9379178285598755 Acc: 0.53125
+Train Iteration #13350:: 0.6332069635391235 Acc: 0.8125
+Train Iteration #13400:: 0.6999223232269287 Acc: 0.6875
+Train Iteration #13450:: 0.7153422236442566 Acc: 0.75
+Train Iteration #13500:: 0.46611863374710083 Acc: 0.84375
+Train Iteration #13550:: 0.3874589204788208 Acc: 0.9375
+Train Iteration #13600:: 0.7387901544570923 Acc: 0.6875
+Train Iteration #13650:: 0.6885827779769897 Acc: 0.8125
+Training:: Loss: 0.6453 Acc: 0.7649
+Validation:: Loss: 0.5453 Acc: 0.7821
+Epoch 36/49
+----------
+Train Iteration #13700:: 0.6508638858795166 Acc: 0.71875
+Train Iteration #13750:: 0.49013179540634155 Acc: 0.90625
+Train Iteration #13800:: 0.693394660949707 Acc: 0.6875
+Train Iteration #13850:: 0.45398271083831787 Acc: 0.8125
+Train Iteration #13900:: 0.4843701124191284 Acc: 0.875
+Train Iteration #13950:: 0.4802452623844147 Acc: 0.8125
+Train Iteration #14000:: 0.5534241199493408 Acc: 0.78125
+Train Iteration #14050:: 0.7061765193939209 Acc: 0.8125
+Training:: Loss: 0.6507 Acc: 0.7642
+Validation Iteration #1550:: 0.7599962949752808 Acc: 0.71875
+Validation:: Loss: 0.6690 Acc: 0.7035
+Epoch 37/49
+----------
+Train Iteration #14100:: 0.5676922798156738 Acc: 0.75
+Train Iteration #14150:: 0.5792152881622314 Acc: 0.875
+Train Iteration #14200:: 0.45685404539108276 Acc: 0.78125
+Train Iteration #14250:: 0.8435431718826294 Acc: 0.6875
+Train Iteration #14300:: 0.517200767993927 Acc: 0.875
+Train Iteration #14350:: 0.6515276432037354 Acc: 0.78125
+Train Iteration #14400:: 0.49800801277160645 Acc: 0.8125
+Training:: Loss: 0.6512 Acc: 0.7639
+Validation Iteration #1600:: 0.42547011375427246 Acc: 0.84375
+Validation:: Loss: 0.5107 Acc: 0.8199
+Epoch 38/49
+----------
+Train Iteration #14450:: 0.3808940649032593 Acc: 0.90625
+Train Iteration #14500:: 0.7281109094619751 Acc: 0.65625
+Train Iteration #14550:: 0.7969131469726562 Acc: 0.625
+Train Iteration #14600:: 0.48739176988601685 Acc: 0.875
+Train Iteration #14650:: 0.5060336589813232 Acc: 0.84375
+Train Iteration #14700:: 0.5788549780845642 Acc: 0.8125
+Train Iteration #14750:: 0.6670101881027222 Acc: 0.59375
+Train Iteration #14800:: 0.8057695031166077 Acc: 0.625
+Training:: Loss: 0.6654 Acc: 0.7579
+Validation Iteration #1650:: 0.5519399642944336 Acc: 0.84375
+Validation:: Loss: 0.5107 Acc: 0.8258
+Epoch 39/49
+----------
+Train Iteration #14850:: 0.6633220911026001 Acc: 0.84375
+Train Iteration #14900:: 0.7482443451881409 Acc: 0.75
+Train Iteration #14950:: 0.7313146591186523 Acc: 0.875
+Train Iteration #15000:: 0.7338550090789795 Acc: 0.71875
+Train Iteration #15050:: 0.7077462673187256 Acc: 0.6875
+Train Iteration #15100:: 0.7001121044158936 Acc: 0.71875
+Train Iteration #15150:: 0.5932352542877197 Acc: 0.78125
+Training:: Loss: 0.6409 Acc: 0.7698
+Validation Iteration #1700:: 0.47064080834388733 Acc: 0.71875
+Validation:: Loss: 0.5307 Acc: 0.7954
+Epoch 40/49
+----------
+Train Iteration #15200:: 0.575586199760437 Acc: 0.84375
+Train Iteration #15250:: 0.5984053611755371 Acc: 0.71875
+Train Iteration #15300:: 0.5502197742462158 Acc: 0.71875
+Train Iteration #15350:: 0.4817582964897156 Acc: 0.84375
+Train Iteration #15400:: 0.777148962020874 Acc: 0.78125
+Train Iteration #15450:: 0.633193850517273 Acc: 0.75
+Train Iteration #15500:: 0.6755537390708923 Acc: 0.71875
+Train Iteration #15550:: 0.6415154933929443 Acc: 0.71875
+Training:: Loss: 0.6492 Acc: 0.7602
+Validation Iteration #1750:: 0.6188940405845642 Acc: 0.71875
+Validation:: Loss: 0.5462 Acc: 0.7813
+Epoch 41/49
+----------
+Train Iteration #15600:: 0.5991419553756714 Acc: 0.8125
+Train Iteration #15650:: 0.7408854961395264 Acc: 0.84375
+Train Iteration #15700:: 0.4897187650203705 Acc: 0.875
+Train Iteration #15750:: 0.7050524950027466 Acc: 0.71875
+Train Iteration #15800:: 0.8964047431945801 Acc: 0.71875
+Train Iteration #15850:: 0.7782824039459229 Acc: 0.65625
+Train Iteration #15900:: 0.4614323675632477 Acc: 0.875
+Train Iteration #15950:: 0.6903315782546997 Acc: 0.875
+Training:: Loss: 0.6377 Acc: 0.7676
+Validation Iteration #1800:: 0.6504584550857544 Acc: 0.71875
+Validation:: Loss: 0.5372 Acc: 0.7843
+Epoch 42/49
+----------
+Train Iteration #16000:: 0.5110183358192444 Acc: 0.84375
+Train Iteration #16050:: 0.5437562465667725 Acc: 0.875
+Train Iteration #16100:: 0.8179358243942261 Acc: 0.75
+Train Iteration #16150:: 0.783196747303009 Acc: 0.78125
+Train Iteration #16200:: 0.9319155812263489 Acc: 0.6875
+Train Iteration #16250:: 0.556261420249939 Acc: 0.75
+Train Iteration #16300:: 0.6820823550224304 Acc: 0.75
+Training:: Loss: 0.6579 Acc: 0.7639
+Validation:: Loss: 0.6565 Acc: 0.7102
+Epoch 43/49
+----------
+Train Iteration #16350:: 0.8112168312072754 Acc: 0.71875
+Train Iteration #16400:: 0.32114681601524353 Acc: 0.84375
+Train Iteration #16450:: 0.8544183373451233 Acc: 0.71875
+Train Iteration #16500:: 0.732908308506012 Acc: 0.71875
+Train Iteration #16550:: 0.4381084144115448 Acc: 0.8125
+Train Iteration #16600:: 0.7080996036529541 Acc: 0.78125
+Train Iteration #16650:: 0.8663119673728943 Acc: 0.6875
+Train Iteration #16700:: 0.6582244634628296 Acc: 0.78125
+Training:: Loss: 0.6408 Acc: 0.7691
+Validation Iteration #1850:: 0.6238927841186523 Acc: 0.78125
+Validation:: Loss: 0.5923 Acc: 0.7539
+Epoch 44/49
+----------
+Train Iteration #16750:: 0.571320652961731 Acc: 0.75
+Train Iteration #16800:: 0.37022680044174194 Acc: 0.90625
+Train Iteration #16850:: 0.5766438245773315 Acc: 0.78125
+Train Iteration #16900:: 0.6866723895072937 Acc: 0.8125
+Train Iteration #16950:: 0.5213431119918823 Acc: 0.78125
+Train Iteration #17000:: 0.5048720836639404 Acc: 0.8125
+Train Iteration #17050:: 0.8619450926780701 Acc: 0.59375
+Training:: Loss: 0.6450 Acc: 0.7700
+Validation Iteration #1900:: 0.7344872951507568 Acc: 0.625
+Validation:: Loss: 0.5639 Acc: 0.7709
+Epoch 45/49
+----------
+Train Iteration #17100:: 0.6903506517410278 Acc: 0.6875
+Train Iteration #17150:: 0.6137948036193848 Acc: 0.65625
+Train Iteration #17200:: 0.5302114486694336 Acc: 0.875
+Train Iteration #17250:: 0.5426974296569824 Acc: 0.78125
+Train Iteration #17300:: 0.42791420221328735 Acc: 0.78125
+Train Iteration #17350:: 0.7493500709533691 Acc: 0.65625
+Train Iteration #17400:: 0.5979039072990417 Acc: 0.8125
+Train Iteration #17450:: 0.7370149493217468 Acc: 0.625
+Training:: Loss: 0.6457 Acc: 0.7662
+Validation Iteration #1950:: 0.36475682258605957 Acc: 0.8125
+Validation:: Loss: 0.5820 Acc: 0.7583
+Epoch 46/49
+----------
+Train Iteration #17500:: 0.6692547798156738 Acc: 0.625
+Train Iteration #17550:: 0.5870568156242371 Acc: 0.84375
+Train Iteration #17600:: 0.4769935607910156 Acc: 0.875
+Train Iteration #17650:: 0.492580771446228 Acc: 0.84375
+Train Iteration #17700:: 0.533202588558197 Acc: 0.875
+Train Iteration #17750:: 0.4000568389892578 Acc: 0.84375
+Train Iteration #17800:: 0.5113297700881958 Acc: 0.9375
+Train Iteration #17850:: 0.7788454294204712 Acc: 0.6875
+Training:: Loss: 0.6419 Acc: 0.7630
+Validation Iteration #2000:: 0.4446273744106293 Acc: 0.78125
+Validation:: Loss: 0.5564 Acc: 0.7732
+Epoch 47/49
+----------
+Train Iteration #17900:: 0.9784954190254211 Acc: 0.53125
+Train Iteration #17950:: 0.6967349052429199 Acc: 0.75
+Train Iteration #18000:: 0.5625090599060059 Acc: 0.8125
+Train Iteration #18050:: 0.7716294527053833 Acc: 0.59375
+Train Iteration #18100:: 0.4695475101470947 Acc: 0.90625
+Train Iteration #18150:: 0.6212329864501953 Acc: 0.75
+Train Iteration #18200:: 0.5307736396789551 Acc: 0.84375
+Training:: Loss: 0.6240 Acc: 0.7770
+Validation Iteration #2050:: 0.422993004322052 Acc: 0.84375
+Validation:: Loss: 0.5185 Acc: 0.8058
+Epoch 48/49
+----------
+Train Iteration #18250:: 0.7613400220870972 Acc: 0.71875
+Train Iteration #18300:: 0.5361813306808472 Acc: 0.84375
+Train Iteration #18350:: 0.41565877199172974 Acc: 0.875
+Train Iteration #18400:: 0.5686776638031006 Acc: 0.75
+Train Iteration #18450:: 0.73292076587677 Acc: 0.71875
+Train Iteration #18500:: 0.6606869697570801 Acc: 0.71875
+Train Iteration #18550:: 0.5166038274765015 Acc: 0.875
+Train Iteration #18600:: 0.8809386491775513 Acc: 0.78125
+Training:: Loss: 0.6344 Acc: 0.7726
+Validation Iteration #2100:: 0.5578411221504211 Acc: 0.78125
+Validation:: Loss: 0.6553 Acc: 0.7124
+Epoch 49/49
+----------
+Train Iteration #18650:: 0.6779414415359497 Acc: 0.75
+Train Iteration #18700:: 0.7499567866325378 Acc: 0.78125
+Train Iteration #18750:: 0.5612327456474304 Acc: 0.84375
+Train Iteration #18800:: 0.5633747577667236 Acc: 0.78125
+Train Iteration #18850:: 0.7090380191802979 Acc: 0.75
+Train Iteration #18900:: 0.6109560132026672 Acc: 0.75
+Train Iteration #18950:: 0.6094398498535156 Acc: 0.78125
+Training:: Loss: 0.6369 Acc: 0.7707
+Validation:: Loss: 0.5572 Acc: 0.7680
+Best Validation Acc: 0.850259
+End time:4:55:17.713093
+Program Complete
+Average Train Loss:0.6900975531910113
+Average Validation Loss:0.6081194715739799
+Average Train Accuracy:0.7403459352606869
+Average Validation Accuracy:0.7448183839881395

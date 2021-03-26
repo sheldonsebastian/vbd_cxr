@@ -1,0 +1,29 @@
+
+For 90% train & 10% validation ensembling
+
+Version 2
+https://www.kaggle.com/guluna/10percent-train-as-test-512images
+
+
+Version 5
+https://www.kaggle.com/guluna/infer-10percent-train-as-test-512images/
+
+
+Version 2
+https://www.kaggle.com/guluna/conversion-for-ensembling/
+
+
+-------------------------
+
+LB score = 0.142
+
+
+Version 1
+https://www.kaggle.com/guluna/10percent-train-as-test-512images
+
+
+Version 4
+https://www.kaggle.com/guluna/infer-10percent-train-as-test-512images/
+
+
+-------------------------

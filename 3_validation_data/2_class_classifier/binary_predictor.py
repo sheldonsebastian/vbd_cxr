@@ -114,7 +114,7 @@ model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
 # %% --------------------
-# set model to eval mode, to not disturb the weights
+# set model to eval mode, to not activate Batch Normalization and Dropouts
 model.eval()
 
 # %% --------------------

@@ -79,7 +79,7 @@ print(device)
 # %% --------------------MODEL INSTANCE
 # create model instance
 # model name
-model_name = "resnet152"
+model_name = "resnet50"
 
 # feature_extract_param = True means all layers frozen except the last user added layers
 # feature_extract_param = False means all layers unfrozen and entire network learns new weights
@@ -91,12 +91,12 @@ feature_extract_param = True
 num_classes = 1
 
 # initializing model
-model = initialize_model(model_name, num_classes, feature_extract_param,
-                         use_pretrained=True)
+model, params_to_update = initialize_model(model_name, num_classes, feature_extract_param,
+                                           use_pretrained=True)
 
-saved_model_name = "resnet152"
+saved_model_name = "resnet50"
 # load model weights
-saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/resnet152/{saved_model_name}.pt"
+saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/resnet50_frozen/{saved_model_name}.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
@@ -163,4 +163,4 @@ if not Path(holdout_path).exists():
     os.makedirs(holdout_path)
 
 # write csv file
-holdout_predictions.to_csv(holdout_path + f"/holdout_{saved_model_name}.csv", index=False)
+holdout_predictions.to_csv(holdout_path + f"/holdout_{saved_model_name}_frozen.csv", index=False)

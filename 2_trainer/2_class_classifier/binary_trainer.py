@@ -21,7 +21,8 @@ sys.path.append(os.getenv("HOME_DIR"))
 # https://www.kaggle.com/corochann/vinbigdata-2-class-classifier-complete-pipeline
 import random
 import albumentations
-from common.classifier_models import initialize_model
+from common.classifier_models import initialize_model, get_param_to_optimize, \
+    set_parameter_requires_grad
 from common.utilities import UnNormalize
 import numpy as np
 import torch
@@ -34,12 +35,12 @@ from pathlib import Path
 import shutil
 
 # %% --------------------set seeds
-seed = 42
-torch.manual_seed(seed)
-torch.cuda.manual_seed(seed)
-np.random.seed(seed)
-random.seed(seed)
-torch.backends.cudnn.deterministic = True
+# seed = 42
+# torch.manual_seed(seed)
+# torch.cuda.manual_seed(seed)
+# np.random.seed(seed)
+# random.seed(seed)
+# torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
 IMAGE_DIR = os.getenv("IMAGE_DIR")
@@ -48,9 +49,9 @@ SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
 
 # model name
-# model_name = "alexnet"
+model_name = "resnet50"
 # model_name = "vgg19"
-model_name = "resnet152"
+# model_name = "resnet152"
 
 # %% --------------------TENSORBOARD DIRECTORY INITIALIZATION
 train_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/{model_name}/train"
@@ -73,17 +74,10 @@ validation_writer = tensorboard.SummaryWriter(validation_tensorboard_dir)
 # https://albumentations.ai/docs/api_reference/augmentations/transforms/
 train_transformer = albumentations.Compose([
     # augmentation operations
-    albumentations.augmentations.transforms.RandomBrightnessContrast(p=0.5),
-    albumentations.augmentations.transforms.CoarseDropout(max_holes=8, max_height=25, max_width=25,
-                                                          p=0.5),
-    albumentations.augmentations.transforms.Blur(p=0.5, blur_limit=[3, 7]),
-    albumentations.augmentations.transforms.RandomGamma(p=0.6, gamma_limit=[80, 120]),
-    albumentations.augmentations.transforms.ShiftScaleRotate(scale_limit=0.15, rotate_limit=10,
-                                                             p=0.5),
-    albumentations.augmentations.transforms.Downscale(scale_min=0.25, scale_max=0.9, p=0.3),
-
+    albumentations.augmentations.transforms.RandomBrightnessContrast(p=0.3),
+    albumentations.augmentations.transforms.ShiftScaleRotate(rotate_limit=5, p=0.4),
     # horizontal flipping
-    albumentations.augmentations.transforms.HorizontalFlip(p=0.5),
+    albumentations.augmentations.transforms.HorizontalFlip(p=0.4),
 
     # resize operation
     albumentations.Resize(height=512, width=512, always_apply=True),
@@ -106,13 +100,13 @@ validation_transformer = albumentations.Compose([
 # 1 = abnormal
 # 0 = normal
 train_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                       MERGED_DIR + "/512/wbf_merged/90_percent_train"
+                                       MERGED_DIR + "/512/unmerged/90_percent_train"
                                                     "/2_class_classifier"
                                                     "/90_percent/train_df.csv",
                                        majority_transformations=train_transformer)
 
 validation_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                            MERGED_DIR + "/512/wbf_merged/90_percent_train"
+                                            MERGED_DIR + "/512/unmerged/90_percent_train"
                                                          "/2_class_classifier"
                                                          "/10_percent/holdout_df.csv",
                                             majority_transformations=validation_transformer)
@@ -139,7 +133,7 @@ sampler = WeightedRandomSampler(weights=target_weight, num_samples=len(train_dat
                                 replacement=True)
 
 # %% --------------------DATALOADER
-BATCH_SIZE = 32
+BATCH_SIZE = 24
 workers = int(os.getenv("NUM_WORKERS"))
 
 # # perform weighted random sampler for training only. NOTE: sampler shuffles the data by default
@@ -147,33 +141,7 @@ train_data_loader = torch.utils.data.DataLoader(
     train_data_set, batch_size=BATCH_SIZE, num_workers=workers, sampler=sampler)
 
 validation_data_loader = torch.utils.data.DataLoader(
-    validation_data_set, batch_size=BATCH_SIZE, shuffle=False, num_workers=workers)
-
-# %% --------------------
-# define device
-device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-print(device)
-
-# %% --------------------MODEL INSTANCE
-# feature_extract_param = True means all layers frozen except the last user added layers
-# feature_extract_param = False means all layers unfrozen and entire network learns new weights
-# and biases
-feature_extract_param = True
-
-# 0 = normal CXR or 1 = abnormal CXR
-# single label binary classifier
-num_classes = 1
-
-# input_size is minimum constraint
-model = initialize_model(model_name, num_classes, feature_extract_param,
-                         use_pretrained=True)
-
-# %% --------------------HYPER-PARAMETERS
-LR = 1e-3
-EPOCHS = 50
-
-# %% --------------------OPTIMIZER
-optimizer = torch.optim.Adam(model.parameters(), lr=LR)
+    validation_data_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=workers)
 
 # %% --------------------WEIGHTS FOR LOSS
 target_list = train_data_set.targets
@@ -193,26 +161,54 @@ pos_weight = torch.as_tensor(pos_weight, dtype=float)
 # https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html
 criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
 
-# %% --------------------move to device
-model.to(device)
-
-# %% --------------------CHECK THE DATALOADER
-# # works when num of workers = 0 on local environment
-# for images, targets in train_data_loader:
-#     print(images)
-#     print(targets)
-
 # %% --------------------UnNormalize
 unnormalizer = UnNormalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
 
+# %% --------------------
+# OVERFITTER
+# train_image_ids, train_image, train_target = iter(train_data_loader).next()
+# validation_image_ids, validation_image, validation_target = iter(validation_data_loader).next()
+
+# %% --------------------
+# define device
+device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+print(device)
+
+# %% --------------------MODEL INSTANCE
+# feature_extract_param = True means all layers frozen except the last user added layers
+# feature_extract_param = False means all layers unfrozen and entire network learns new weights
+# and biases
+feature_extract_param = True
+
+# 0 = normal CXR or 1 = abnormal CXR
+# single label binary classifier
+num_classes = 1
+
+# input_size is minimum constraint
+model, params_to_update = initialize_model(model_name, num_classes, feature_extract_param,
+                                           use_pretrained=True)
+
+# %% --------------------HYPER-PARAMETERS
+TOTAL_EPOCHS = 50
+REDUCED_LR = 1e-3
+
+# for 10% of EPOCHS train with all layers frozen except last, after that train with lowered LR
+# with all layers unfrozen
+INITIAL_EPOCHS = TOTAL_EPOCHS // 10
+INITIAL_LR = REDUCED_LR * 10
+
+# %% --------------------OPTIMIZER
+optimizer = torch.optim.Adam(params_to_update, lr=INITIAL_LR)
+
+# %% --------------------move to device
+model.to(device)
+
 # %% --------------------TRAINING LOOP
-print("Program started")
+print_iteration_frequency = 50
+freeze_all_flag = True
 
 train_iter = 0
 val_iter = 0
-
-# start time
-start = datetime.now()
 
 # track train loss, validation loss, train accuracy, validation accuracy
 val_acc_history_arr = []
@@ -220,7 +216,9 @@ train_acc_history_arr = []
 train_loss_arr = []
 valid_loss_arr = []
 
-best_acc = 0.0
+# condition to save model
+lowest_loss = 10000000
+best_model_found_epoch = 0
 
 # if directory does not exist then create it
 saved_model_dir = Path(f"{SAVED_MODEL_DIR}/2_class_classifier/{model_name}")
@@ -230,11 +228,27 @@ if not saved_model_dir.exists():
 
 saved_model_path = f"{saved_model_dir}/{model_name}.pt"
 
+print("Program started")
+# start time
+start = datetime.now()
 # https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
-for epoch in range(EPOCHS):
+for epoch in range(TOTAL_EPOCHS):
 
-    print('Epoch {}/{}'.format(epoch, EPOCHS - 1))
+    print('Epoch {}/{}'.format(epoch, TOTAL_EPOCHS - 1))
     print('-' * 10)
+
+    if (epoch >= INITIAL_EPOCHS) and freeze_all_flag:
+        # do below tasks only once when current epoch > INITIAL EPOCH
+        freeze_all_flag = False
+
+        # unfreeze all layers
+        set_parameter_requires_grad(model, False)
+
+        # get parameters to optimize
+        params = get_param_to_optimize(model, False)
+
+        # update optimizer and reduce LR
+        optimizer = torch.optim.Adam(params, lr=REDUCED_LR)
 
     # ----------------------TRAINING PHASE----------------------
     model.train()
@@ -247,6 +261,8 @@ for epoch in range(EPOCHS):
     train_epoch_flag = True
 
     # iterate the data
+    # overfitting code
+    # for _, images, targets in zip([train_image_ids], [train_image], [train_target]):
     for _, images, targets in train_data_loader:
         # send the input to device
         images = images.to(device)
@@ -266,6 +282,7 @@ for epoch in range(EPOCHS):
 
         # optimizer.zero_grad() is critically important because it resets all weight and bias
         # gradients to 0
+        # we are updating W and B for each batch, thus zero the gradients in each batch
         optimizer.zero_grad()
 
         # forward pass
@@ -295,7 +312,7 @@ for epoch in range(EPOCHS):
         running_loss += train_loss.item() * images.size(0)
         running_corrects += torch.sum(preds == targets.data)
 
-        if train_iter % 50 == 0:
+        if train_iter % print_iteration_frequency == 0:
             print(
                 f'Train Iteration #{train_iter}:: {train_loss.item()} Acc: {torch.sum(preds == targets.data).item() / (len(preds))}')
 
@@ -304,7 +321,7 @@ for epoch in range(EPOCHS):
     # epoch level statistics take average of batch
     epoch_loss = running_loss / len(train_data_loader.dataset)
     epoch_acc = running_corrects.double() / len(train_data_loader.dataset)
-    print('Training:: Loss: {:.4f} Acc: {:.4f}'.format(epoch_loss, epoch_acc))
+    print('Epoch Training:: Loss: {:.4f} Acc: {:.4f}'.format(epoch_loss, epoch_acc))
 
     # track using tensorboard
     train_writer.add_scalar("loss", epoch_loss, global_step=epoch)
@@ -322,6 +339,8 @@ for epoch in range(EPOCHS):
     running_corrects = 0
 
     # iterate the data
+    # overfitting code
+    # for _, images, targets in zip([validation_image_ids], [validation_image], [validation_target]):
     for _, images, targets in validation_data_loader:
         # send the input to device
         images = images.to(device)
@@ -344,7 +363,7 @@ for epoch in range(EPOCHS):
         running_loss += val_loss.item() * images.size(0)
         running_corrects += torch.sum(preds == targets.data)
 
-        if val_iter % 50 == 0:
+        if val_iter % print_iteration_frequency == 0:
             print(
                 f'Validation Iteration #{val_iter}:: {val_loss.item()} Acc: {torch.sum(preds == targets.data).item() / (len(preds))}')
 
@@ -353,7 +372,7 @@ for epoch in range(EPOCHS):
     # epoch level statistics take average of batch
     epoch_loss = running_loss / len(validation_data_loader.dataset)
     epoch_acc = running_corrects.double() / len(validation_data_loader.dataset)
-    print('Validation:: Loss: {:.4f} Acc: {:.4f}'.format(epoch_loss, epoch_acc))
+    print('Epoch Validation:: Loss: {:.4f} Acc: {:.4f}'.format(epoch_loss, epoch_acc))
 
     # track using tensorboard
     validation_writer.add_scalar("loss", epoch_loss, global_step=epoch)
@@ -362,10 +381,10 @@ for epoch in range(EPOCHS):
     valid_loss_arr.append(epoch_loss)
     val_acc_history_arr.append(epoch_acc.item())
 
-    # model checkpoint, save best model only when epoch accuracy in validation is best
-    if epoch_acc > best_acc:
-        best_acc = epoch_acc
-
+    # save model based on lowest epoch validation loss
+    if epoch_loss <= lowest_loss:
+        lowest_loss = epoch_loss
+        best_model_found_epoch = epoch
         # save model state based on best val accuracy per epoch
         # https://debuggercafe.com/effective-model-saving-and-resuming-training-in-pytorch/
         torch.save({
@@ -375,7 +394,7 @@ for epoch in range(EPOCHS):
             'loss': criterion,
         }, saved_model_path)
 
-print('Best Validation Acc: {:4f}'.format(best_acc))
+print('Lowest Validation Acc: {:4f} at epoch:{}'.format(lowest_loss, best_model_found_epoch))
 
 print("End time:" + str(datetime.now() - start))
 print("Program Complete")

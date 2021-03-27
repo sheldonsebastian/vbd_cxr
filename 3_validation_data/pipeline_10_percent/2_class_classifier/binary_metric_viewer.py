@@ -31,7 +31,7 @@ print("Holdout 10% data")
 # %% --------------------
 # read predictions
 holdout_pred = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/holdout_resnet152.csv")
+    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/holdout_resnet50_frozen.csv")
 holdout_pred["ground_truth"] = -1
 
 # read gt

@@ -1,0 +1,14 @@
+** fvcore version of PathManager will be deprecated soon. **
+** Please migrate to the version in iopath repo. **
+https://github.com/facebookresearch/iopath 
+
+Loading config /home/ssebastian94/.conda/envs/vbd_cxr/lib/python3.7/site-packages/detectron2/model_zoo/configs/COCO-Detection/../Base-RetinaNet.yaml with yaml.unsafe_load. Your machine may be at risk if the file contains malicious content.
+Skip loading parameter 'head.cls_score.weight' to the model due to incompatible shapes: (720, 256, 3, 3) in the checkpoint but (630, 256, 3, 3) in the model! You might want to double check if this is expected.
+Skip loading parameter 'head.cls_score.bias' to the model due to incompatible shapes: (720,) in the checkpoint but (630,) in the model! You might want to double check if this is expected.
+Skip loading parameter 'head.bbox_pred.weight' to the model due to incompatible shapes: (36, 256, 3, 3) in the checkpoint but (180, 256, 3, 3) in the model! You might want to double check if this is expected.
+Skip loading parameter 'head.bbox_pred.bias' to the model due to incompatible shapes: (36,) in the checkpoint but (180,) in the model! You might want to double check if this is expected.
+Skip loading parameter 'anchor_generator.cell_anchors.0' to the model due to incompatible shapes: (9, 4) in the checkpoint but (45, 4) in the model! You might want to double check if this is expected.
+Skip loading parameter 'anchor_generator.cell_anchors.1' to the model due to incompatible shapes: (9, 4) in the checkpoint but (45, 4) in the model! You might want to double check if this is expected.
+Skip loading parameter 'anchor_generator.cell_anchors.2' to the model due to incompatible shapes: (9, 4) in the checkpoint but (45, 4) in the model! You might want to double check if this is expected.
+Skip loading parameter 'anchor_generator.cell_anchors.3' to the model due to incompatible shapes: (9, 4) in the checkpoint but (45, 4) in the model! You might want to double check if this is expected.
+Skip loading parameter 'anchor_generator.cell_anchors.4' to the model due to incompatible shapes: (9, 4) in the checkpoint but (45, 4) in the model! You might want to double check if this is expected.

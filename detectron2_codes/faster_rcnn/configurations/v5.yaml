@@ -1,0 +1,22 @@
+# https://www.kaggle.com/corochann/vinbigdata-detectron2-train
+# https://www.kaggle.com/corochann/vinbigdata-alb-aug-512-cos
+# BASE RCNN YAML: https://github.com/facebookresearch/detectron2/blob/master/configs/Base-RCNN-FPN.yaml
+# FASTER RCNN: https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md#faster-r-cnn
+
+# AUGMENTATION
+aug_kwargs:
+  HorizontalFlip:
+    p: 0.5
+  RandomBrightnessContrast:
+    p: 0.5
+  ShiftScaleRotate:
+    scale_limit: 0.15
+    rotate_limit: 10
+    p: 0.5
+
+# OPTIMIZER
+batch_size: 2
+base_lr: 0.001
+lr_scheduler_name: WarmupCosineLR
+epoch: 30
+eval_period_epoch: 6

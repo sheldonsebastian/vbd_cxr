@@ -19,7 +19,6 @@ sys.path.append(os.getenv("HOME_DIR"))
 
 # %% --------------------START HERE
 # https://www.kaggle.com/corochann/vinbigdata-2-class-classifier-complete-pipeline
-import random
 import albumentations
 from common.classifier_models import initialize_model, get_param_to_optimize, \
     set_parameter_requires_grad
@@ -49,8 +48,8 @@ SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
 TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
 
 # model name
-model_name = "resnet50"
-# model_name = "vgg19"
+# model_name = "resnet50"
+model_name = "vgg19"
 # model_name = "resnet152"
 
 # %% --------------------TENSORBOARD DIRECTORY INITIALIZATION
@@ -133,7 +132,7 @@ sampler = WeightedRandomSampler(weights=target_weight, num_samples=len(train_dat
                                 replacement=True)
 
 # %% --------------------DATALOADER
-BATCH_SIZE = 24
+BATCH_SIZE = 8
 workers = int(os.getenv("NUM_WORKERS"))
 
 # # perform weighted random sampler for training only. NOTE: sampler shuffles the data by default
@@ -189,13 +188,13 @@ model, params_to_update = initialize_model(model_name, num_classes, feature_extr
                                            use_pretrained=True)
 
 # %% --------------------HYPER-PARAMETERS
-TOTAL_EPOCHS = 50
-REDUCED_LR = 1e-3
+TOTAL_EPOCHS = 30
+REDUCED_LR = 1e-4
 
-# for 10% of EPOCHS train with all layers frozen except last, after that train with lowered LR
+# for first 5 EPOCHS train with all layers frozen except last, after that train with lowered LR
 # with all layers unfrozen
-INITIAL_EPOCHS = TOTAL_EPOCHS // 10
-INITIAL_LR = REDUCED_LR * 10
+INITIAL_EPOCHS = 5
+INITIAL_LR = REDUCED_LR * 100
 
 # %% --------------------OPTIMIZER
 optimizer = torch.optim.Adam(params_to_update, lr=INITIAL_LR)

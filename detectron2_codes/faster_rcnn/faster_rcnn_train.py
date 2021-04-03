@@ -19,8 +19,6 @@ sys.path.append(os.getenv("HOME_DIR"))
 # %% --------------------IMPORTS
 # https://www.kaggle.com/corochann/vinbigdata-detectron2-train
 
-import random
-import numpy as np
 import torch
 from detectron2.utils.logger import setup_logger
 from common.detectron2_utils import get_train_detectron_dataset, convert_epoch_to_max_iter, \
@@ -32,19 +30,17 @@ from detectron2 import model_zoo
 from common.detectron_config_manager import Flags
 
 # %% --------------------set seeds
-seed = 42
-torch.manual_seed(seed)
-torch.cuda.manual_seed(seed)
-np.random.seed(seed)
-random.seed(seed)
-torch.backends.cudnn.deterministic = True
+# seed = 42
+# torch.manual_seed(seed)
+# torch.cuda.manual_seed(seed)
+# np.random.seed(seed)
+# random.seed(seed)
+# torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
 IMAGE_DIR = os.getenv("IMAGE_DIR")
 # MERGED_DIR contains GT dataframes
 MERGED_DIR = os.getenv("MERGED_DIR")
-SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
-TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
 DETECTRON2_DIR = os.getenv("DETECTRON2_DIR")
 WORKERS = int(os.getenv("NUM_WORKERS"))
 EXTERNAL_DIR = os.getenv("EXTERNAL_DIR")
@@ -56,8 +52,8 @@ train_gt_dataframe = MERGED_DIR + f"/512/unmerged/90_percent_train/object_detect
 val_gt_dataframe = MERGED_DIR + f"/512/unmerged/90_percent_train/object_detection/10_percent" \
                                 f"/holdout_df.csv"
 external_gt_dataframe = EXTERNAL_DIR + "/transformed_train.csv"
-flag_path = DETECTRON2_DIR + "/faster_rcnn/configurations/v3.yaml"
-output_dir = DETECTRON2_DIR + f"/faster_rcnn/train/unmerged_external/"
+flag_path = DETECTRON2_DIR + "/faster_rcnn/configurations/v5.yaml"
+output_dir = DETECTRON2_DIR + f"/faster_rcnn/train/final/"
 
 # %% --------------------READ FLAGS
 flag = Flags().load_yaml(flag_path)
@@ -94,7 +90,7 @@ cfg.OUTPUT_DIR = output_dir
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
 # %% --------------------MODEL CONFIGURATION
-config_name = "COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml"
+config_name = "COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"
 cfg.merge_from_file(model_zoo.get_config_file(config_name))
 # use pretrained model
 cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(config_name)
@@ -102,13 +98,15 @@ cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # update model anchor sizes and aspect ratio
 # https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection/discussion/220295
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8], [16], [32], [64], [128], [256], [512]]
-# TODO dont know what is p2, ....p6
-cfg.MODEL.RPN.IN_FEATURES = ['p2', 'p2', 'p3', 'p4', 'p5', 'p6', 'p6']
-cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.33, 0.5, 1.0, 2.0, 3.0]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[2, 4, 8, 16, 32, 64, 128, 256, 512]]
+cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.33, 0.5, 1.0, 2.0, 2.5]]
 
 # update the number of classes
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(thing_classes)
+
+# update the minimum and maximum size of image to be used for training
+cfg.INPUT.MIN_SIZE_TRAIN = (512,)
+cfg.INPUT.MAX_SIZE_TRAIN = (512,)
 
 # %% --------------------OPTIMIZER CONFIGURATION
 # define batch size
@@ -144,6 +142,10 @@ cfg.TEST.EVAL_PERIOD = validation_iteration
 
 # define num worker for dataloader
 cfg.DATALOADER.NUM_WORKERS = WORKERS
+
+cfg.DATALOADER.SAMPLER_TRAIN = "RepeatFactorTrainingSampler"
+# anything under 1000 frequency will be repeated more often
+cfg.DATALOADER.REPEAT_THRESHOLD = 1000
 
 # %% --------------------EVALUATION PARAMETER
 cfg.mAP_conf_thr = 0.10

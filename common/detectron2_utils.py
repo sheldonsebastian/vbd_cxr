@@ -74,8 +74,12 @@ def get_train_detectron_dataset(img_dir, annot_path, external_dir=None, external
 
     # EXTERNAL OBJECT DETECTION DATA
     if (external_dir is not None) and (external_annot_path is not None):
+
         # read GT annotations
         external_df = pd.read_csv(external_annot_path)
+
+        # only use pneumothorax = 12 and atelectasis = 1
+        external_df = external_df[(external_df["class_id"] == 12) | (external_df["class_id"] == 1)]
 
         # get unique image_ids
         external_uids = sorted(list(external_df["image_id"].unique()))
@@ -424,7 +428,6 @@ class CustomTrainLoop(DefaultTrainer):
 
     @classmethod
     def build_train_loader(cls, cfg, sampler=None):
-        cfg.DATALOADER.SAMPLER_TRAIN = "TrainingSampler"
         return build_detection_train_loader(cfg, mapper=AlbumentationsMapper(cfg, True))
 
     @classmethod

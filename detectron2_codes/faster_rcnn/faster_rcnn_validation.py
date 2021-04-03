@@ -20,7 +20,6 @@ sys.path.append(os.getenv("HOME_DIR"))
 # https://www.kaggle.com/corochann/vinbigdata-detectron2-train
 import cv2
 from detectron2.engine import DefaultPredictor
-import random
 import numpy as np
 import torch
 from detectron2.utils.logger import setup_logger
@@ -31,6 +30,7 @@ from detectron2.config import get_cfg
 from detectron2 import model_zoo
 from common.detectron_config_manager import Flags
 import pandas as pd
+import random
 
 # %% --------------------set seeds
 seed = 42
@@ -50,9 +50,10 @@ WORKERS = int(os.getenv("NUM_WORKERS"))
 # %% --------------------READ DATA
 # DYNAMIC
 holdout_gt_dataframe = MERGED_DIR + f"/512/unmerged/10_percent_holdout/holdout_df.csv"
-flag_path = DETECTRON2_DIR + "/faster_rcnn/configurations/v3.yaml"
-output_dir = DETECTRON2_DIR + "/faster_rcnn/holdout/unmerged"
-model_dir = DETECTRON2_DIR + "/faster_rcnn/train/unmerged"
+flag_path = DETECTRON2_DIR + "/faster_rcnn/configurations/v5.yaml"
+output_dir = DETECTRON2_DIR + "/faster_rcnn/holdout/current"
+model_dir = DETECTRON2_DIR + "/faster_rcnn/train/final"
+
 # %% --------------------READ FLAGS
 flag = Flags().load_yaml(flag_path)
 
@@ -82,7 +83,7 @@ cfg.OUTPUT_DIR = output_dir
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
 # %% --------------------MODEL CONFIGURATION
-config_name = "COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml"
+config_name = "COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"
 cfg.merge_from_file(model_zoo.get_config_file(config_name))
 # use saved model weights
 cfg.MODEL.WEIGHTS = model_dir + "/model_final.pth"
@@ -90,10 +91,8 @@ cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # update model anchor sizes and aspect ratio
 # https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection/discussion/220295
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[8], [16], [32], [64], [128], [256], [512]]
-# TODO dont know what is p2, ....p6
-cfg.MODEL.RPN.IN_FEATURES = ['p2', 'p2', 'p3', 'p4', 'p5', 'p6', 'p6']
-cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.33, 0.5, 1.0, 2.0, 3.0]]
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[2, 4, 8, 16, 32, 64, 128, 256, 512]]
+cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.33, 0.5, 1.0, 2.0, 2.5]]
 
 # update the number of classes
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(thing_classes)

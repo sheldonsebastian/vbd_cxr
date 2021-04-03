@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from common.kaggle_utils import extract_dimension_df
@@ -144,6 +145,13 @@ def binary_and_object_detection_processing(binary_pred_df, object_pred_df, low_t
 
         else:
             raise ValueError('Prediction must be from [0-1]')
+
+    # add logic here that any missing binary id becomes no findings class
+    missing_id = np.setdiff1d(binary_uids, object_pred_df["image_id"].unique())
+
+    for id in missing_id:
+        sub.append({"image_id": id, "x_min": 0, "y_min": 0, "x_max": 1, "y_max": 1,
+                    "label": 14, "confidence_score": 1})
 
     sub_df = pd.DataFrame(sub, columns=["image_id", "x_min", "y_min", "x_max", "y_max", "label",
                                         "confidence_score"])

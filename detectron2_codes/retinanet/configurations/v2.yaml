@@ -1,5 +1,5 @@
 # BASE RCNN YAML: https://github.com/facebookresearch/detectron2/blob/master/configs/Base-RetinaNet.yaml
-# RETINANET: https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/retinanet_R_50_FPN_3x.yaml
+# RETINANET: https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/retinanet_R_101_FPN_3x.yaml
 
 # AUGMENTATION
 aug_kwargs:
@@ -7,10 +7,14 @@ aug_kwargs:
     p: 0.5
   RandomBrightnessContrast:
     p: 0.5
+  ShiftScaleRotate:
+    scale_limit: 0.15
+    rotate_limit: 10
+    p: 0.5
 
 # OPTIMIZER
-batch_size: 8
-lr_scheduler_name: WarmupCosineLR
+batch_size: 2
 base_lr: 0.001
-epoch: 10
-eval_period_epoch: 3
+lr_scheduler_name: WarmupCosineLR
+epoch: 30
+eval_period_epoch: 6

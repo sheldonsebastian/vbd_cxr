@@ -73,7 +73,9 @@ print(device)
 # %% --------------------MODEL INSTANCE
 # create model instance
 # model name
-model_name = "resnet152"
+# model_name, conf_thr = ("resnet50", 0.7)
+# model_name, conf_thr = ("resnet152", 0.5)
+model_name, conf_thr = ("vgg19", 0.5)
 
 # feature_extract_param = True means all layers frozen except the last user added layers
 # feature_extract_param = False means all layers unfrozen and entire network learns new weights
@@ -85,12 +87,11 @@ feature_extract_param = True
 num_classes = 1
 
 # initializing model
-model = initialize_model(model_name, num_classes, feature_extract_param,
+model,_ = initialize_model(model_name, num_classes, feature_extract_param,
                          use_pretrained=True)
 
-saved_model_name = "resnet152"
 # load model weights
-saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/resnet152/{saved_model_name}.pt"
+saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/{model_name}/{model_name}.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
@@ -129,7 +130,7 @@ with torch.no_grad():
 
             # converting logits to probabilities and keeping threshold of 0.5
             # https://discuss.pytorch.org/t/multilabel-classification-how-to-binarize-scores-how-to-learn-thresholds/25396
-            preds = (probabilities > 0.5).to(torch.float32)
+            preds = (probabilities > conf_thr).to(torch.float32)
 
         # iterate preds, image_ids and add them to the csv file
         for img_id, p, prob in zip(image_ids, preds, probabilities):
@@ -157,4 +158,4 @@ if not Path(test_path).exists():
     os.makedirs(test_path)
 
 # write csv file
-test_predictions.to_csv(test_path + f"/test_2_class_{saved_model_name}.csv", index=False)
+test_predictions.to_csv(test_path + f"/test_2_class_{model_name}.csv", index=False)

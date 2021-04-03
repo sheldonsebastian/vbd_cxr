@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH -o ../slurm_outputs/detectron2_faster_rcnn_train__external_%j.out
-#SBATCH -e ../slurm_outputs/detectron2_faster_rcnn_train__external%j.err
+#SBATCH -o ../slurm_outputs/detectron2_faster_rcnn_train_final_%j.out
+#SBATCH -e ../slurm_outputs/detectron2_faster_rcnn_train_final_%j.err
 #SBATCH -N 1
 #SBATCH -t 24:00:00
 #SBATCH -p gpu
-#SBATCH -w node011
+#SBATCH -w node010
 #SBATCH --mail-type=all
 #SBATCH --mail-user=ssebastian94@gwu.edu
 

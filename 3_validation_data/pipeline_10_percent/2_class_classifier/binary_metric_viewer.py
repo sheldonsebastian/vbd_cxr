@@ -28,10 +28,15 @@ import pandas as pd
 pd.set_option('display.max_columns', None)
 
 print("Holdout 10% data")
+
+model_name = "Ensemble Equal Weightage for Resnet50, Resnet152, VGG19"
+print(model_name)
 # %% --------------------
 # read predictions
-holdout_pred = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + "/pipeline_10_percent/2_class_classifier/predictions/holdout_resnet50_frozen.csv")
+# holdout_pred = pd.read_csv(
+#     VALIDATION_PREDICTION_DIR + f"/pipeline_10_percent/2_class_classifier/predictions/holdout_{model_name}.csv")
+holdout_pred = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr/final_outputs/holdout/holdout_binary_ensembled.csv")
+
 holdout_pred["ground_truth"] = -1
 
 # read gt

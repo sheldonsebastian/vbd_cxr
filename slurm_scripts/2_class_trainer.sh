@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#SBATCH -o ../slurm_outputs/2_class_train_resnet50_%j.out
-#SBATCH -e ../slurm_outputs/2_class_train_resnet50_%j.err
+#SBATCH -o ../slurm_outputs/2_class_train_vgg19_%j.out
+#SBATCH -e ../slurm_outputs/2_class_train_vgg19_%j.err
 #SBATCH -N 1
 #SBATCH -t 24:00:00
 #SBATCH -p gpu

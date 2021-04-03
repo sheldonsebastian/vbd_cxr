@@ -44,23 +44,15 @@ torch.backends.cudnn.deterministic = True
 IMAGE_DIR = os.getenv("IMAGE_DIR")
 # MERGED_DIR contains GT dataframes
 MERGED_DIR = os.getenv("MERGED_DIR")
-SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
-TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
 DETECTRON2_DIR = os.getenv("DETECTRON2_DIR")
 WORKERS = int(os.getenv("NUM_WORKERS"))
 
-# %% --------------------
-surname = "0_6"
-mode = "wbf"
-print(f"Running for {mode}: {surname}")
-
 # %% --------------------READ DATA
 # DYNAMIC
-holdout_gt_dataframe = MERGED_DIR + f"/512/{mode}_merged/10_percent_holdout/holdout_df_{surname}.csv"
-saved_model_dir = DETECTRON2_DIR + f"/retinanet/train/{mode}/{surname}"
-
+holdout_gt_dataframe = MERGED_DIR + f"/512/unmerged/10_percent_holdout/holdout_df.csv"
 flag_path = DETECTRON2_DIR + "/retinanet/configurations/v2.yaml"
-output_dir = DETECTRON2_DIR + f"/retinanet/holdout/{mode}/{surname}"
+output_dir = DETECTRON2_DIR + f"/retinanet/holdout/current"
+model_dir = DETECTRON2_DIR + f"/retinanet/train/final"
 
 # %% --------------------READ FLAGS
 flag = Flags().load_yaml(flag_path)
@@ -91,21 +83,19 @@ cfg.OUTPUT_DIR = output_dir
 os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
 
 # %% --------------------MODEL CONFIGURATION
-config_name = "COCO-Detection/retinanet_R_50_FPN_3x.yaml"
+config_name = "COCO-Detection/retinanet_R_101_FPN_3x.yaml"
 cfg.merge_from_file(model_zoo.get_config_file(config_name))
 # use saved model weights
-cfg.MODEL.WEIGHTS = saved_model_dir + "/model_final.pth"
-
+cfg.MODEL.WEIGHTS = model_dir + "/model_final.pth"
 cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # update model anchor sizes and aspect ratio
 # https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection/discussion/220295
-cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[2], [4], [8], [16], [32], [64], [128], [256], [512], [1024]]
-cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.33, 0.5, 1.0, 2.0, 3.0]]
-# TODO dont know what is p3, ....p7
-cfg.MODEL.RETINANET.IN_FEATURES = ['p3', 'p3', 'p3', 'p3', 'p4', 'p5', 'p6', 'p7', 'p7', 'p7']
+cfg.MODEL.ANCHOR_GENERATOR.SIZES = [[2, 4, 8, 16, 32, 64, 128, 256, 512]]
+cfg.MODEL.ANCHOR_GENERATOR.ASPECT_RATIOS = [[0.33, 0.5, 1.0, 2.0, 2.5]]
 
 # update the number of classes
+cfg.MODEL.RETINANET.NUM_CLASSES = len(thing_classes)
 cfg.MODEL.ROI_HEADS.NUM_CLASSES = len(thing_classes)
 
 # model prediction threshold

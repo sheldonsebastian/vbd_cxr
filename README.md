@@ -1,4 +1,12 @@
-# vbd_cxr
+# VinBigData Chest X-ray Abnormality Detection
+ 
+ Steps to reproduce results:
+ .....
+ 
+ Directory Structure:
+ |Path|Description|
+ |------------|-----------|
+ |....|.....|
  
 - 0_preprocessor ==> DICOM to jpeg
 - 1_merger ==> Bounding Box Fusion using WBF

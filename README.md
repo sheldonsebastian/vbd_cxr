@@ -12,9 +12,11 @@
 |Path|Description|
 |------------|-----------|
 |0_preprocessor|Code to convert DICOM to jpeg and resize images.|
-|1_data_split|Code to split the data into train-validation-holdout|
-|2_trainer|Code to train classification models and object detection models.|
-|3_inference|Code to make predictions using classification, object detection, and ensemble models.|
-|4_kaggle_files|Utility files to make Kaggle submissions|
-|5_deployment_files|Code related to Flask App|
+|1_eda|Code to perform EDA|
+|2_data_split|Code to split the data into train-validation-holdout|
+|3_trainer|Code to train classification models and object detection models.|
+|4_saved_models|Saved models are stored here. Alternatively you can download them from ...|
+|5_inference|Code to make predictions using classification, object detection, and ensemble models.|
+|6_kaggle_files|Utility files to make Kaggle submissions|
+|7_deployment_files|Code related to Flask App|
 |common|Utility files for coding|

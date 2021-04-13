@@ -1,30 +1,20 @@
 # %% --------------------
-import os
 import sys
 
-from dotenv import load_dotenv
-
 # local
-env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-           "Workspace/vbd_cxr/6_environment_files/local.env "
+BASE_DIR = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr"
 # cerberus
-# env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
-
-load_dotenv(env_file)
-
-# %% --------------------
-# DIRECTORIES
-IMAGE_DIR = os.getenv("IMAGE_DIR")
-BASE_TRAIN_DIR = IMAGE_DIR
+# BASE_DIR = "/home/ssebastian94/vbd_cxr"
 
 # add HOME DIR to PYTHONPATH
-sys.path.append(os.getenv("HOME_DIR"))
+sys.path.append(BASE_DIR)
 
 # %% --------------------START HERE
 import pandas as pd
+import os
 
 # %% --------------------
-train_df = pd.read_csv(f"{BASE_TRAIN_DIR}/transformed_train.csv")
+train_df = pd.read_csv(f"{BASE_DIR}/input_data/512/transformed_data/train/transformed_train.csv")
 
 # %% --------------------
 train_df.head()
@@ -108,7 +98,7 @@ unmerged = no_finding_df.append(finding_df)
 unmerged = unmerged.sort_values("image_id").reset_index(drop=True)
 
 # %% --------------------
-os.makedirs("./512/unmerged/100_percent_train/", exist_ok=True)
+os.makedirs(f"{BASE_DIR}/1_data_split/512/unmerged/100_percent_train/", exist_ok=True)
 
 # %% --------------------
-unmerged.to_csv("./512/unmerged/100_percent_train/unmerged.csv", index=False)
+unmerged.to_csv(f"{BASE_DIR}/1_data_split/512/unmerged/100_percent_train/unmerged.csv", index=False)

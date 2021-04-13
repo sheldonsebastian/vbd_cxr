@@ -1,31 +1,22 @@
 # %% --------------------
-import os
 import sys
 
-from dotenv import load_dotenv
-
 # local
-env_file = "d:/gwu/4 spring 2021/6501 capstone/vbd cxr/pycharm " \
-           "workspace/vbd_cxr/6_environment_files/local.env "
+BASE_DIR = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr"
 # cerberus
-# env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
+# BASE_DIR = "/home/ssebastian94/vbd_cxr"
 
-load_dotenv(env_file)
-
-# add home dir to pythonpath
-sys.path.append(os.getenv("home_dir"))
-
-# directories
-MERGED_DIR = os.getenv("MERGED_DIR")
+# add HOME DIR to PYTHONPATH
+sys.path.append(BASE_DIR)
 
 # %% --------------------start here
 import pandas as pd
 from common.utilities import multi_label_split_based_on_percentage, display_fold_distribution
+import os
 
 # %% --------------------splits for 2 class classifier
 # read train_df.csv file
-# IOU Threshold does not matter for 2 class classifier
-merged_wbf = pd.read_csv(MERGED_DIR + f"/512/unmerged/90_percent_train/train_df.csv")
+merged_wbf = pd.read_csv(f"{BASE_DIR}/1_data_split/512/unmerged/90_percent_train/train_df.csv")
 
 # %% --------------------
 # create binary class
@@ -56,14 +47,16 @@ train_df = train_df.drop(["fold"], axis=1)
 holdout_df = holdout_df.drop(["fold"], axis=1)
 
 # %% --------------------
-os.makedirs(MERGED_DIR + f"/512/unmerged/90_percent_train/2_class_classifier/90_percent",
+os.makedirs(f"{BASE_DIR}/1_data_split/512/unmerged/90_percent_train/2_class_classifier/90_percent",
             exist_ok=True)
-os.makedirs(MERGED_DIR + f"/512/unmerged/90_percent_train/2_class_classifier/10_percent",
+os.makedirs(f"{BASE_DIR}/1_data_split/512/unmerged/90_percent_train/2_class_classifier/10_percent",
             exist_ok=True)
 
 # %% --------------------
 # save in csv
-train_df.to_csv(MERGED_DIR + f"/512/unmerged/90_percent_train/2_class_classifier/90_percent/train_df"
-                             f".csv", index=False)
-holdout_df.to_csv(MERGED_DIR + f"/512/unmerged/90_percent_train/2_class_classifier/10_percent"
-                               "/holdout_df.csv", index=False)
+train_df.to_csv(
+    f"{BASE_DIR}/1_data_split/512/unmerged/90_percent_train/2_class_classifier/90_percent/train_df.csv",
+    index=False)
+holdout_df.to_csv(
+    f"{BASE_DIR}/1_data_split/512/unmerged/90_percent_train/2_class_classifier/10_percent/holdout_df.csv",
+    index=False)

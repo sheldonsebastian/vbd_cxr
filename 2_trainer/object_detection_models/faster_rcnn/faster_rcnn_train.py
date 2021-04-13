@@ -155,3 +155,6 @@ cfg.mAP_conf_thr = 0.10
 trainer = CustomTrainLoop(cfg)
 trainer.resume_or_load(resume=False)
 trainer.train()
+
+# %% --------------------
+# TODO move the saved model to 3_saved_models folder

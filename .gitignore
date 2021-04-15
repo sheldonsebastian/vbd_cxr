@@ -127,12 +127,8 @@ dmypy.json
 *.pth
 *.jpeg
 .idea/
-/8_tensorboard_logs/
 environment.yml
-/detectron2_codes/detectron2-windows/
-/detectron2_codes/faster_rcnn/archives/
-/5_models/object_detection/archives/
-/detectron2_codes/faster_rcnn/train/archives/
-detectron2_codes/retinanet/train/final/retinanet_best.pth
-detectron2_codes/faster_rcnn/train/final/faster_rcnn_best.pth
 slurm/
+/common/detectron2-windows/
+2_data_split/000d68e42b71d3eac10ccc077aba07c1.dicom
+2_data_split/abc.py

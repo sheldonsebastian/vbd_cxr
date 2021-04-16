@@ -1,0 +1,3 @@
+
+Version 1
+https://www.kaggle.com/guluna/10percent-train-as-test-512images?scriptVersionId=57768659

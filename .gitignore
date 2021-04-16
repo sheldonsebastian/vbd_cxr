@@ -133,3 +133,4 @@ slurm/
 2_data_split/000d68e42b71d3eac10ccc077aba07c1.dicom
 2_data_split/abc.py
 *.png
+7_deployment_files/Flask/.DS_Store

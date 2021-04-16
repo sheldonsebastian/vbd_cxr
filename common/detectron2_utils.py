@@ -26,10 +26,10 @@ from detectron2.structures.boxes import BoxMode
 from detectron2.utils.logger import log_every_n_seconds
 from detectron2.utils.visualizer import Visualizer
 
-# %% --------------------DATASET PREPARATION
 from common.detectron2_evaluator import Detectron2_ZFTurbo_mAP
 
 
+# %% --------------------DATASET PREPARATION
 def get_train_detectron_dataset(img_dir, annot_path, external_dir=None, external_annot_path=None):
     """
     Converts training data containing annotations into format compatible for detectron2
@@ -53,9 +53,9 @@ def get_train_detectron_dataset(img_dir, annot_path, external_dir=None, external
 
         img_data = df[df["image_id"] == uid]
 
-        record = {"file_name": os.path.join(img_dir, uid + ".jpeg"), "image_id": uid,
-                  "height": int(img_data.transformed_height.values[0]),
-                  "width": int(img_data.transformed_width.values[0])}
+        record = {"file_name": os.path.join(img_dir, uid + ".png"), "image_id": uid,
+                  "height": 512,
+                  "width": 512}
 
         objs = []
 
@@ -89,9 +89,9 @@ def get_train_detectron_dataset(img_dir, annot_path, external_dir=None, external
 
             img_data = external_df[external_df["image_id"] == uid]
 
-            record = {"file_name": os.path.join(external_dir, uid + ".jpeg"), "image_id": uid,
-                      "height": int(img_data.transformed_height.values[0]),
-                      "width": int(img_data.transformed_width.values[0])}
+            record = {"file_name": os.path.join(external_dir, uid + ".png"), "image_id": uid,
+                      "height": 512,
+                      "width": 512}
 
             objs = []
 
@@ -131,9 +131,9 @@ def get_test_detectron_dataset(img_dir, dataframe_path):
     for uid in uids:
         img_data = df[df["image_id"] == uid]
 
-        record = {"file_name": os.path.join(img_dir, uid + ".jpeg"), "image_id": uid,
-                  "height": int(img_data.transformed_height.values[0]),
-                  "width": int(img_data.transformed_width.values[0])}
+        record = {"file_name": os.path.join(img_dir, uid + ".png"), "image_id": uid,
+                  "height": 512,
+                  "width": 512}
 
         # append record to dataset
         dataset_dicts.append(record)
@@ -167,7 +167,7 @@ class AlbumentationsMapper:
         self.is_train = is_train
 
         mode = "training" if is_train else "inference"
-        print(f"AlbumentationsMapper Augmentation used in {mode}: {self.transform}")
+        print(f"Albumentations Mapper Augmentation used in {mode}: {self.transform}")
 
     # make the class itself callable
     def __call__(self, dataset_dict):
@@ -190,6 +190,7 @@ class AlbumentationsMapper:
         category_id = np.arange(len(dataset_dict["annotations"]))
 
         # transform the input image
+        print(dataset_dict["file_name"])
         transformed = self.transform(image=image, bboxes=bboxes, category_ids=category_id)
 
         # extract transformed image

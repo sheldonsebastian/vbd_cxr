@@ -3,6 +3,7 @@ import pandas as pd
 from ensemble_boxes import weighted_boxes_fusion
 
 
+# %% --------------------
 def check_normalization(normalized_bb, technique, o_id):
     normalized_bb_temp = normalized_bb.values
     # normalization checker to check if values are b/w 0 and 1
@@ -17,6 +18,7 @@ def check_normalization(normalized_bb, technique, o_id):
         return None
 
 
+# %% --------------------
 def ensemble_object_detectors(list_object_detection_predictions, original_image_df, height_col,
                               width_col, iou_thr, weights_list):
     """this function uses zfturbos implementation of weighted boxes fusion"""
@@ -39,7 +41,7 @@ def ensemble_object_detectors(list_object_detection_predictions, original_image_
 
         # iterate through each prediction list and get the image id
         for prediction, technique, weights in zip(list_object_detection_predictions,
-                                                  ["Retinanet", "YOLOv5"],
+                                                  ["Faster RCNN", "YOLOv5"],
                                                   weights_list):
             image_data = prediction[prediction["image_id"] == o_id]
 
@@ -54,12 +56,10 @@ def ensemble_object_detectors(list_object_detection_predictions, original_image_
             labels = image_data.loc[:, "label"]
             scores = image_data.loc[:, "confidence_score"]
 
-            # TODO fix this ugly hack
-            if normalized is not None:
-                normalized_arr.append(normalized.values)
-                labels_arr.append(labels.values)
-                scores_arr.append(scores.values)
-                weights_arr.append(weights)
+            normalized_arr.append(normalized.values)
+            labels_arr.append(labels.values)
+            scores_arr.append(scores.values)
+            weights_arr.append(weights)
 
         # zfturbo library
         boxes_merged, scores_merged, labels_merged = weighted_boxes_fusion(normalized_arr,

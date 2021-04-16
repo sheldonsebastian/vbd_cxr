@@ -1,23 +1,15 @@
 # %% --------------------
-import os
 import sys
 
-from dotenv import load_dotenv
-
 # local
-# env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-#            "Workspace/vbd_cxr/6_environment_files/local.env "
-
+# BASE_DIR = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr"
 # cerberus
-env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
-
-load_dotenv(env_file)
+BASE_DIR = "/home/ssebastian94/vbd_cxr"
 
 # add HOME DIR to PYTHONPATH
-sys.path.append(os.getenv("HOME_DIR"))
+sys.path.append(BASE_DIR)
 
 # %% --------------------START HERE
-# perform for validation and holdout sets for respected fold
 import albumentations
 import torch
 from common.CustomDatasets import VBD_CXR_2_Class_Test
@@ -25,6 +17,7 @@ from common.classifier_models import initialize_model
 from datetime import datetime
 import pandas as pd
 from pathlib import Path
+import os
 
 # %% --------------------set seeds
 # seed = 42
@@ -35,38 +28,26 @@ from pathlib import Path
 # torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
-IMAGE_DIR = os.getenv("IMAGE_DIR")
-MERGED_DIR = os.getenv("MERGED_DIR")
-SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
-VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
+TEST_DIR = f"{BASE_DIR}/input_data/512x512"
+TEST_IMAGE_DIR = f"{BASE_DIR}/input_data/512x512/test"
+SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
 
 # %% --------------------
 # generic transformer used for validation data and holdout data
 generic_transformer = albumentations.Compose([
-    # resize operation
-    albumentations.Resize(height=512, width=512, always_apply=True),
-
     # this normalization is performed based on ImageNet statistics per channel
     albumentations.augmentations.transforms.Normalize()
 ])
 
 # %% --------------------DATASET
-# create holdout dataset
-# holdout does not have fold, thus use all data
-# holdout was 10% split
-holdout_data_set = VBD_CXR_2_Class_Test(IMAGE_DIR,
-                                        MERGED_DIR + "/512/unmerged/10_percent_holdout/holdout_df"
-                                                     ".csv",
-                                        majority_transformations=generic_transformer,
-                                        clahe_normalize=False,
-                                        histogram_normalize=False)
+test_data_set = VBD_CXR_2_Class_Test(TEST_IMAGE_DIR, f"{TEST_DIR}/test.csv", generic_transformer)
 
 # %% --------------------DATALOADER
 BATCH_SIZE = 32
-workers = int(os.getenv("NUM_WORKERS"))
+workers = 4
 
 # create dataloader
-holdout_data_loader = torch.utils.data.DataLoader(holdout_data_set, batch_size=BATCH_SIZE,
+test_data_loader = torch.utils.data.DataLoader(test_data_set, batch_size=BATCH_SIZE,
                                                   shuffle=False, num_workers=workers)
 
 # %% --------------------
@@ -75,10 +56,6 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 print(device)
 
 # %% --------------------MODEL INSTANCE
-# create model instance
-# model name
-model_name = "vgg19"
-
 # feature_extract_param = True means all layers frozen except the last user added layers
 # feature_extract_param = False means all layers unfrozen and entire network learns new weights
 # and biases
@@ -89,11 +66,11 @@ feature_extract_param = True
 num_classes = 1
 
 # initializing model
-model, params_to_update = initialize_model(model_name, num_classes, feature_extract_param,
+model, params_to_update = initialize_model("vgg19", num_classes, feature_extract_param,
                                            use_pretrained=True)
 
 # load model weights
-saved_model_path = f"{SAVED_MODEL_DIR}/2_class_classifier/{model_name}/{model_name}.pt"
+saved_model_path = f"{SAVED_MODEL_DIRECTORY}/vgg19.pt"
 model.load_state_dict(
     torch.load(saved_model_path, map_location=torch.device(device))["model_state_dict"])
 
@@ -107,7 +84,7 @@ model = model.to(device)
 
 # %% --------------------
 # make predictions for holdout data
-print("Holdout predictions started")
+print("Test predictions started")
 # start time
 start = datetime.now()
 
@@ -116,10 +93,10 @@ image_id_arr = []
 pred_label_arr = []
 # save probabilities and targets
 pred_prob_arr = []
-holdout_iter = 0
+test_iter = 0
 
 with torch.no_grad():
-    for image_ids, images in holdout_data_loader:
+    for image_ids, images in test_data_loader:
         # send the input to device
         images = images.to(device)
 
@@ -140,24 +117,24 @@ with torch.no_grad():
             pred_label_arr.append(p.item())
             pred_prob_arr.append(prob.item())
 
-        if holdout_iter % 50 == 0:
-            print(f"Iteration #: {holdout_iter}")
+        if test_iter % 50 == 0:
+            print(f"Iteration #: {test_iter}")
 
-        holdout_iter += 1
+        test_iter += 1
 
 print("Predictions Complete")
 print("End time:" + str(datetime.now() - start))
 
-holdout_predictions = pd.DataFrame({"image_id": image_id_arr,
+test_predictions = pd.DataFrame({"image_id": image_id_arr,
                                     "target": pred_label_arr,
                                     "probabilities": pred_prob_arr})
 
 # %% --------------------
-# holdout path
-holdout_path = f"{VALIDATION_PREDICTION_DIR}/pipeline_10_percent/2_class_classifier/predictions"
+# test path
+test_path = f"{BASE_DIR}/6_kaggle_test_files/files"
 
-if not Path(holdout_path).exists():
-    os.makedirs(holdout_path)
+if not Path(test_path).exists():
+    os.makedirs(test_path)
 
 # write csv file
-holdout_predictions.to_csv(holdout_path + f"/holdout_{model_name}.csv", index=False)
+test_predictions.to_csv(test_path + "/test_vgg19.csv", index=False)

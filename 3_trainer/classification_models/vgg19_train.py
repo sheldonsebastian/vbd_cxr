@@ -1,21 +1,14 @@
 # %% --------------------
 import os
 import sys
-from datetime import datetime
-
-from dotenv import load_dotenv
 
 # local
-# env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-#            "Workspace/vbd_cxr/6_environment_files/local.env "
-
+# BASE_DIR = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr"
 # cerberus
-env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
-
-load_dotenv(env_file)
+BASE_DIR = "/home/ssebastian94/vbd_cxr"
 
 # add HOME DIR to PYTHONPATH
-sys.path.append(os.getenv("HOME_DIR"))
+sys.path.append(BASE_DIR)
 
 # %% --------------------START HERE
 # https://www.kaggle.com/corochann/vinbigdata-2-class-classifier-complete-pipeline
@@ -32,6 +25,7 @@ from collections import Counter
 from torch.utils import tensorboard
 from pathlib import Path
 import shutil
+from datetime import datetime
 
 # %% --------------------set seeds
 # seed = 42
@@ -42,17 +36,16 @@ import shutil
 # torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
-IMAGE_DIR = os.getenv("IMAGE_DIR")
-MERGED_DIR = os.getenv("MERGED_DIR")
-SAVED_MODEL_DIR = os.getenv("SAVED_MODEL_DIR")
-TENSORBOARD_DIR = os.getenv("TENSORBOARD_DIR")
-
-# model name
-model_name = "vgg19"
+IMAGE_DIR = f"{BASE_DIR}/input_data/512x512/train"
+SPLIT_DIR = f"{BASE_DIR}/2_data_split"
+SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
 
 # %% --------------------TENSORBOARD DIRECTORY INITIALIZATION
-train_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/{model_name}/train"
-validation_tensorboard_dir = f"{TENSORBOARD_DIR}/2_class_classifier/{model_name}/validation"
+train_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/vgg19/train"
+os.makedirs(train_tensorboard_dir, exist_ok=True)
+
+validation_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/vgg19/validation"
+os.makedirs(validation_tensorboard_dir, exist_ok=True)
 
 # if logs already exist then delete them
 train_dirpath = Path(train_tensorboard_dir)
@@ -76,18 +69,12 @@ train_transformer = albumentations.Compose([
     # horizontal flipping
     albumentations.augmentations.transforms.HorizontalFlip(p=0.4),
 
-    # resize operation
-    albumentations.Resize(height=512, width=512, always_apply=True),
-
     # this normalization is performed based on ImageNet statistics per channel
     # mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)
     albumentations.augmentations.transforms.Normalize()
 ])
 
 validation_transformer = albumentations.Compose([
-    # resize operation
-    albumentations.Resize(height=512, width=512, always_apply=True),
-
     # this normalization is performed based on ImageNet statistics per channel
     # mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)
     albumentations.augmentations.transforms.Normalize()
@@ -97,16 +84,15 @@ validation_transformer = albumentations.Compose([
 # 1 = abnormal
 # 0 = normal
 train_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                       MERGED_DIR + "/512/unmerged/90_percent_train"
-                                                    "/2_class_classifier"
-                                                    "/90_percent/train_df.csv",
-                                       majority_transformations=train_transformer)
+                                       SPLIT_DIR + "/512/unmerged/90_percent_train"
+                                                   "/2_class_classifier"
+                                                   "/90_percent/train_df.csv", train_transformer)
 
 validation_data_set = VBD_CXR_2_Class_Train(IMAGE_DIR,
-                                            MERGED_DIR + "/512/unmerged/90_percent_train"
-                                                         "/2_class_classifier"
-                                                         "/10_percent/holdout_df.csv",
-                                            majority_transformations=validation_transformer)
+                                            SPLIT_DIR + "/512/unmerged/90_percent_train"
+                                                        "/2_class_classifier"
+                                                        "/10_percent/holdout_df.csv",
+                                            validation_transformer)
 
 # %% --------------------WEIGHTED RANDOM SAMPLER
 # weighted random sampler to handle class imbalance
@@ -131,9 +117,9 @@ sampler = WeightedRandomSampler(weights=target_weight, num_samples=len(train_dat
 
 # %% --------------------DATALOADER
 BATCH_SIZE = 8
-workers = int(os.getenv("NUM_WORKERS"))
+workers = 4
 
-# # perform weighted random sampler for training only. NOTE: sampler shuffles the data by default
+# perform weighted random sampler for training only. NOTE: sampler shuffles the data by default
 train_data_loader = torch.utils.data.DataLoader(
     train_data_set, batch_size=BATCH_SIZE, num_workers=workers, sampler=sampler)
 
@@ -182,7 +168,7 @@ feature_extract_param = True
 num_classes = 1
 
 # input_size is minimum constraint
-model, params_to_update = initialize_model(model_name, num_classes, feature_extract_param,
+model, params_to_update = initialize_model("vgg19", num_classes, feature_extract_param,
                                            use_pretrained=True)
 
 # %% --------------------HYPER-PARAMETERS
@@ -217,13 +203,8 @@ valid_loss_arr = []
 lowest_loss = 10000000
 best_model_found_epoch = 0
 
-# if directory does not exist then create it
-saved_model_dir = Path(f"{SAVED_MODEL_DIR}/2_class_classifier/{model_name}")
-
-if not saved_model_dir.exists():
-    os.makedirs(saved_model_dir)
-
-saved_model_path = f"{saved_model_dir}/{model_name}.pt"
+os.makedirs(SAVED_MODEL_DIRECTORY, exist_ok=True)
+saved_model_path = f"{SAVED_MODEL_DIRECTORY}/vgg19.pt"
 
 print("Program started")
 # start time

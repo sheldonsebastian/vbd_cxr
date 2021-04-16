@@ -1,24 +1,17 @@
 # %% --------------------
-import os
 import sys
 
-from dotenv import load_dotenv
-
 # local
-env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-           "Workspace/vbd_cxr/6_environment_files/local.env "
+BASE_DIR = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr"
 # cerberus
-# env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
-
-load_dotenv(env_file)
+# BASE_DIR = "/home/ssebastian94/vbd_cxr"
 
 # add HOME DIR to PYTHONPATH
-sys.path.append(os.getenv("HOME_DIR"))
+sys.path.append(BASE_DIR)
 
 # %% --------------------
 # DIRECTORIES
-VALIDATION_PREDICTION_DIR = os.getenv("VALIDATION_PREDICTION_DIR")
-MERGED_DIR = os.getenv("MERGED_DIR")
+SPLIT_DIR = f"{BASE_DIR}/2_data_split"
 
 # %% --------------------START HERE
 from sklearn.metrics import f1_score, roc_auc_score, accuracy_score, \
@@ -29,18 +22,13 @@ pd.set_option('display.max_columns', None)
 
 print("Holdout 10% data")
 
-model_name = "vgg19"
-
 # %% --------------------
 # read predictions
-holdout_pred = pd.read_csv(
-    VALIDATION_PREDICTION_DIR + f"/pipeline_10_percent/2_class_classifier/predictions/holdout_{model_name}.csv")
-holdout_pred = pd.read_csv("D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr/final_outputs/holdout/holdout_binary_ensembled.csv")
-
+holdout_pred = pd.read_csv(f"{BASE_DIR}/5_inference/0_predictions/holdout_vgg19.csv")
 holdout_pred["ground_truth"] = -1
 
 # read gt
-holdout_gt = pd.read_csv(MERGED_DIR + f"/512/unmerged/10_percent_holdout/holdout_df.csv")
+holdout_gt = pd.read_csv(f"{SPLIT_DIR}/512/unmerged/10_percent_holdout/holdout_df.csv")
 
 # %% --------------------
 # add GT to prediction dataframe

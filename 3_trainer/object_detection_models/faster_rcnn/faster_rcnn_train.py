@@ -1,20 +1,13 @@
 # %% --------------------
-import os
 import sys
 
-from dotenv import load_dotenv
-
 # local
-# env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-#            "Workspace/vbd_cxr/6_environment_files/local.env "
-
+# BASE_DIR = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr"
 # cerberus
-env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
-
-load_dotenv(env_file)
+BASE_DIR = "/home/ssebastian94/vbd_cxr"
 
 # add HOME DIR to PYTHONPATH
-sys.path.append(os.getenv("HOME_DIR"))
+sys.path.append(BASE_DIR)
 
 # %% --------------------IMPORTS
 # https://www.kaggle.com/corochann/vinbigdata-detectron2-train
@@ -28,6 +21,8 @@ from detectron2.config.config import CfgNode as CN
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
 from common.detectron_config_manager import Flags
+import os
+import shutil
 
 # %% --------------------set seeds
 # seed = 42
@@ -38,22 +33,17 @@ from common.detectron_config_manager import Flags
 # torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
-IMAGE_DIR = os.getenv("IMAGE_DIR")
-# MERGED_DIR contains GT dataframes
-MERGED_DIR = os.getenv("MERGED_DIR")
-DETECTRON2_DIR = os.getenv("DETECTRON2_DIR")
-WORKERS = int(os.getenv("NUM_WORKERS"))
-EXTERNAL_DIR = os.getenv("EXTERNAL_DIR")
+IMAGE_DIR = f"{BASE_DIR}/input_data/512x512/train"
+EXTERNAL_DIR = f"{BASE_DIR}/input_data/external/512"
+SPLIT_DIR = f"{BASE_DIR}/2_data_split"
+SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
 
 # %% --------------------
-# DYNAMIC
-train_gt_dataframe = MERGED_DIR + f"/512/unmerged/90_percent_train/object_detection/90_percent" \
-                                  f"/train_df.csv"
-val_gt_dataframe = MERGED_DIR + f"/512/unmerged/90_percent_train/object_detection/10_percent" \
-                                f"/holdout_df.csv"
+train_gt_dataframe = f"{SPLIT_DIR}/512/unmerged/90_percent_train/object_detection/90_percent/train_df.csv"
+val_gt_dataframe = f"{SPLIT_DIR}/512/unmerged/90_percent_train/object_detection/10_percent/holdout_df.csv"
 external_gt_dataframe = EXTERNAL_DIR + "/transformed_train.csv"
-flag_path = DETECTRON2_DIR + "/faster_rcnn/configurations/v5.yaml"
-output_dir = DETECTRON2_DIR + f"/faster_rcnn/train/final/"
+flag_path = f"{BASE_DIR}/3_trainer/object_detection_models/faster_rcnn/configurations/v5.yaml"
+output_dir = f"{BASE_DIR}/3_trainer/object_detection_models/faster_rcnn/faster_rcnn_output"
 
 # %% --------------------READ FLAGS
 flag = Flags().load_yaml(flag_path)
@@ -141,7 +131,7 @@ cfg.DATASETS.TEST = ("validation",)
 cfg.TEST.EVAL_PERIOD = validation_iteration
 
 # define num worker for dataloader
-cfg.DATALOADER.NUM_WORKERS = WORKERS
+cfg.DATALOADER.NUM_WORKERS = 4
 
 cfg.DATALOADER.SAMPLER_TRAIN = "RepeatFactorTrainingSampler"
 # anything under 1000 frequency will be repeated more often
@@ -157,4 +147,8 @@ trainer.resume_or_load(resume=False)
 trainer.train()
 
 # %% --------------------
-# TODO move the saved model to 3_saved_models folder
+# move the saved model to 4_saved_models folder
+# https://pythonguides.com/python-copy-file/
+src = f"{output_dir}/model_final.pth"
+dst = f'{SAVED_MODEL_DIRECTORY}/faster_rcnn.pth'
+shutil.copyfile(src, dst)

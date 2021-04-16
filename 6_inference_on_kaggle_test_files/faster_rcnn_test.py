@@ -1,20 +1,13 @@
 # %% --------------------
-import os
 import sys
 
-from dotenv import load_dotenv
-
 # local
-# env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-#            "Workspace/vbd_cxr/6_environment_files/local.env "
-
+# BASE_DIR = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr"
 # cerberus
-env_file = "/home/ssebastian94/vbd_cxr/6_environment_files/cerberus.env"
-
-load_dotenv(env_file)
+BASE_DIR = "/home/ssebastian94/vbd_cxr"
 
 # add HOME DIR to PYTHONPATH
-sys.path.append(os.getenv("HOME_DIR"))
+sys.path.append(BASE_DIR)
 
 # %% --------------------IMPORTS
 # https://www.kaggle.com/corochann/vinbigdata-detectron2-train
@@ -22,7 +15,6 @@ import cv2
 from detectron2.engine import DefaultPredictor
 import numpy as np
 import torch
-from detectron2.utils.logger import setup_logger
 from common.detectron2_utils import get_test_detectron_dataset, predict_batch
 from detectron2.data import DatasetCatalog, MetadataCatalog
 from detectron2.config.config import CfgNode as CN
@@ -30,31 +22,28 @@ from detectron2.config import get_cfg
 from detectron2 import model_zoo
 from common.detectron_config_manager import Flags
 import pandas as pd
-import random
+from pathlib import Path
+import os
 
 # %% --------------------set seeds
-seed = 42
-torch.manual_seed(seed)
-torch.cuda.manual_seed(seed)
-np.random.seed(seed)
-random.seed(seed)
-torch.backends.cudnn.deterministic = True
+# seed = 42
+# torch.manual_seed(seed)
+# torch.cuda.manual_seed(seed)
+# np.random.seed(seed)
+# random.seed(seed)
+# torch.backends.cudnn.deterministic = True
 
 # %% --------------------DIRECTORIES and VARIABLES
-KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
-DETECTRON2_DIR = os.getenv("DETECTRON2_DIR")
-WORKERS = int(os.getenv("NUM_WORKERS"))
+TEST_DIR = f"{BASE_DIR}/input_data/512x512"
+TEST_IMAGE_DIR = f"{BASE_DIR}/input_data/512x512/test"
+SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
 
 # %% --------------------READ DATA
-test_dataframe = KAGGLE_TEST_DIR + "/test_original_dimension.csv"
-flag_path = DETECTRON2_DIR + "/faster_rcnn/configurations/v5.yaml"
-output_dir = DETECTRON2_DIR + "/faster_rcnn/test/final"
-model_dir = DETECTRON2_DIR + "/faster_rcnn/train/final"
+flag_path = f"{BASE_DIR}/3_trainer/object_detection_models/faster_rcnn/configurations/v5.yaml"
+test_gt_dataframe = f"{TEST_DIR}/test.csv"
+
 # %% --------------------READ FLAGS
 flag = Flags().load_yaml(flag_path)
-
-# %% -------------------- SETUP LOGGER
-setup_logger(output=output_dir)
 
 # %% --------------------REGISTER DATASETs and METADATA
 thing_classes = ["Aortic enlargement", "Atelectasis", "Calcification", "Cardiomegaly",
@@ -63,9 +52,9 @@ thing_classes = ["Aortic enlargement", "Atelectasis", "Calcification", "Cardiome
                  "Pulmonary fibrosis"]
 
 # lambda is anonymous function
-# holdout dataset w/o annotations
+# test dataset w/o annotations
 DatasetCatalog.register("test",
-                        lambda: get_test_detectron_dataset(KAGGLE_TEST_DIR, test_dataframe))
+                        lambda: get_test_detectron_dataset(TEST_IMAGE_DIR, test_gt_dataframe))
 MetadataCatalog.get("test").set(thing_classes=thing_classes)
 
 # %% --------------------CONFIGURATIONS
@@ -75,14 +64,13 @@ cfg = get_cfg()
 cfg.aug_kwargs = CN(flag.get("aug_kwargs"))
 
 # update output directory
-cfg.OUTPUT_DIR = output_dir
-os.makedirs(cfg.OUTPUT_DIR, exist_ok=True)
+cfg.OUTPUT_DIR = ""
 
 # %% --------------------MODEL CONFIGURATION
 config_name = "COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml"
 cfg.merge_from_file(model_zoo.get_config_file(config_name))
 # use saved model weights
-cfg.MODEL.WEIGHTS = model_dir + "/model_final.pth"
+cfg.MODEL.WEIGHTS = SAVED_MODEL_DIRECTORY + "/faster_rcnn.pth"
 cfg.MODEL.DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 # update model anchor sizes and aspect ratio
@@ -111,21 +99,21 @@ cfg.SOLVER.IMS_PER_BATCH = batch_size
 cfg.DATASETS.TEST = ("test",)
 
 # define num worker for dataloader
-cfg.DATALOADER.NUM_WORKERS = WORKERS
+cfg.DATALOADER.NUM_WORKERS = 4
 
 # %% --------------------INFERENCE
 # this will create model and load weights and use cfg.DATASETS.TEST[0]
 predictor = DefaultPredictor(cfg)
-holdout_dataset = DatasetCatalog.get("test")
+test_dataset = DatasetCatalog.get("test")
 
 # %% --------------------
 outputs_arr = []
 
 # iterate for MAX ITERATION
-for i in range(int(np.ceil(len(holdout_dataset) / batch_size))):
+for i in range(int(np.ceil(len(test_dataset) / batch_size))):
     # get image indices
-    inds = list(range(batch_size * i, min(batch_size * (i + 1), len(holdout_dataset))))
-    dataset_dicts_batch = [holdout_dataset[i] for i in inds]
+    inds = list(range(batch_size * i, min(batch_size * (i + 1), len(test_dataset))))
+    dataset_dicts_batch = [test_dataset[i] for i in inds]
 
     # read the indices of the image
     im_list = [cv2.imread(d["file_name"]) for d in dataset_dicts_batch]
@@ -136,7 +124,7 @@ for i in range(int(np.ceil(len(holdout_dataset) / batch_size))):
     # format the batch of outputs
     for idx, output in zip(inds, outputs_list):
         # get image id
-        img_id = holdout_dataset[idx]["image_id"]
+        img_id = test_dataset[idx]["image_id"]
 
         fields = output["instances"].get_fields()
 
@@ -158,8 +146,14 @@ results = pd.DataFrame(outputs_arr,
                        columns=["image_id", "x_min", "y_min", "x_max", "y_max", "label",
                                 "confidence_score"])
 
-print("Finished Inference on Test Dataset")
+print("Finished Inference")
+
 # %% --------------------
-# NOTE THERE CAN BE IMAGE IDS WHICH ARE NOT ADDED IN PREDICTION CSV, POST PROCESSING NEEDED
+test_path = f"{BASE_DIR}/6_kaggle_test_files/files"
+if not Path(test_path).exists():
+    os.makedirs(test_path)
+
+# %% --------------------
+# NOTE THERE CAN BE IMAGE IDS WHICH ARE NOT ADDED IN PREDICTION CSV, HENCE POST PROCESSING NEEDED
 # store dataframe as csv
-results.to_csv(output_dir + "/test.csv", index=False)
+results.to_csv(f"{test_path}/test_faster_rcnn.csv", index=False)

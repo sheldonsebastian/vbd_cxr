@@ -1,0 +1,8 @@
+
+Version 4
+https://www.kaggle.com/guluna/infer-10percent-train-as-test-512images?scriptVersionId=57780593
+
+
+
+Version 1 (each BB on newline)
+https://www.kaggle.com/guluna/converting-kaggle-submsn-format-to-sheldon-format

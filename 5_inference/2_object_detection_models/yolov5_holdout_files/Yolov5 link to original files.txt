@@ -10,5 +10,5 @@ https://www.kaggle.com/guluna/infer-10percent-train-as-test-512images?scriptVers
 
 
 Conversion (Each BB on separate line)
-- Version 2
+- Version 2 (Predictions for 10% holdout)
 https://www.kaggle.com/guluna/conversion-for-ensembling/

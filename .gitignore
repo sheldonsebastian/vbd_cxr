@@ -136,3 +136,5 @@ slurm/
 7_deployment_files/Flask/.DS_Store
 .DS_Store
 6_inference_on_kaggle_test_files/.DS_Store
+.DS_Store
+6_inference_on_kaggle_test_files/.DS_Store

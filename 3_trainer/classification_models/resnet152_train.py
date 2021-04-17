@@ -41,10 +41,10 @@ SPLIT_DIR = f"{BASE_DIR}/2_data_split"
 SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
 
 # %% --------------------TENSORBOARD DIRECTORY INITIALIZATION
-train_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/resnet152/train"
+train_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/resnet152_again/train"
 os.makedirs(train_tensorboard_dir, exist_ok=True)
 
-validation_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/resnet152/validation"
+validation_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/resnet152_again/validation"
 os.makedirs(validation_tensorboard_dir, exist_ok=True)
 
 # if logs already exist then delete them
@@ -204,7 +204,7 @@ lowest_loss = 10000000
 best_model_found_epoch = 0
 
 os.makedirs(SAVED_MODEL_DIRECTORY, exist_ok=True)
-saved_model_path = f"{SAVED_MODEL_DIRECTORY}/resnet152.pt"
+saved_model_path = f"{SAVED_MODEL_DIRECTORY}/resnet152_again.pt"
 
 print("Program started")
 # start time

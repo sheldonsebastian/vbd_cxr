@@ -3,13 +3,13 @@ import albumentations
 import numpy as np
 import pandas as pd
 
-from common.utilities import get_bb_info, convert_bb_smallest_max_scale
+from common.utilities import get_bb_info
 
 
 # %% --------------------
 def extract_dimension_df(df):
     agg_df = df.groupby(["image_id"]).aggregate(
-        {"original_width": "first", "original_height": "first", "transformed_width": "first",
+        {"width": "first", "height": "first", "transformed_width": "first",
          "transformed_height": "first"}).copy()
     return agg_df
 
@@ -23,11 +23,7 @@ def resize_bb_w_h(bb_coordinates, source_width, source_height, target_width, tar
         albumentations.Resize(width=target_width, height=target_height, always_apply=True)
     ], bbox_params=albumentations.BboxParams(format='pascal_voc'))
 
-    dummy_img_arr = np.empty(shape=(source_width, source_height))
-    print(dummy_img_arr.shape)
-    print(source_width, source_height)
-    print(target_width, target_height)
-    print(bb_coordinates)
+    dummy_img_arr = np.empty(shape=(source_height, source_width))
     transformed = transform(image=dummy_img_arr, bboxes=bb_coordinates)
 
     return np.array(list(map(list, transformed["bboxes"])))[:, [0, 1, 2, 3]]
@@ -63,58 +59,6 @@ def rescaler(predicted_df, df_with_original_dimension, source_height_col, source
             source_width, source_height,
             target_width, target_height)
 
-    for i in range(len(bounding_boxes_info)):
-        # class 14 is no findings class and should be represented as 0,0,1,1
-        if bounding_boxes_info[i][4] == 14:
-            image_id_arr.append(img)
-            x_min_arr.append(0)
-            y_min_arr.append(0)
-            x_max_arr.append(1)
-            y_max_arr.append(1)
-            label_arr.append(bounding_boxes_info[i][4])
-            score_arr.append(bounding_boxes_info[i][5])
-        else:
-            image_id_arr.append(img)
-            x_min_arr.append(bounding_boxes_info[i][0])
-            y_min_arr.append(bounding_boxes_info[i][1])
-            x_max_arr.append(bounding_boxes_info[i][2])
-            y_max_arr.append(bounding_boxes_info[i][3])
-            label_arr.append(bounding_boxes_info[i][4])
-            score_arr.append(bounding_boxes_info[i][5])
-
-    scaled_data = pd.DataFrame(
-        {"image_id": image_id_arr, "x_min": x_min_arr, "y_min": y_min_arr, "x_max": x_max_arr,
-         "y_max": y_max_arr, "label": label_arr, "confidence_score": score_arr})
-
-    return scaled_data
-
-
-# %% --------------------
-def up_scaler(predicted_df, df_with_original_dimension,
-              columns=["x_min", "y_min", "x_max", "y_max", "label", "confidence_score"],
-              source_height_col="transformed_height", source_width_col="transformed_width",
-              target_height_col="original_height", target_width_col="original_width"):
-    # get the dimensions from data frame containing repeated rows of image id
-    extracted_dimension_df = extract_dimension_df(df_with_original_dimension)
-
-    image_id_arr = []
-    x_min_arr = []
-    y_min_arr = []
-    x_max_arr = []
-    y_max_arr = []
-    label_arr = []
-    score_arr = []
-
-    for img in predicted_df["image_id"].unique():
-        o_width, o_height, t_width, t_height = extracted_dimension_df.loc[
-            img, [target_width_col, target_height_col, source_width_col, source_height_col]]
-
-        bounding_boxes_info = get_bb_info(predicted_df, img, columns)
-
-        # upscale the predicted bounding boxes based on original scale and visualize it
-        bounding_boxes_info[:, [0, 1, 2, 3]] = convert_bb_smallest_max_scale(
-            bounding_boxes_info[:, [0, 1, 2, 3]], t_width, t_height, o_width, o_height)
-
         for i in range(len(bounding_boxes_info)):
             # class 14 is no findings class and should be represented as 0,0,1,1
             if bounding_boxes_info[i][4] == 14:
@@ -134,11 +78,11 @@ def up_scaler(predicted_df, df_with_original_dimension,
                 label_arr.append(bounding_boxes_info[i][4])
                 score_arr.append(bounding_boxes_info[i][5])
 
-    upscaled_data = pd.DataFrame(
+    scaled_data = pd.DataFrame(
         {"image_id": image_id_arr, "x_min": x_min_arr, "y_min": y_min_arr, "x_max": x_max_arr,
          "y_max": y_max_arr, "label": label_arr, "confidence_score": score_arr})
 
-    return upscaled_data
+    return scaled_data
 
 
 # %% --------------------

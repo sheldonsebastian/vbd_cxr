@@ -24,7 +24,8 @@ print("Holdout 10% data")
 
 # %% --------------------
 # read predictions
-holdout_pred = pd.read_csv(f"{BASE_DIR}/5_inference/0_predictions/holdout_vgg19.csv")
+holdout_pred = pd.read_csv(
+    f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_vgg19.csv")
 holdout_pred["ground_truth"] = -1
 
 # read gt

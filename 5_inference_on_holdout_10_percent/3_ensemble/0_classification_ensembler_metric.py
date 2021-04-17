@@ -18,7 +18,7 @@ pd.set_option('display.max_columns', None)
 
 # %% --------------------
 SPLIT_DIR = f"{BASE_DIR}/2_data_split"
-output_dir = f"{BASE_DIR}/5_inference/0_predictions"
+output_dir = f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions"
 
 # %% --------------------
 # read resnet152 output
@@ -45,7 +45,7 @@ combined = combined[["image_id", "probabilities"]]
 
 # %% --------------------
 # save output of classification ensemble
-combined.to_csv(output_dir + "/holdout_ensemble_resnet152_vgg19.csv", index=False)
+combined.to_csv(output_dir + "/holdout_ensemble_classification.csv", index=False)
 
 # %% --------------------EVALUATION
 print("Holdout 10% Evaluation for Ensemble of Resnet152 and VGG19")

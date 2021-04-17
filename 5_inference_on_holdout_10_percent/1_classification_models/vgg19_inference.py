@@ -135,7 +135,7 @@ holdout_predictions = pd.DataFrame({"image_id": image_id_arr,
 
 # %% --------------------
 # holdout path
-holdout_path = f"{BASE_DIR}/5_inference/0_predictions"
+holdout_path = f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions"
 
 if not Path(holdout_path).exists():
     os.makedirs(holdout_path)

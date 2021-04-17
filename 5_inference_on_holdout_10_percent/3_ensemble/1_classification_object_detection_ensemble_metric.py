@@ -15,12 +15,12 @@ from common.detectron2_post_processor_utils import post_process_conf_filter_nms,
     binary_and_object_detection_processing
 from common.mAP_utils import zfturbo_compute_mAP, normalize_bb_512
 from common.utilities_object_detection_ensembler import ensemble_object_detectors
-from common.utilities import resize_image_w_h
+from common.kaggle_utils import rescaler
 
 # %% --------------------
 # probability threshold for 2 class classifier
-upper_thr = 0.9  # more chance of having disease
-lower_thr = 0.1  # less chance of having disease
+upper_thr = 0.95  # more chance of having disease
+lower_thr = 0.05  # less chance of having disease
 
 confidence_filter_thr = 0.05
 iou_thr = 0.3
@@ -28,37 +28,29 @@ iou_thr = 0.3
 # %% --------------------
 # 2 class filter prediction
 binary_prediction = pd.read_csv(
-    f"{BASE_DIR}/5_inference/0_predictions/holdout_ensemble_resnet152_vgg19.csv")
+    f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_vgg19.csv")
 
-faster_rcnn = pd.read_csv(f"{BASE_DIR}/5_inference/0_predictions/holdout_faster_rcnn.csv")
+faster_rcnn = pd.read_csv(
+    f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_faster_rcnn.csv")
 
 # read yolo v5 output in upscaled format
-yolov5 = pd.read_csv(f"{BASE_DIR}/5_inference/0_predictions/holdout_yolov5.csv")
+yolov5 = pd.read_csv(
+    f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_yolov5.csv")
 
 # %% -------------------- GROUND TRUTH
 holdout_gt_df = pd.read_csv(
     f"{BASE_DIR}/2_data_split/512/unmerged/10_percent_holdout/holdout_df.csv")
 original_image_ids = holdout_gt_df["image_id"].unique()
 
+# %% --------------------
+# add 512x512 dimensions in GT
+holdout_gt_df["transformed_height"] = 512
+holdout_gt_df["transformed_width"] = 512
+
 # %% --------------------Downscale YOLO
 # downscale YOLOv5 predictions
-for img_id in holdout_gt_df["image_id"].unique():
-    width, height = \
-        holdout_gt_df.loc[holdout_gt_df["image_id"] == img_id, ['width', 'height']].values[0]
-
-    # first height then width: checked for image: 004dc2a50591fb5f1aaf012bffa95fd9
-    dummy_image = np.empty(shape=(height, width))
-
-    transformed_data = resize_image_w_h(df=yolov5,
-                                        image_id=img_id,
-                                        img_arr=dummy_image,
-                                        columns=['x_min', 'y_min', 'x_max', 'y_max', "label"],
-                                        width=512, height=512)
-
-    # update the bbox information
-    yolov5.loc[
-        yolov5["image_id"] == img_id, ['x_min', 'y_min', 'x_max', 'y_max', "label"]] = pd.DataFrame(
-        transformed_data["bboxes"], columns=['x_min', 'y_min', 'x_max', 'y_max', "label"]).values
+yolov5 = rescaler(yolov5, holdout_gt_df, "height", "width", "transformed_height",
+                  "transformed_width")
 
 # %% --------------------Combine outputs of predictors
 predictors = [faster_rcnn, yolov5]
@@ -95,11 +87,6 @@ for holdout_predictions in predictors:
 
     post_processed_predictors.append(validation_conf_nms)
 
-# %% --------------------
-# add 512x512 dimensions in GT
-holdout_gt_df["transformed_height"] = 512
-holdout_gt_df["transformed_width"] = 512
-
 # %% --------------------MERGE BB for post_processed_predictors
 # ensembles the outputs and also adds missing image ids
 ensembled_outputs = ensemble_object_detectors(post_processed_predictors, holdout_gt_df,
@@ -107,6 +94,7 @@ ensembled_outputs = ensemble_object_detectors(post_processed_predictors, holdout
                                               [3, 9])
 
 # %% --------------------CONF + NMS
+iou_thr = 0.3
 validation_conf_nms = post_process_conf_filter_nms(ensembled_outputs, confidence_filter_thr,
                                                    iou_thr)
 
@@ -139,9 +127,18 @@ binary_object_nms = binary_and_object_detection_processing(binary_prediction,
                                                            validation_conf_nms,
                                                            lower_thr, upper_thr)
 
+# %% --------------------
+# round to the next 3 digits to avoid normalization errors
+binary_object_nms = binary_object_nms.round(3)
+
 # %% --------------------NORMALIZE
 normalized_gt = normalize_bb_512(holdout_gt_df)
 normalized_preds_nms = normalize_bb_512(binary_object_nms)
+
+# %% --------------------
+binary_object_nms.to_csv(
+    f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_ensemble_classification_object_detection.csv",
+    index=False)
 
 # %% --------------------
 id_to_label = {

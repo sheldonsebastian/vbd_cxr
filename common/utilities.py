@@ -195,7 +195,7 @@ def convert_bb_resize_scale(bb_df, original_width, original_height, transformed_
 def bounding_box_plotter_side_to_side(img_as_arr, img_id, bounding_boxes_left,
                                       bounding_boxes_right, left_title, right_title, label2color,
                                       save_title_or_plot="plot"):
-    fig, (ax1, ax2) = plt.subplots(1, 2, constrained_layout=True)
+    fig, (ax1, ax2) = plt.subplots(1, 2)
 
     for bb, img, ax, title in zip([bounding_boxes_left, bounding_boxes_right],
                                   [img_as_arr, img_as_arr], [ax1, ax2], [left_title, right_title]):

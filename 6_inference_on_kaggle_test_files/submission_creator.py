@@ -1,76 +1,166 @@
 # %% --------------------
-import os
 import sys
 
-from dotenv import load_dotenv
-
 # local
-env_file = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm " \
-           "Workspace/vbd_cxr/6_environment_files/local.env "
-
-load_dotenv(env_file)
+BASE_DIR = "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm Workspace/vbd_cxr"
 
 # add HOME DIR to PYTHONPATH
-sys.path.append(os.getenv("HOME_DIR"))
+sys.path.append(BASE_DIR)
 
 # %% --------------------imports
 import pandas as pd
+import numpy as np
 from common.detectron2_post_processor_utils import post_process_conf_filter_nms, \
     binary_and_object_detection_processing
-from common.kaggle_utils import submission_file_creator, up_scaler
+from common.kaggle_utils import submission_file_creator, rescaler
+from common.utilities_object_detection_ensembler import ensemble_object_detectors
+import time
 
-# %% --------------------directories
-DETECTRON2_DIR = os.getenv("DETECTRON2_DIR")
-KAGGLE_TEST_DIR = os.getenv("KAGGLE_TEST_DIR")
-LOCAL_TEST_DIR = os.getenv("TEST_DIR")
-output_directory = DETECTRON2_DIR + "/post_processing_local/submissions"
+start = time.time()
 
 # %% --------------------
 # probability threshold for 2 class classifier
-upper_thr = 0.9  # more chance of having disease
-lower_thr = 0.1  # less chance of having disease
+upper_thr = 0.95  # more chance of having disease
+lower_thr = 0.05  # less chance of having disease
 
-obj_det_conf_thr = 0.05
-iou_threshold = 0.3
+confidence_filter_thr = 0.05
+iou_thr = 0.3
 
 # %% --------------------read the predictions
-# read binary classifier outputs
-binary_prediction = pd.read_csv(
-    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-    "Workspace/vbd_cxr/final_outputs/test_predictions/test_2_class_ensembled_resnet_152_vgg_19.csv")
+resnet152 = pd.read_csv(
+    f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_2_class_resnet152.csv")
+vgg19 = pd.read_csv(f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_2_class_vgg19.csv")
+faster_rcnn = pd.read_csv(f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_faster_rcnn.csv")
+yolov5 = pd.read_csv(f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_yolov5.csv")
 
-# read object detection outputs
-object_detection_prediction = pd.read_csv(
-    "D:/GWU/4 Spring 2021/6501 Capstone/VBD CXR/PyCharm "
-    "Workspace/vbd_cxr/final_outputs/test_predictions"
-    "/test_ensemble_faster_rcnn_yolov5_311.csv")
+# %% --------------------ENSEMBLE CLASSIFICATION MODELS
+ensembled_classification = vgg19.copy(deep=True)
+ensembled_classification = ensembled_classification.drop(columns=["target"])
+
+# average probability of two models
+ensembled_classification["probabilities"] = (vgg19["probabilities"] + resnet152[
+    "probabilities"]) / 2
+
+print("Finished Classification Ensembling")
 
 # %% --------------------
-original_dataset = pd.read_csv(KAGGLE_TEST_DIR + "/test_original_dimension.csv")
+# read the test csv that contains original dimensions
+original_dataset = pd.read_csv(f"{BASE_DIR}/input_data/512x512/test.csv")
 
 # get all image ids in original dataset
 original_image_ids = list(original_dataset["image_id"].unique())
 
-# %% --------------------CONFIDENCE + NMS
-# will also contain no findings class with 100% probability
-nms_predictions = post_process_conf_filter_nms(object_detection_prediction,
-                                               obj_det_conf_thr,
-                                               iou_threshold)
+# %% --------------------
+# add 512x512 dimensions in GT
+original_dataset["transformed_height"] = 512
+original_dataset["transformed_width"] = 512
+
+# %% --------------------Downscale YOLO
+# downscale YOLOv5 predictions
+yolov5 = rescaler(yolov5, original_dataset, "height", "width", "transformed_height",
+                  "transformed_width")
+print("Finished Downscaling YOLOv5")
+
+# %% --------------------ENSEMBLE OBJECT DETECTION MODELS
+predictors = [faster_rcnn, yolov5]
+
+# %% --------------------POST PROCESSING
+post_processed_predictors = []
+# apply post processing individually to each predictor
+for test_predictions in predictors:
+    test_conf_nms = post_process_conf_filter_nms(test_predictions, confidence_filter_thr,
+                                                 iou_thr)
+
+    # ids which failed confidence
+    normal_ids_nms = np.setdiff1d(original_image_ids,
+                                  test_conf_nms["image_id"].unique())
+    print(f"NMS normal ids count: {len(normal_ids_nms)}")
+    normal_pred_nms = []
+    # add normal ids to dataframe
+    for normal_id in set(normal_ids_nms):
+        normal_pred_nms.append({
+            "image_id": normal_id,
+            "x_min": 0,
+            "y_min": 0,
+            "x_max": 1,
+            "y_max": 1,
+            "label": 14,
+            "confidence_score": 1
+        })
+
+    normal_pred_df_nms = pd.DataFrame(normal_pred_nms,
+                                      columns=["image_id", "x_min", "y_min", "x_max", "y_max",
+                                               "label",
+                                               "confidence_score"])
+    test_conf_nms = test_conf_nms.append(normal_pred_df_nms)
+
+    post_processed_predictors.append(test_conf_nms)
+
+# %% --------------------MERGE BB for post_processed_predictors
+# ensembles the outputs and also adds missing image ids
+ensembled_outputs = ensemble_object_detectors(post_processed_predictors, original_dataset,
+                                              "transformed_height", "transformed_width", iou_thr,
+                                              [3, 9])
+print("Finished WBF process")
+
+# %% --------------------CONF + NMS (POST PROCESSING)
+test_conf_nms = post_process_conf_filter_nms(ensembled_outputs, confidence_filter_thr,
+                                             iou_thr)
+
+# ids which failed confidence
+normal_ids_nms = np.setdiff1d(original_image_ids,
+                              test_conf_nms["image_id"].unique())
+print(f"NMS normal ids count: {len(normal_ids_nms)}")
+normal_pred_nms = []
+# add normal ids to dataframe
+for normal_id in set(normal_ids_nms):
+    normal_pred_nms.append({
+        "image_id": normal_id,
+        "x_min": 0,
+        "y_min": 0,
+        "x_max": 1,
+        "y_max": 1,
+        "label": 14,
+        "confidence_score": 1
+    })
+
+normal_pred_df_nms = pd.DataFrame(normal_pred_nms,
+                                  columns=["image_id", "x_min", "y_min", "x_max", "y_max",
+                                           "label",
+                                           "confidence_score"])
+test_conf_nms = test_conf_nms.append(normal_pred_df_nms)
 
 # %% --------------------
 # combine 2 class classifier and object detection predictions
-binary_object_nms = binary_and_object_detection_processing(binary_prediction, nms_predictions,
+binary_object_nms = binary_and_object_detection_processing(ensembled_classification,
+                                                           test_conf_nms,
                                                            lower_thr, upper_thr)
+print("Finished performing thresholding logic")
 
-# %% --------------------submission prepper
-# upscale
-upscaled_nms = up_scaler(binary_object_nms, original_dataset)
+# %% --------------------
+# round to the next 3 digits to avoid normalization errors
+binary_object_nms = binary_object_nms.round(3)
+
+# %% --------------------
+upscaled_predictions = rescaler(binary_object_nms, original_dataset,
+                                source_height_col="transformed_height",
+                                source_width_col="transformed_width",
+                                target_height_col="height", target_width_col="width")
+
+print("Finished Upscaling the predictions")
 
 # %% --------------------
 # formatter
-formatted_nms = submission_file_creator(upscaled_nms, "x_min", "y_min", "x_max", "y_max",
+formatted_nms = submission_file_creator(upscaled_predictions, "x_min", "y_min", "x_max", "y_max",
                                         "label",
                                         "confidence_score")
 
 # %% --------------------
-formatted_nms.to_csv(output_directory + "/resnet152_vgg19_fasterrcnn_yolov5_311_iou_03.csv", index=False)
+formatted_nms.to_csv(f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/best_submission.csv",
+                     index=False)
+
+# %% --------------------
+end = time.time() - start
+
+# %% --------------------
+print(end)

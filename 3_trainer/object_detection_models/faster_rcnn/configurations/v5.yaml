@@ -11,7 +11,7 @@ aug_kwargs:
     p: 0.5
   ShiftScaleRotate:
     scale_limit: 0.15
-    rotate_limit: 10
+    rotate_limit: 0
     p: 0.5
 
 # OPTIMIZER

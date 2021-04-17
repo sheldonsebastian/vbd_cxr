@@ -25,7 +25,8 @@ original_image_ids = holdout_gt_df["image_id"].unique()
 
 # %% --------------------
 # read the predicted validation csv
-holdout_predictions = pd.read_csv(f"{BASE_DIR}/5_inference/0_predictions/holdout_faster_rcnn.csv")
+holdout_predictions = pd.read_csv(
+    f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_faster_rcnn.csv")
 
 # %% --------------------
 confidence_filter_thr = 0.05

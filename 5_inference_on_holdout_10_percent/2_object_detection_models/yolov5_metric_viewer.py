@@ -14,7 +14,7 @@ import pandas as pd
 from common.mAP_utils import zfturbo_compute_mAP, normalize_bb_512
 from common.detectron2_post_processor_utils import post_process_conf_filter_nms
 import numpy as np
-from common.utilities import resize_image_w_h
+from common.kaggle_utils import rescaler
 
 # %% --------------------DIRECTORIES
 SPLIT_DIR = f"{BASE_DIR}/2_data_split"
@@ -25,30 +25,20 @@ holdout_gt_df = pd.read_csv(SPLIT_DIR + "/512/unmerged/10_percent_holdout/holdou
 original_image_ids = holdout_gt_df["image_id"].unique()
 
 # %% --------------------
-# read the predicted validation csv
-holdout_predictions = pd.read_csv(f"{BASE_DIR}/5_inference/0_predictions/holdout_yolov5.csv")
+# add 512x512 dimensions in GT
+holdout_gt_df["transformed_height"] = 512
+holdout_gt_df["transformed_width"] = 512
 
 # %% --------------------
+# read the predicted validation csv
+holdout_predictions = pd.read_csv(
+    f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_yolov5.csv")
+
+# %% --------------------Downscale YOLO
 # downscale YOLOv5 predictions
-for img_id in holdout_gt_df["image_id"].unique():
-    width, height = \
-        holdout_gt_df.loc[holdout_gt_df["image_id"] == img_id, ['width', 'height']].values[0]
-
-    # first height then width: checked for image: 004dc2a50591fb5f1aaf012bffa95fd9
-    dummy_image = np.empty(shape=(height, width))
-
-    transformed_data = resize_image_w_h(df=holdout_predictions,
-                                        image_id=img_id,
-                                        img_arr=dummy_image,
-                                        columns=['x_min', 'y_min', 'x_max', 'y_max', "label"],
-                                        width=512, height=512)
-
-    # update the bbox information
-    holdout_predictions.loc[
-        holdout_predictions["image_id"] == img_id, ['x_min', 'y_min', 'x_max', 'y_max',
-                                                    "label"]] = \
-        pd.DataFrame(transformed_data["bboxes"],
-                     columns=['x_min', 'y_min', 'x_max', 'y_max', "label"]).values
+holdout_predictions = rescaler(holdout_predictions, holdout_gt_df, "height", "width",
+                               "transformed_height",
+                               "transformed_width")
 
 # %% --------------------
 confidence_filter_thr = 0.05
@@ -100,6 +90,7 @@ normal_pred_df_nms = pd.DataFrame(normal_pred_nms,
 
 # %% --------------------
 validation_conf_nms = validation_conf_nms.append(normal_pred_df_nms)
+validation_conf_nms = validation_conf_nms.round(3)
 
 # %% --------------------
 # normalize

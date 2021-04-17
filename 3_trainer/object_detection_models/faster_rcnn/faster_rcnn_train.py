@@ -43,7 +43,7 @@ train_gt_dataframe = f"{SPLIT_DIR}/512/unmerged/90_percent_train/object_detectio
 val_gt_dataframe = f"{SPLIT_DIR}/512/unmerged/90_percent_train/object_detection/10_percent/holdout_df.csv"
 external_gt_dataframe = EXTERNAL_DIR + "/transformed_train.csv"
 flag_path = f"{BASE_DIR}/3_trainer/object_detection_models/faster_rcnn/configurations/v5.yaml"
-output_dir = f"{BASE_DIR}/3_trainer/object_detection_models/faster_rcnn/faster_rcnn_output"
+output_dir = f"{BASE_DIR}/3_trainer/object_detection_models/faster_rcnn/faster_rcnn_output_no_rotate"
 
 # %% --------------------READ FLAGS
 flag = Flags().load_yaml(flag_path)

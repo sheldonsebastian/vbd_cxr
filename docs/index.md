@@ -13,7 +13,7 @@ Amna Gul, Sheldon Sebastian
 ----------------------------
 ### Video Presentation
 
-![[](https://drive.google.com/file/d/1YAfHQ9DC5NiKgvadFy7bjWqoNWy8h-Tx/view?usp=sharing)](saved_images/video_presentation.png)
+<a target="_blank" href="https://drive.google.com/file/d/1YAfHQ9DC5NiKgvadFy7bjWqoNWy8h-Tx/view?usp=sharing">![](saved_images/video_presentation.png)</a>
 
 ----------------------------
 # Table of Contents:

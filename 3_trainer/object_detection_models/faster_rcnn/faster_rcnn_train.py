@@ -34,7 +34,7 @@ import shutil
 
 # %% --------------------DIRECTORIES and VARIABLES
 IMAGE_DIR = f"{BASE_DIR}/input_data/512x512/train"
-EXTERNAL_DIR = f"{BASE_DIR}/input_data/external/512"
+EXTERNAL_DIR = f"{BASE_DIR}/input_data/external/"
 SPLIT_DIR = f"{BASE_DIR}/2_data_split"
 SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
 
@@ -43,7 +43,7 @@ train_gt_dataframe = f"{SPLIT_DIR}/512/unmerged/90_percent_train/object_detectio
 val_gt_dataframe = f"{SPLIT_DIR}/512/unmerged/90_percent_train/object_detection/10_percent/holdout_df.csv"
 external_gt_dataframe = EXTERNAL_DIR + "/transformed_train.csv"
 flag_path = f"{BASE_DIR}/3_trainer/object_detection_models/faster_rcnn/configurations/v5.yaml"
-output_dir = f"{BASE_DIR}/3_trainer/object_detection_models/faster_rcnn/faster_rcnn_output_no_rotate"
+output_dir = f"{BASE_DIR}/3_trainer/object_detection_models/faster_rcnn/faster_rcnn_output"
 
 # %% --------------------READ FLAGS
 flag = Flags().load_yaml(flag_path)
@@ -60,7 +60,7 @@ thing_classes = ["Aortic enlargement", "Atelectasis", "Calcification", "Cardiome
 # lambda is anonymous function
 # train dataset
 DatasetCatalog.register("train", lambda: get_train_detectron_dataset(IMAGE_DIR, train_gt_dataframe,
-                                                                     EXTERNAL_DIR,
+                                                                     EXTERNAL_DIR+"/512",
                                                                      external_gt_dataframe))
 MetadataCatalog.get("train").set(thing_classes=thing_classes)
 

@@ -28,7 +28,7 @@ label2color = get_label_2_color_dict()
 original_image_ids = gt["image_id"].unique()
 
 # %% --------------------
-for image_id in original_image_ids[10:20]:
+for image_id in original_image_ids[0:20]:
     img_as_arr = get_image_as_array(f"{BASE_DIR}/input_data/512x512/train/{image_id}.png")
 
     # %% --------------------

@@ -28,8 +28,8 @@ iou_thr = 0.3
 
 # %% --------------------read the predictions
 resnet152 = pd.read_csv(
-    f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_2_class_resnet152.csv")
-vgg19 = pd.read_csv(f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_2_class_vgg19.csv")
+    f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_resnet152.csv")
+vgg19 = pd.read_csv(f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_vgg19.csv")
 faster_rcnn = pd.read_csv(f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_faster_rcnn.csv")
 yolov5 = pd.read_csv(f"{BASE_DIR}/6_inference_on_kaggle_test_files/files/test_yolov5.csv")
 

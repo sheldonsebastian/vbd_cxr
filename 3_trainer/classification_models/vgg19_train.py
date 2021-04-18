@@ -41,10 +41,10 @@ SPLIT_DIR = f"{BASE_DIR}/2_data_split"
 SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
 
 # %% --------------------TENSORBOARD DIRECTORY INITIALIZATION
-train_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/vgg19_again/train"
+train_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/vgg19/train"
 os.makedirs(train_tensorboard_dir, exist_ok=True)
 
-validation_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/vgg19_again/validation"
+validation_tensorboard_dir = f"{BASE_DIR}/3_trainer/classification_models/vgg19/validation"
 os.makedirs(validation_tensorboard_dir, exist_ok=True)
 
 # if logs already exist then delete them
@@ -68,13 +68,16 @@ train_transformer = albumentations.Compose([
     albumentations.augmentations.transforms.ShiftScaleRotate(rotate_limit=5, p=0.4),
     # horizontal flipping
     albumentations.augmentations.transforms.HorizontalFlip(p=0.4),
-
+    # resize operation
+    albumentations.Resize(height=512, width=512, always_apply=True),
     # this normalization is performed based on ImageNet statistics per channel
     # mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)
     albumentations.augmentations.transforms.Normalize()
 ])
 
 validation_transformer = albumentations.Compose([
+    # resize operation
+    albumentations.Resize(height=512, width=512, always_apply=True),
     # this normalization is performed based on ImageNet statistics per channel
     # mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)
     albumentations.augmentations.transforms.Normalize()
@@ -204,7 +207,7 @@ lowest_loss = 10000000
 best_model_found_epoch = 0
 
 os.makedirs(SAVED_MODEL_DIRECTORY, exist_ok=True)
-saved_model_path = f"{SAVED_MODEL_DIRECTORY}/vgg19_again.pt"
+saved_model_path = f"{SAVED_MODEL_DIRECTORY}/vgg19.pt"
 
 print("Program started")
 # start time

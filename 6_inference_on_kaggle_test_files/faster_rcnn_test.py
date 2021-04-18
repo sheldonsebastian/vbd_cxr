@@ -149,7 +149,7 @@ results = pd.DataFrame(outputs_arr,
 print("Finished Inference")
 
 # %% --------------------
-test_path = f"{BASE_DIR}/6_kaggle_test_files/files"
+test_path = f"{BASE_DIR}/6_inference_on_kaggle_test_files/files"
 if not Path(test_path).exists():
     os.makedirs(test_path)
 

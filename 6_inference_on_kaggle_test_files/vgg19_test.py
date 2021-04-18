@@ -48,7 +48,7 @@ workers = 4
 
 # create dataloader
 test_data_loader = torch.utils.data.DataLoader(test_data_set, batch_size=BATCH_SIZE,
-                                                  shuffle=False, num_workers=workers)
+                                               shuffle=False, num_workers=workers)
 
 # %% --------------------
 # define device
@@ -126,12 +126,12 @@ print("Predictions Complete")
 print("End time:" + str(datetime.now() - start))
 
 test_predictions = pd.DataFrame({"image_id": image_id_arr,
-                                    "target": pred_label_arr,
-                                    "probabilities": pred_prob_arr})
+                                 "target": pred_label_arr,
+                                 "probabilities": pred_prob_arr})
 
 # %% --------------------
 # test path
-test_path = f"{BASE_DIR}/6_kaggle_test_files/files"
+test_path = f"{BASE_DIR}/6_inference_on_kaggle_test_files/files"
 
 if not Path(test_path).exists():
     os.makedirs(test_path)

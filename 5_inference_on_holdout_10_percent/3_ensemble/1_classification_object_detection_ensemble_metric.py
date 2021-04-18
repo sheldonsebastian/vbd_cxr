@@ -28,7 +28,7 @@ iou_thr = 0.3
 # %% --------------------
 # 2 class filter prediction
 binary_prediction = pd.read_csv(
-    f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_vgg19.csv")
+    f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_ensemble_classification.csv")
 
 faster_rcnn = pd.read_csv(
     f"{BASE_DIR}/5_inference_on_holdout_10_percent/0_predictions/holdout_faster_rcnn.csv")
@@ -94,7 +94,6 @@ ensembled_outputs = ensemble_object_detectors(post_processed_predictors, holdout
                                               [3, 9])
 
 # %% --------------------CONF + NMS
-iou_thr = 0.3
 validation_conf_nms = post_process_conf_filter_nms(ensembled_outputs, confidence_filter_thr,
                                                    iou_thr)
 

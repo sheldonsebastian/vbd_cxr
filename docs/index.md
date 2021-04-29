@@ -11,7 +11,7 @@ Amna Gul, Sheldon Sebastian
 
 Deep learning has played a crucial role in advancing the field of health care especially for analyzing images. However, within the healthcare domain, automatic detection of abnormalities in Chest X-Rays (CXRs) is an area where very limited research has been done. So the goal of this project is to provide doctors with computer-aided diagnostic assistance to locate common lung diseases. 
 
-<br>
+<br><br>
 
 <i>Keywords</i>: Computer Vision, Deep Learning, Object Detection, Chest X-rays
 
@@ -247,7 +247,7 @@ After performing stratified splitting of data we trained the following models:
 <li> YOLOv5 </li>
 </ol>
 
-Resnet152 and VGG19 were used to classify whether the CXR is healthy or unhealthy and Faster RCNN and YOLOv5 were used for abnormality detection of 14 thoracic diseases. For evaluating the classification models we used F1 score and for evaluating object detection models we used mean average precision (mAP) with IoU of 0.4.
+Resnet152 and VGG19 were used to classify whether the CXR is healthy or unhealthy and Faster RCNN and YOLOv5 were used for abnormality detection of 14 thoracic diseases. For evaluating the classification models we used <b>F1 score</b> and for evaluating object detection models we used <b>mean average precision (mAP) with IoU of 0.4.</b>
 
 </div>
 
@@ -256,9 +256,9 @@ Resnet152 and VGG19 were used to classify whether the CXR is healthy or unhealth
 
 <div style="text-align: justify">
 
-Resnet152 and VGG19 models were created using PyTorch and trained using pretrained weights<sup>[8]</sup>. The models were trained for 5 epochs with all the layers frozen except the last layer and then were trained for additional 25 epochs with all layers unfrozen and with a reduced learning rate<sup>[7]</sup>.
+Resnet152 and VGG19 models were created using PyTorch and trained using pretrained weights<sup>[8]</sup>. The models were trained for 5 epochs with all the layers frozen except the last layer and then were trained for additional 25 epochs with all layers unfrozen and with a reduced learning rate<sup>[7]</sup>.<br><br>
 
-The final layer had a single neuron that would specify whether the CXR is healthy or unhealthy. The loss function used to train the models was BCEWithLogitsLoss<sup>[9]</sup>. To handle the class imbalance, the minority unhealthy CXR class was oversampled, and additionally, class weights were used in the loss function<sup>[20]</sup>.
+The final layer had a single neuron that would specify whether the CXR is healthy or unhealthy. The loss function used to train the models was BCEWithLogitsLoss<sup>[9]</sup>. To handle the class imbalance, the minority unhealthy CXR class was oversampled, and additionally, class weights were used in the loss function<sup>[20]</sup>.<br><br>
 
 The training data and validation data were normalized using ImageNet statistics. When training the models to avoid overfitting, the following augmentations from the albumentations<sup>[21]</sup> package were applied for the training dataset:
 <ul>
@@ -274,9 +274,9 @@ The batch size used during training was 8 and the optimizer used was Adam with a
 
 <div style="text-align: justify">
 
-Faster RCNN is a two-stage object detector where it first finds regions of interest and then classifies them. Faster RCNN model was created using the detectron2<sup>[10]</sup> framework and was trained using pretrained backbone Resnet101 with FPN<sup>[11]</sup>. 
+Faster RCNN is a two-stage object detector where it first finds regions of interest and then classifies them. Faster RCNN model was created using the detectron2<sup>[10]</sup> framework and was trained using pretrained backbone Resnet101 with FPN<sup>[11]</sup>.<br><br> 
 
-The model was trained for 30 epochs and the model state was saved periodically. The last epoch model was the best performing model. Stochastic gradient descent was used as optimizer with a base learning rate of 0.001. The learning rate scheduler used was warmup cosine and the batch size was 2. 
+The model was trained for 30 epochs and the model state was saved periodically. The last epoch model was the best performing model. Stochastic gradient descent was used as optimizer with a base learning rate of 0.001. The learning rate scheduler used was warmup cosine and the batch size was 2.<br><br> 
 
 To identify abnormalities of various sizes custom anchor sizes of 2, 4, 8, 16, 32, 64, 128, 256 and 512 were used with aspect ratio of 0.33, 0.5, 1.0, 2.0 and 2.5. The augmentations used for the training dataset are as follows:
 <ul>
@@ -292,9 +292,9 @@ To handle the class imbalance in object detection models, external dataset from 
 
 <div style="text-align: justify">
 
-YOLOv5<sup>[16][17]</sup> is a single-stage detector based on PyTorch framework. The bounding box data was converted to be compatible with the YOLOv5 format (x -mid, y-mid, width, height). For training purposes, the data was split into training and validation datasets. The pretrained yolo5x.pt (largest in YOLO family) model was used.
+YOLOv5<sup>[16][17]</sup> is a single-stage detector based on PyTorch framework. The bounding box data was converted to be compatible with the YOLOv5 format (x -mid, y-mid, width, height). For training purposes, the data was split into training and validation datasets. The pretrained yolo5x.pt (largest in YOLO family) model was used.<br><br>
 
-By default stochastic gradient descent was used as optimizer and the anchor boxes were automatically learned using k-means and genetic algorithm. The learning rate for training was 0.002 and the batch size was 16. The model was trained using the default YOLOv5 data augmentations for a total of 30 epochs.
+By default stochastic gradient descent was used as optimizer and the anchor boxes were automatically learned using k-means and genetic algorithm. The learning rate for training was 0.002 and the batch size was 16. The model was trained using the default YOLOv5 data augmentations for a total of 30 epochs.<br><br>
 
 </div>
 
@@ -302,11 +302,11 @@ By default stochastic gradient descent was used as optimizer and the anchor boxe
 
 <div style="text-align: justify">
 
-<u>Ensembling Classification Models</u>: For Resnet152 and VGG19 classification models, the prediction probabilities were combined by taking their average.<br>
+<u>Ensembling Classification Models</u>: For Resnet152 and VGG19 classification models, the prediction probabilities were combined by taking their average.<br><br>
 
-<u>Ensembling Object Detection Models</u>: To combine the results of Faster RCNN and YOLOv5, weighted boxes fusion(WBF)<sup>[5][18]</sup> was used with weights of 3:9 respectively. The outputs of Faster RCNN and YOLOv5 were post-processed using NMS with an IoU threshold of 0.3 and a confidence threshold of 0.05. The processed outputs were then fused together using WBF and the fused outputs were again post-processed using NMS with an IoU threshold of 0.3 and a confidence threshold of 0.05<br>
+<u>Ensembling Object Detection Models</u>: To combine the results of Faster RCNN and YOLOv5, weighted boxes fusion(WBF)<sup>[5][18]</sup> was used with weights of 3:9 respectively. The outputs of Faster RCNN and YOLOv5 were post-processed using NMS with an IoU threshold of 0.3 and a confidence threshold of 0.05. The processed outputs were then fused together using WBF and the fused outputs were again post-processed using NMS with an IoU threshold of 0.3 and a confidence threshold of 0.05<br><br>
 
-<u>Ensembling Classification and Object Detection Models</u>: We used thresholding logic<sup>[19]</sup> (as shown in Figure 9) to ensemble the classification and object detection models instead of a hierarchical approach. <br>
+<u>Ensembling Classification and Object Detection Models</u>: We used thresholding logic<sup>[19]</sup> (as shown in Figure 9) to ensemble the classification and object detection models instead of a hierarchical approach. <br><br>
 
 </div>
 
@@ -319,15 +319,15 @@ In Figure 9, the lower threshold was set to 0.05 and the upper threshold was set
 
 The steps for thresholding logic are as follow:
 
-Step 1: If classification model prediction probability (close to 0 means healthy and close to 1 means unhealthy) is less than the lower threshold then use the classification model prediction i.e. No findings class with a 100% confidence score. For example, the below figure shows ground truth vs predicted annotations:
+<b>Step 1:</b> If classification model prediction probability (close to 0 means healthy and close to 1 means unhealthy) is less than the lower threshold then use the classification model prediction i.e. No findings class with a 100% confidence score. For example, the below figure shows ground truth vs predicted annotations:
 
 ![img.png](saved_images/thresholding_1.png)
 
-Step 2: If classification model prediction probability is greater than the upper threshold then use the object detection model prediction as is. For example, the below figure shows ground truth vs predicted annotations:
+<b>Step 2:</b> If classification model prediction probability is greater than the upper threshold then use the object detection model prediction as is. For example, the below figure shows ground truth vs predicted annotations:
 
 ![img.png](saved_images/thresholding_2.png)
 
-Step 3: If classification model prediction probability is less than the upper threshold but greater than the lower threshold then we add the classification model output i.e. No findings class with classification model prediction probability as confidence score, to the object detection predictions. For example, the below figure shows ground truth vs predicted annotations:
+<b>Step 3:</b> If classification model prediction probability is less than the upper threshold but greater than the lower threshold then we add the classification model output i.e. No findings class with classification model prediction probability as confidence score, to the object detection predictions. For example, the below figure shows ground truth vs predicted annotations:
 
 ![img.png](saved_images/thresholding_3.png)
 
@@ -338,7 +338,7 @@ Using the thresholding logic, mAP of the No Findings class improved from <b>0.13
 
 <div style="text-align: justify">
 
-With the help of transfer learning and class imbalance handling techniques, the classification models were able to distinguish between healthy and unhealthy images with a very high F1 score of approximately 90%. On the other hand, the highest mAP value obtained through object detection models was 0.19 which got increased to 0.29 after applying threshold logic for the “No finding” class.
+With the help of transfer learning and class imbalance handling techniques, the classification models were able to distinguish between healthy and unhealthy images with a very high F1 score of approximately 90%. On the other hand, the highest mAP value obtained through object detection models was 0.19 which got increased to 0.29 after applying threshold logic for the “No finding” class.<br><br>
 The table below summarizes the individual best performance obtained on each of our deep learning models. 
 
 </div>
@@ -350,9 +350,9 @@ The table below summarizes the individual best performance obtained on each of o
 
 <div style="text-align: justify">
 
-From the above results, it can be concluded that the ensemble model approach gave the best performance with a boost of almost 50% on the holdout set. 
+From the above results, it can be concluded that the ensemble model approach gave the best performance with a boost of almost 50% on the holdout set.<br><br> 
 
-To further validate our results, 3000 test dataset images were passed through our model and final predictions were submitted on Kaggle’s competition page which scored among the *top 14%* of solutions with mAP of 0.235 on the competition’s private leaderboard. 
+To further validate our results, 3000 test dataset images were passed through our model and final predictions were submitted on Kaggle’s competition page which scored among the *top 14%* of solutions with mAP of 0.235 on the competition’s private leaderboard.<br><br> 
 
 Based on the results, our model can potentially serve as a second opinion to doctors in diagnosing abnormalities in Chest X-rays. Further improvements in the model can prove to be a stepping stone for automating abnormality detection in Chest X-rays.  
 
@@ -362,9 +362,9 @@ Based on the results, our model can potentially serve as a second opinion to doc
 
 <div style="text-align: justify">
 
-Due to a lack of expertise in the medical domain, it was challenging to perform feature engineering and other related tasks on the dataset as the abnormalities in CXRs are hardly distinguishable to an untrained eye. 
+Due to a lack of expertise in the medical domain, it was challenging to perform feature engineering and other related tasks on the dataset as the abnormalities in CXRs are hardly distinguishable to an untrained eye.<br><br> 
 
-Furthermore, doctors usually consult a patient’s medical history and other demographic metadata before making a prognosis but our dataset did not fully contain that information.
+Furthermore, doctors usually consult a patient’s medical history and other demographic metadata before making a prognosis but our dataset did not fully contain that information.<br><br>
 
 Also, the dataset consisted of 15,000 images which is not a sufficient quantity to fully train a deep learning model for detecting 14 abnormalities. So we tried collecting CXRs from external sources but almost all of the publicly available CXR datasets we found had labels only for classification instead of object detection.
 
@@ -388,76 +388,53 @@ The following extensions can be added to the current project for future work:
 
 [1] Kaggle Competition https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection
 <br>
-<br>
 [2] Link to EDA Notebook https://www.kaggle.com/guluna/eda-cxr
-<br>
 <br>
 [3] https://www.kaggle.com/sakuraandblackcat/chest-x-ray-knowledges-for-the-14-abnormalities
 <br>
-<br>
 [4] Nguyen, Ha Q., and Khanh Lam et al. VinDr-CXR: An Open Dataset of Chest X-Rays With radiologist’s Annotations. Jan. 2021. https://arxiv.org/pdf/2012.15029.pdf
-<br>
 <br>
 [5] Solovyev, Roman, and Weimin Wang. Weighted Boxes Fusion: Ensembling Boxes for Object Detection Models. Oct. 2019. https://arxiv.org/abs/1910.13302v1
 <br>
-<br>
 [6] Sirazitdinov, Ilyas, et al. “Deep Neural Network Ensemble for Pneumonia Localization from a Large-Scale Chest x-Ray Database.” Computers & Electrical Engineering, vol. 78, Sept. 2019, doi:10.1016/j.compeleceng.2019.08.004. https://www.sciencedirect.com/science/article/abs/pii/S0045790618332890?via=ihub
-<br>
 <br>
 [7] Guo, R., Passi, K.; Jain, C. (2020, August 13). Tuberculosis diagnostics and localization in chest x-rays via deep learning models.
 https://www.frontiersin.org/articles/10.3389/frai.2020.583427/full
 <br>
-<br>
 [8] https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
 <br>
-<br>
 [9] https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html
-<br>
 <br>
 [10] Yuxin Wu, Alexander Kirillov, Francisco Massa, and Wan-Yen Lo, & Ross Girshick. (2019).
 Detectron2. https://github.com/facebookresearch/detectron2.
 <br>
-<br>
 [11] https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml
-<br>
 <br>
 [12] Wang X, Peng Y, Lu L, Lu Z, Bagheri M, Summers RM. ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks on Weakly-Supervised Classification and Localization of Common Thorax Diseases. IEEE CVPR 2017,
 ChestX-ray8Hospital-ScaleChestCVPR2017_paper.pdf
 <br>
-<br>
 [13]https://detectron2.readthedocs.io/en/latest/modules/data.html?highlight=RepeatFactorTrainingSampler#detectron2.data.samplers.RepeatFactorTrainingSampler
-<br>
 <br>
 [14] https://www.kaggle.com/nih-chest-xrays/data
 <br>
-<br>
 [15]https://www.kaggle.com/guluna/10percent-train-as-test-512images?scriptVersionId=57768659
-<br>
 <br>
 [16] Glenn Jocher, Alex Stoken, Jirka Borovec, NanoCode012, Ayush Chaurasia, TaoXie, … Francisco Ingham. (2021, April 11). ultralytics/yolov5: v5.0 - YOLOv5-P6 1280 models, AWS, Supervise.ly and YouTube integrations (Version v5.0). Zenodo.
 http://doi.org/10.5281/zenodo.4679653
 <br>
-<br>
 [17] https://github.com/ultralytics/yolov5
-<br>
 <br>
 [18] https://github.com/ZFTurbo/Weighted-Boxes-Fusion
 <br>
-<br>
 [19] https://www.kaggle.com/awsaf49/vinbigdata-2-class-filter
-<br>
 <br>
 [20] Tahira Iqbal, Arslan Shaukat, Usman Akram, Zartasha Mustansar, & Yung-Cheol Byun. (2020). A Hybrid VDV Model for Automatic Diagnosis of Pneumothorax using Class-Imbalanced Chest X-rays Dataset.
 <br>
-<br>
 [21] Buslaev, A., Iglovikov, V., Khvedchenya, E., Parinov, A., Druzhinin, M., & Kalinin, A. (2020). Albumentations: Fast and Flexible Image Augmentations. Information, 11(2).
-<br>
 <br>
 [22] Link to all code files https://github.com/sheldonsebastian/vbd_cxr
 <br>
-<br>
 [23] Link to download trained model files https://www.kaggle.com/sheldonsebastian/vbd-cxr-files
-<br>
 <br>
 </div>
 

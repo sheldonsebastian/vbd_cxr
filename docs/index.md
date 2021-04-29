@@ -3,7 +3,7 @@
 Amna Gul, Sheldon Sebastian
 
 ![](saved_images/banner.jpg)
-<center>Photo by <a href="https://unsplash.com/@valda_photography?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Günter Valda</a> on <a href="https://unsplash.com/s/photos/radiology?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></center>
+<center>Photo by <a href="https://unsplash.com/@nci?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">National Cancer Institute</a> on <a href="https://unsplash.com/s/photos/radiologist?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></center>
 
 ## Abstract
 

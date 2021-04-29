@@ -97,12 +97,12 @@ The scope of our project is passing a raw CXR image to our trained machine learn
 
 </div>
 
-![](saved_images/figure_1.png)
+<center><img src="saved_images/figure_1.png"/></center>
 <center>Figure 1</center>
 
 <br>
 
-![](saved_images/workflow.png)
+<center><img src="saved_images/workflow.png"/></center>
 
 <div style="text-align: justify">
 
@@ -163,10 +163,8 @@ The description of each column is given below:
 
 A sample image (and its corresponding annotations) from the training dataset is given below:
 
-  
-![img.png](saved_images/figure_3.png)
-
-Figure 3
+<center><img src="saved_images/figure_3.png"/></center>
+<center>Figure 3</center>
 
 ### Exploratory Data Analysis
 
@@ -177,7 +175,7 @@ The total number of annotations in the dataset is 67,914. The bar chart in Figur
 
 </div>
 
-![img.png](saved_images/figure_4.png)
+<center><img src="saved_images/figure_4.png"/></center>
 <center>Figure 4<sup>[2]</sup></center>
 
 
@@ -191,7 +189,7 @@ Figure 5 below shows that
 
 </div>
 
-![img.png](saved_images/figure_5.png)
+<center><img src="saved_images/figure_5.png"/></center>
 <center>Figure 5<sup>[2]</sup></center>
 
 
@@ -205,7 +203,7 @@ Figure 6 below was created using bounding box information of each class to ident
 </ul>
 </div>
 
-![img.png](saved_images/figure_6.png)
+<center><img src="saved_images/figure_6.png"/></center>
 <center>Figure 6<sup>[2]</sup></center>
 
 
@@ -215,7 +213,7 @@ Further investigating the bounding box statistics per class, a box plot (Figure 
 
 </div>
 
-![img.png](saved_images/figure_7.png)
+<center><img src="saved_images/figure_7.png"/></center>
 <center>Figure 7<sup>[2]</sup></center>
 
 
@@ -233,7 +231,7 @@ The following preprocessing steps were performed before passing data to deep lea
 </ul>
 </div>
 
-![img.png](saved_images/figure_8.png)
+<center><img src="saved_images/figure_8.png"/></center>
 <center>Figure 8</center>
 
 
@@ -312,7 +310,7 @@ By default stochastic gradient descent was used as optimizer and the anchor boxe
 
 </div>
 
-![img.png](saved_images/figure_9.png)
+<center><img src="saved_images/figure_9.png"/></center>
 <center>Figure 9</center>
 
 
@@ -345,7 +343,8 @@ The table below summarizes the individual best performance obtained on each of o
 
 </div>
 
-![img.png](saved_images/results.png)
+<center><img src="saved_images/results.png"/></center>
+
 
 ## Conclusion
 
@@ -389,53 +388,76 @@ The following extensions can be added to the current project for future work:
 
 [1] Kaggle Competition https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection
 <br>
+<br>
 [2] Link to EDA Notebook https://www.kaggle.com/guluna/eda-cxr
+<br>
 <br>
 [3] https://www.kaggle.com/sakuraandblackcat/chest-x-ray-knowledges-for-the-14-abnormalities
 <br>
+<br>
 [4] Nguyen, Ha Q., and Khanh Lam et al. VinDr-CXR: An Open Dataset of Chest X-Rays With radiologist’s Annotations. Jan. 2021. https://arxiv.org/pdf/2012.15029.pdf
+<br>
 <br>
 [5] Solovyev, Roman, and Weimin Wang. Weighted Boxes Fusion: Ensembling Boxes for Object Detection Models. Oct. 2019. https://arxiv.org/abs/1910.13302v1
 <br>
+<br>
 [6] Sirazitdinov, Ilyas, et al. “Deep Neural Network Ensemble for Pneumonia Localization from a Large-Scale Chest x-Ray Database.” Computers & Electrical Engineering, vol. 78, Sept. 2019, doi:10.1016/j.compeleceng.2019.08.004. https://www.sciencedirect.com/science/article/abs/pii/S0045790618332890?via=ihub
+<br>
 <br>
 [7] Guo, R., Passi, K.; Jain, C. (2020, August 13). Tuberculosis diagnostics and localization in chest x-rays via deep learning models.
 https://www.frontiersin.org/articles/10.3389/frai.2020.583427/full
 <br>
+<br>
 [8] https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
 <br>
+<br>
 [9] https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html
+<br>
 <br>
 [10] Yuxin Wu, Alexander Kirillov, Francisco Massa, and Wan-Yen Lo, & Ross Girshick. (2019).
 Detectron2. https://github.com/facebookresearch/detectron2.
 <br>
+<br>
 [11] https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml
+<br>
 <br>
 [12] Wang X, Peng Y, Lu L, Lu Z, Bagheri M, Summers RM. ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks on Weakly-Supervised Classification and Localization of Common Thorax Diseases. IEEE CVPR 2017,
 ChestX-ray8Hospital-ScaleChestCVPR2017_paper.pdf
 <br>
+<br>
 [13]https://detectron2.readthedocs.io/en/latest/modules/data.html?highlight=RepeatFactorTrainingSampler#detectron2.data.samplers.RepeatFactorTrainingSampler
+<br>
 <br>
 [14] https://www.kaggle.com/nih-chest-xrays/data
 <br>
+<br>
 [15]https://www.kaggle.com/guluna/10percent-train-as-test-512images?scriptVersionId=57768659
+<br>
 <br>
 [16] Glenn Jocher, Alex Stoken, Jirka Borovec, NanoCode012, Ayush Chaurasia, TaoXie, … Francisco Ingham. (2021, April 11). ultralytics/yolov5: v5.0 - YOLOv5-P6 1280 models, AWS, Supervise.ly and YouTube integrations (Version v5.0). Zenodo.
 http://doi.org/10.5281/zenodo.4679653
 <br>
+<br>
 [17] https://github.com/ultralytics/yolov5
+<br>
 <br>
 [18] https://github.com/ZFTurbo/Weighted-Boxes-Fusion
 <br>
+<br>
 [19] https://www.kaggle.com/awsaf49/vinbigdata-2-class-filter
+<br>
 <br>
 [20] Tahira Iqbal, Arslan Shaukat, Usman Akram, Zartasha Mustansar, & Yung-Cheol Byun. (2020). A Hybrid VDV Model for Automatic Diagnosis of Pneumothorax using Class-Imbalanced Chest X-rays Dataset.
 <br>
+<br>
 [21] Buslaev, A., Iglovikov, V., Khvedchenya, E., Parinov, A., Druzhinin, M., & Kalinin, A. (2020). Albumentations: Fast and Flexible Image Augmentations. Information, 11(2).
+<br>
 <br>
 [22] Link to all code files https://github.com/sheldonsebastian/vbd_cxr
 <br>
+<br>
 [23] Link to download trained model files https://www.kaggle.com/sheldonsebastian/vbd-cxr-files
+<br>
 <br>
 </div>
 

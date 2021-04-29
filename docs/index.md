@@ -385,7 +385,7 @@ The following extensions can be added to the current project for future work:
 
 <div style="text-align: justify">
 
-[1]Kaggle Competition https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection
+[1] Kaggle Competition https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection
 <br>
 [2] Link to EDA Notebook https://www.kaggle.com/guluna/eda-cxr
 <br>
@@ -407,7 +407,7 @@ https://www.frontiersin.org/articles/10.3389/frai.2020.583427/full
 [10] Yuxin Wu, Alexander Kirillov, Francisco Massa, and Wan-Yen Lo, & Ross Girshick. (2019).
 Detectron2. https://github.com/facebookresearch/detectron2.
 <br>
-[11]https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml
+[11] https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml
 <br>
 [12] Wang X, Peng Y, Lu L, Lu Z, Bagheri M, Summers RM. ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks on Weakly-Supervised Classification and Localization of Common Thorax Diseases. IEEE CVPR 2017,
 ChestX-ray8Hospital-ScaleChestCVPR2017_paper.pdf

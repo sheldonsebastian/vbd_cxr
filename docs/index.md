@@ -302,11 +302,11 @@ By default stochastic gradient descent was used as optimizer and the anchor boxe
 
 <div style="text-align: justify">
 
-<u>Ensembling Classification Models</u>: For Resnet152 and VGG19 classification models, the prediction probabilities were combined by taking their average.
+<u>Ensembling Classification Models</u>: For Resnet152 and VGG19 classification models, the prediction probabilities were combined by taking their average.<br>
 
-<u>Ensembling Object Detection Models</u>: To combine the results of Faster RCNN and YOLOv5, weighted boxes fusion(WBF)<sup>[5][18]</sup> was used with weights of 3:9 respectively. The outputs of Faster RCNN and YOLOv5 were post-processed using NMS with an IoU threshold of 0.3 and a confidence threshold of 0.05. The processed outputs were then fused together using WBF and the fused outputs were again post-processed using NMS with an IoU threshold of 0.3 and a confidence threshold of 0.05
+<u>Ensembling Object Detection Models</u>: To combine the results of Faster RCNN and YOLOv5, weighted boxes fusion(WBF)<sup>[5][18]</sup> was used with weights of 3:9 respectively. The outputs of Faster RCNN and YOLOv5 were post-processed using NMS with an IoU threshold of 0.3 and a confidence threshold of 0.05. The processed outputs were then fused together using WBF and the fused outputs were again post-processed using NMS with an IoU threshold of 0.3 and a confidence threshold of 0.05<br>
 
-<u>Ensembling Classification and Object Detection Models</u>: We used thresholding logic<sup>[19]</sup> (as shown in Figure 9) to ensemble the classification and object detection models instead of a hierarchical approach. 
+<u>Ensembling Classification and Object Detection Models</u>: We used thresholding logic<sup>[19]</sup> (as shown in Figure 9) to ensemble the classification and object detection models instead of a hierarchical approach. <br>
 
 </div>
 

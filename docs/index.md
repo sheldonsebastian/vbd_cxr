@@ -182,8 +182,10 @@ The total number of annotations in the dataset is 67,914. The bar chart in Figur
 <div style="text-align: justify">
 
 Figure 5 below shows that 
-- 3 of the radiologists (R9, R10, & R8 in that order) are responsible for the vast majority of annotations (~60% of all annotations)
-- Among the other 14 radiologists, there is some variation around the number of annotations made, however, these 14 radiologists all made between 3121 annotations and 812 annotations
+<ul>
+<li> 3 of the radiologists (R9, R10, & R8 in that order) are responsible for the vast majority of annotations (~60% of all annotations)</li>
+<li> Among the other 14 radiologists, there is some variation around the number of annotations made, however, these 14 radiologists all made between 3121 annotations and 812 annotations</li>
+</ul>
 
 </div>
 

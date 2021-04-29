@@ -142,6 +142,7 @@ A sample image (and its corresponding annotations) from the training dataset is 
 
   
 ![img.png](saved_images/figure_3.png)
+
 Figure 3
 
 ### Exploratory Data Analysis

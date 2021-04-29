@@ -9,6 +9,7 @@ Amna Gul, Sheldon Sebastian
 <div style="text-align: justify"> 
 Deep learning has played a crucial role in advancing the field of health care especially for analyzing images. However, within the healthcare domain, automatic detection of abnormalities in Chest X-Rays (CXRs) is an area where very limited research has been done. So the goal of this project is to provide doctors with computer-aided diagnostic assistance to locate common lung diseases. 
 </div>
+
 <br>
 
 *Keywords*: Computer Vision, Deep Learning, Object Detection, Chest X-rays
@@ -52,6 +53,8 @@ Conventional methods of manual CXR prognosis have many limitations, for example 
 Innumerable abnormalities can be present in CXRs but we focused only on the 14 most common thoracic diseases and assigned a numerical value to each of them from 0-13. 
 </div>
 
+<br>
+
 Names, as well as class IDs of these abnormalities, are listed below:
 
 | Class Id | Class Name |
@@ -83,7 +86,6 @@ The scope of our project is passing a raw CXR image to our trained machine learn
 </div>
 
 ![](saved_images/figure_1.png)
-
 <center>Figure 1</center>
 
 
@@ -120,6 +122,7 @@ The 15,000 training set images have an accompanying CSV file that has the follow
 ![](saved_images/figure_2.png)
 <center>Figure 2</center>
 
+<br>
 
 <div style="text-align: justify">
 Each row contains information about a single annotation made by a single radiologist on a single image. Furthermore, each image appears at least 3 times in the image_id column because each image was independently labeled by 3 different radiologists. 

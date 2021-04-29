@@ -6,7 +6,9 @@ Amna Gul, Sheldon Sebastian
 <center>Photo by <a href="https://unsplash.com/@valda_photography?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Günter Valda</a> on <a href="https://unsplash.com/s/photos/radiology?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></center>
 
 ## Abstract
+
 <div style="text-align: justify"> 
+
 Deep learning has played a crucial role in advancing the field of health care especially for analyzing images. However, within the healthcare domain, automatic detection of abnormalities in Chest X-Rays (CXRs) is an area where very limited research has been done. So the goal of this project is to provide doctors with computer-aided diagnostic assistance to locate common lung diseases. 
 
 <br>
@@ -46,14 +48,19 @@ Deep learning has played a crucial role in advancing the field of health care es
 ## Introduction
 
 ### Problem Statement
+
 <div style="text-align: justify">
+
 Conventional methods of manual CXR prognosis have many limitations, for example not only is it slow and costly but can also lead to misdiagnosis caused by poor human judgment. To address this problem, machine learning models can be used to classify and identify the location of abnormalities in CXRs. Such computer-aided diagnosis can help reduce the pressure on doctors and improve diagnostic quality by providing swift and accurate assessments about a patient’s condition.
+
 </div>
 
 ### Problem Elaboration
 
 <div style="text-align: justify">
+
 Innumerable abnormalities can be present in CXRs but we focused only on the 14 most common thoracic diseases and assigned a numerical value to each of them from 0-13. 
+
 </div>
 
 Names, as well as class IDs of these abnormalities, are listed below:
@@ -76,14 +83,18 @@ Names, as well as class IDs of these abnormalities, are listed below:
 | 13|  Pulmonary fibrosis |
 
 <div style="text-align: justify">
+
 If none of the above-mentioned diseases are found in a CXR, then it will be assigned to the 
 <b>“14 - No Finding”</b> class category i.e. healthy patient’s CXR. 
+
 </div>
 
 ### Project Scope
 
 <div style="text-align: justify">
+
 The scope of our project is passing a raw CXR image to our trained machine learning model(s) and get predicted abnormality detection bounding boxes overlaid on top of it as output (as shown below in Fig 1).
+
 </div>
 
 ![](saved_images/figure_1.png)
@@ -94,13 +105,17 @@ The scope of our project is passing a raw CXR image to our trained machine learn
 ![](saved_images/workflow.png)
 
 <div style="text-align: justify">
+
 The above workflow diagram provides a high-level overview of tasks that we have performed on our project from start to finish. We first pre-processed the raw data and performed exploratory data analysis on it. The pre-processed data was used for training binary classification models and object detection models. The output of all models were ensembled and based on the best validation ensembling strategy, submissions were made on Kaggle. The details of each task will be discussed in upcoming sections.
+
 </div>
 
 ## Literature Review
 
 <div style="text-align: justify">
+
 To understand how the original data was collected we read “VinDr-CXR: An Open Dataset of Chest X-Rays With radiologist’s Annotations”<sup>[4]</sup>. Once we understood how the data was collected, we shortlisted which object detection models to use based on “Deep Neural Network Ensemble for Pneumonia Localization from a Large-Scale Chest x-Ray Database”<sup>[6]</sup>. To narrow down the models to use for classifying healthy or unhealthy chest X-rays, we referred to “Tuberculosis diagnostics and localization in chest x-rays via deep learning models”<sup>[7]</sup>. We used the “Weighted Boxes Fusion: Ensembling Boxes for Object Detection Models”<sup>[5]</sup> method to ensemble object detection models by averaging the bounding boxes and confidence scores.
+
 </div>
 
 ## Methodology
@@ -108,7 +123,9 @@ To understand how the original data was collected we read “VinDr-CXR: An Open 
 ### Data Collection
 
 <div style="text-align: justify">
+
 The original dataset consists of 18,000 CXR scans (in DICOM format) collected from two major hospitals in Vietnam and made publicly available as part of a Kaggle competition<sup>[1]</sup>. A total of 17 different radiologists were involved in manually annotating this dataset. The entire dataset was further divided into a training set of 15,000 images and a test set of 3,000 images. Each scan in the training set was independently labeled by 3 radiologists while each scan in the test set was labeled by consensus of 5 radiologists.
+
 </div>
 
 ![](saved_images/data_collection.png)
@@ -116,14 +133,18 @@ The original dataset consists of 18,000 CXR scans (in DICOM format) collected fr
 ### Dataset Description
 
 <div style="text-align: justify">
+
 The 15,000 training set images have an accompanying CSV file that has the following 8 columns as shown below in Figure 2:
+
 </div>
 
 ![](saved_images/figure_2.png)
 <center>Figure 2</center>
 
 <div style="text-align: justify">
+
 Each row contains information about a single annotation made by a single radiologist on a single image. Furthermore, each image appears at least 3 times in the image_id column because each image was independently labeled by 3 different radiologists. 
+
 </div>
 
 
@@ -148,8 +169,10 @@ Figure 3
 ### Exploratory Data Analysis
 
 <div style="text-align: justify">
+
 Before diving deep into the modeling stage, first, we explored our dataset to gather meaningful insights from quantitative data. 
 The total number of annotations in the dataset is 67,914. The bar chart in Figure 4, shows the distribution of these annotations on a per-class basis. It can be observed that the “No finding” class has the highest (~31,000) number of annotations whereas the “Pneumothorax” class has the least number of annotations (226). So overall the dataset that we are dealing with is highly imbalanced.   
+
 </div>
 
 ![img.png](saved_images/figure_4.png)

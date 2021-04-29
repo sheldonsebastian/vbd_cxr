@@ -8,9 +8,9 @@ Amna Gul, Sheldon Sebastian
 ## Abstract
 <div style="text-align: justify"> 
 Deep learning has played a crucial role in advancing the field of health care especially for analyzing images. However, within the healthcare domain, automatic detection of abnormalities in Chest X-Rays (CXRs) is an area where very limited research has been done. So the goal of this project is to provide doctors with computer-aided diagnostic assistance to locate common lung diseases. 
+</div>
 
 *Keywords*: Computer Vision, Deep Learning, Object Detection, Chest X-rays
-</div>
 
 ## Video Presentation
 
@@ -46,11 +46,12 @@ Conventional methods of manual CXR prognosis have many limitations, for example 
 </div>
 
 ### Problem Elaboration
+
 <div style="text-align: justify">
 Innumerable abnormalities can be present in CXRs but we focused only on the 14 most common thoracic diseases and assigned a numerical value to each of them from 0-13. 
+</div>
 
 Names, as well as class IDs of these abnormalities, are listed below:
-</div>
 
 | Class Id | Class Name |
 | ---------| -----------|
@@ -71,7 +72,7 @@ Names, as well as class IDs of these abnormalities, are listed below:
 
 <div style="text-align: justify">
 If none of the above-mentioned diseases are found in a CXR, then it will be assigned to the 
-**“14 - No Finding”** class category i.e. healthy patient’s CXR. 
+<b>“14 - No Finding”</b> class category i.e. healthy patient’s CXR. 
 </div>
 
 ### Project Scope
@@ -116,12 +117,13 @@ The 15,000 training set images have an accompanying CSV file that has the follow
 </div>
 
 ![](saved_images/figure_2.png)
-
 <center>Figure 2</center>
+
 
 <div style="text-align: justify">
 Each row contains information about a single annotation made by a single radiologist on a single image. Furthermore, each image appears at least 3 times in the image_id column because each image was independently labeled by 3 different radiologists. 
 </div>
+
 
 The description of each column is given below:
 
@@ -136,7 +138,11 @@ The description of each column is given below:
 
 A sample image (and its corresponding annotations) from the training dataset is given below:
 
+<p align="center">
+  
 ![img.png](saved_images/figure_3.png)
+
+</p>
 
 <center>Figure 3</center>
 
@@ -148,51 +154,60 @@ The total number of annotations in the dataset is 67,914. The bar chart in Figur
 </div>
 
 ![img.png](saved_images/figure_4.png)
-
 <center>Figure 4<sup>[2]</sup></center>
 
+
 <div style="text-align: justify">
+
 Figure 5 below shows that 
 - 3 of the radiologists (R9, R10, & R8 in that order) are responsible for the vast majority of annotations (~60% of all annotations)
 - Among the other 14 radiologists, there is some variation around the number of annotations made, however, these 14 radiologists all made between 3121 annotations and 812 annotations
+
 </div>
 
 ![img.png](saved_images/figure_5.png)
-
 <center>Figure 5<sup>[2]</sup></center>
 
+
 <div style="text-align: justify">
+
 Figure 6 below was created using bounding box information of each class to identify the approximate location of each abnormality. It can be observed that:
 - Aortic Enlargement is found to be near the aortic vein (above the heart)
 - For Cardiomegaly (heart disease), the distribution is concentrated close to bottom corner of the chest 
 - For all remaining abnormalities, the distribution is lung shaped and relatively diffused
+
 </div>
 
 ![img.png](saved_images/figure_6.png)
-
 <center>Figure 6<sup>[2]</sup></center>
 
+
 <div style="text-align: justify">
+
 Further investigating the bounding box statistics per class, a box plot (Figure 7) was created that shows the distribution of bounding box areas as percentage of total image area. It can be observed that on average, “Pneumothorax” has the largest bounding boxes whereas “Nodule/Mass” has the smallest bounding boxes.
+
 </div>
 
 ![img.png](saved_images/figure_7.png)
-
 <center>Figure 7<sup>[2]</sup></center>
 
+
 ### Data Preprocessing
+
 <div style="text-align: justify">
+
 The following preprocessing steps were performed before passing data to deep learning models:
 - Converting images from DICOM to png format
 - Reducing total dataset size from ~191 GB to ~2.3 GB
 - Resizing images as well as their corresponding bounding boxes to 512 x 512 dimension
 - Converting single-channel images to RGB channels
 - Splitting train data into stratified train-holdout sets (as shown in Figure 8) to evaluate model performance
+
 </div>
 
 ![img.png](saved_images/figure_8.png)
-
 <center>Figure 8</center>
+
 
 ### Modeling
 
@@ -266,8 +281,8 @@ By default stochastic gradient descent was used as optimizer and the anchor boxe
 </div>
 
 ![img.png](saved_images/figure_9.png)
-
 <center>Figure 9</center>
+
 
 <div style="text-align: justify">
 
@@ -275,7 +290,6 @@ In Figure 9, the lower threshold was set to 0.05 and the upper threshold was set
 
 The steps for thresholding logic are as follow:
 1. If classification model prediction probability (close to 0 means healthy and close to 1 means unhealthy) is less than the lower threshold then use the classification model prediction i.e. No findings class with a 100% confidence score. For example, the below figure shows ground truth vs predicted annotations:
-
 
 ![img.png](saved_images/thresholding_1.png)
 

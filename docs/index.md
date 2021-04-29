@@ -10,7 +10,6 @@ Amna Gul, Sheldon Sebastian
 Deep learning has played a crucial role in advancing the field of health care especially for analyzing images. However, within the healthcare domain, automatic detection of abnormalities in Chest X-Rays (CXRs) is an area where very limited research has been done. So the goal of this project is to provide doctors with computer-aided diagnostic assistance to locate common lung diseases. 
 </div>
 
-
 *Keywords*: Computer Vision, Deep Learning, Object Detection, Chest X-rays
 
 ## Video Presentation

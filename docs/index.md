@@ -318,23 +318,20 @@ By default stochastic gradient descent was used as optimizer and the anchor boxe
 In Figure 9, the lower threshold was set to 0.05 and the upper threshold was set to 0.95.
 
 The steps for thresholding logic are as follow:
-<ol>
-<li> If classification model prediction probability (close to 0 means healthy and close to 1 means unhealthy) is less than the lower threshold then use the classification model prediction i.e. No findings class with a 100% confidence score. For example, the below figure shows ground truth vs predicted annotations:</li>
+
+1. If classification model prediction probability (close to 0 means healthy and close to 1 means unhealthy) is less than the lower threshold then use the classification model prediction i.e. No findings class with a 100% confidence score. For example, the below figure shows ground truth vs predicted annotations:
 
 ![img.png](saved_images/thresholding_1.png)
 
-<li> If classification model prediction probability is greater than the upper threshold then use the object detection model prediction as is. For example, the below figure shows ground truth vs predicted annotations:</li>
+2. If classification model prediction probability is greater than the upper threshold then use the object detection model prediction as is. For example, the below figure shows ground truth vs predicted annotations:
 
 ![img.png](saved_images/thresholding_2.png)
 
-<li> If classification model prediction probability is less than the upper threshold but greater than the lower threshold then we add the classification model output i.e. No findings class with classification model prediction probability as confidence score, to the object detection predictions. For example, the below figure shows ground truth vs predicted annotations: </li>
+3. If classification model prediction probability is less than the upper threshold but greater than the lower threshold then we add the classification model output i.e. No findings class with classification model prediction probability as confidence score, to the object detection predictions. For example, the below figure shows ground truth vs predicted annotations:
 
 ![img.png](saved_images/thresholding_3.png)
 
-</ol>
-
 Using the thresholding logic, mAP of the No Findings class improved from <b>0.1368 to 0.9582</b> thus improving the overall mAP from <b>0.1979 to 0.2903</b>
-
 
 
 ## Results & Analysis

@@ -314,7 +314,6 @@ By default stochastic gradient descent was used as optimizer and the anchor boxe
 <center>Figure 9</center>
 
 
-<div style="text-align: justify">
 
 In Figure 9, the lower threshold was set to 0.05 and the upper threshold was set to 0.95.
 
@@ -336,7 +335,7 @@ The steps for thresholding logic are as follow:
 
 Using the thresholding logic, mAP of the No Findings class improved from <b>0.1368 to 0.9582</b> thus improving the overall mAP from <b>0.1979 to 0.2903</b>
 
-</div>
+
 
 ## Results & Analysis
 

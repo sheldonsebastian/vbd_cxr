@@ -128,7 +128,9 @@ The original dataset consists of 18,000 CXR scans (in DICOM format) collected fr
 
 </div>
 
-![](saved_images/data_collection.png)
+<center><img src="saved_images/data_collection.png"/></center>
+
+[comment]: <> (![]&#40;saved_images/data_collection.png&#41;)
 
 ### Dataset Description
 

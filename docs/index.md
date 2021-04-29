@@ -352,7 +352,7 @@ The table below summarizes the individual best performance obtained on each of o
 
 From the above results, it can be concluded that the ensemble model approach gave the best performance with a boost of almost 50% on the holdout set.<br><br> 
 
-To further validate our results, 3000 test dataset images were passed through our model and final predictions were submitted on Kaggle’s competition page which scored among the *top 14%* of solutions with mAP of 0.235 on the competition’s private leaderboard.<br><br> 
+To further validate our results, 3000 test dataset images were passed through our model and final predictions were submitted on Kaggle’s competition page which scored among the <b>top 14%</b> of solutions with mAP of 0.235 on the competition’s private leaderboard.<br><br> 
 
 Based on the results, our model can potentially serve as a second opinion to doctors in diagnosing abnormalities in Chest X-rays. Further improvements in the model can prove to be a stepping stone for automating abnormality detection in Chest X-rays.  
 
@@ -438,7 +438,6 @@ http://doi.org/10.5281/zenodo.4679653
 <br>
 </div>
 
---------------------------------------------------
 
 ## Appendix
 

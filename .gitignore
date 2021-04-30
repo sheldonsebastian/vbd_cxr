@@ -139,3 +139,4 @@ slurm/
 input_data/512x512/test
 input_data/512x512/train
 input_data/external/512/
+4_saved_models/abnormality_detection_trained_models

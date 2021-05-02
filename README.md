@@ -1,10 +1,10 @@
 ## README
 
-#### Website:
+### Website:
 
 https://sheldonsebastian.github.io/vbd_cxr/
 
-#### Directory Structure:
+### Directory Structure:
 
 |Path|Description|
 |------------|-----------|
@@ -21,7 +21,7 @@ https://sheldonsebastian.github.io/vbd_cxr/
 |docs| files related to GitHub website|
 |input_data| folder in which input data will be placed|
 
-#### Steps to run:
+### Steps to run:
 
 1. Download processed data from .... and download external data from ... and place in root directory as "input_data" folder name.
 2. Run requirements.txt to install all required packages

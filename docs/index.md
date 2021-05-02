@@ -386,55 +386,51 @@ The following extensions can be added to the current project for future work:
 
 <div style="text-align: justify">
 
-[1] Kaggle Competition https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection
+1. Kaggle Competition https://www.kaggle.com/c/vinbigdata-chest-xray-abnormalities-detection
 <br>
-[2] Link to EDA Notebook https://www.kaggle.com/guluna/eda-cxr
+2. Link to EDA Notebook https://www.kaggle.com/guluna/eda-cxr
 <br>
-[3] https://www.kaggle.com/sakuraandblackcat/chest-x-ray-knowledges-for-the-14-abnormalities
+3. https://www.kaggle.com/sakuraandblackcat/chest-x-ray-knowledges-for-the-14-abnormalities
 <br>
-[4] Nguyen, Ha Q., and Khanh Lam et al. VinDr-CXR: An Open Dataset of Chest X-Rays With radiologist’s Annotations. Jan. 2021. https://arxiv.org/pdf/2012.15029.pdf
+4. Nguyen, Ha Q., and Khanh Lam et al. VinDr-CXR: An Open Dataset of Chest X-Rays With radiologist’s Annotations. Jan. 2021. https://arxiv.org/pdf/2012.15029.pdf
 <br>
-[5] Solovyev, Roman, and Weimin Wang. Weighted Boxes Fusion: Ensembling Boxes for Object Detection Models. Oct. 2019. https://arxiv.org/abs/1910.13302v1
+5. Solovyev, Roman, and Weimin Wang. Weighted Boxes Fusion: Ensembling Boxes for Object Detection Models. Oct. 2019. https://arxiv.org/abs/1910.13302v1
 <br>
-[6] Sirazitdinov, Ilyas, et al. “Deep Neural Network Ensemble for Pneumonia Localization from a Large-Scale Chest x-Ray Database.” Computers & Electrical Engineering, vol. 78, Sept. 2019, doi:10.1016/j.compeleceng.2019.08.004. https://www.sciencedirect.com/science/article/abs/pii/S0045790618332890?via=ihub
+6. Sirazitdinov, Ilyas, et al. “Deep Neural Network Ensemble for Pneumonia Localization from a Large-Scale Chest x-Ray Database.” Computers & Electrical Engineering, vol. 78, Sept. 2019, doi:10.1016/j.compeleceng.2019.08.004. https://www.sciencedirect.com/science/article/abs/pii/S0045790618332890?via=ihub
 <br>
-[7] Guo, R., Passi, K.; Jain, C. (2020, August 13). Tuberculosis diagnostics and localization in chest x-rays via deep learning models.
+7. Guo, R., Passi, K.; Jain, C. (2020, August 13). Tuberculosis diagnostics and localization in chest x-rays via deep learning models.
 https://www.frontiersin.org/articles/10.3389/frai.2020.583427/full
 <br>
-[8] https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
+8. https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
 <br>
-[9] https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html
+9. https://pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html
 <br>
-[10] Yuxin Wu, Alexander Kirillov, Francisco Massa, and Wan-Yen Lo, & Ross Girshick. (2019).
+10. Yuxin Wu, Alexander Kirillov, Francisco Massa, and Wan-Yen Lo, & Ross Girshick. (2019).
 Detectron2. https://github.com/facebookresearch/detectron2.
 <br>
-[11] https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml
+11. https://github.com/facebookresearch/detectron2/blob/master/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml
 <br>
-[12] Wang X, Peng Y, Lu L, Lu Z, Bagheri M, Summers RM. ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks on Weakly-Supervised Classification and Localization of Common Thorax Diseases. IEEE CVPR 2017,
+12. Wang X, Peng Y, Lu L, Lu Z, Bagheri M, Summers RM. ChestX-ray8: Hospital-scale Chest X-ray Database and Benchmarks on Weakly-Supervised Classification and Localization of Common Thorax Diseases. IEEE CVPR 2017,
 ChestX-ray8Hospital-ScaleChestCVPR2017_paper.pdf
 <br>
-[13]https://detectron2.readthedocs.io/en/latest/modules/data.html?highlight=RepeatFactorTrainingSampler#detectron2.data.samplers.RepeatFactorTrainingSampler
+13. https://detectron2.readthedocs.io/en/latest/modules/data.html?highlight=RepeatFactorTrainingSampler#detectron2.data.samplers.RepeatFactorTrainingSampler
 <br>
-[14] https://www.kaggle.com/nih-chest-xrays/data
+14. https://www.kaggle.com/nih-chest-xrays/data
 <br>
-[15]https://www.kaggle.com/guluna/10percent-train-as-test-512images?scriptVersionId=57768659
+15. https://www.kaggle.com/guluna/10percent-train-as-test-512images?scriptVersionId=57768659
 <br>
-[16] Glenn Jocher, Alex Stoken, Jirka Borovec, NanoCode012, Ayush Chaurasia, TaoXie, … Francisco Ingham. (2021, April 11). ultralytics/yolov5: v5.0 - YOLOv5-P6 1280 models, AWS, Supervise.ly and YouTube integrations (Version v5.0). Zenodo.
+16. Glenn Jocher, Alex Stoken, Jirka Borovec, NanoCode012, Ayush Chaurasia, TaoXie, … Francisco Ingham. (2021, April 11). ultralytics/yolov5: v5.0 - YOLOv5-P6 1280 models, AWS, Supervise.ly and YouTube integrations (Version v5.0). Zenodo.
 http://doi.org/10.5281/zenodo.4679653
 <br>
-[17] https://github.com/ultralytics/yolov5
+17. https://github.com/ultralytics/yolov5
 <br>
-[18] https://github.com/ZFTurbo/Weighted-Boxes-Fusion
+18. https://github.com/ZFTurbo/Weighted-Boxes-Fusion
 <br>
-[19] https://www.kaggle.com/awsaf49/vinbigdata-2-class-filter
+19. https://www.kaggle.com/awsaf49/vinbigdata-2-class-filter
 <br>
-[20] Tahira Iqbal, Arslan Shaukat, Usman Akram, Zartasha Mustansar, & Yung-Cheol Byun. (2020). A Hybrid VDV Model for Automatic Diagnosis of Pneumothorax using Class-Imbalanced Chest X-rays Dataset.
+20. Tahira Iqbal, Arslan Shaukat, Usman Akram, Zartasha Mustansar, & Yung-Cheol Byun. (2020). A Hybrid VDV Model for Automatic Diagnosis of Pneumothorax using Class-Imbalanced Chest X-rays Dataset.
 <br>
-[21] Buslaev, A., Iglovikov, V., Khvedchenya, E., Parinov, A., Druzhinin, M., & Kalinin, A. (2020). Albumentations: Fast and Flexible Image Augmentations. Information, 11(2).
-<br>
-[22] Link to all code files https://github.com/sheldonsebastian/vbd_cxr
-<br>
-[23] Link to download trained model files https://www.kaggle.com/sheldonsebastian/vbd-cxr-files
+21. Buslaev, A., Iglovikov, V., Khvedchenya, E., Parinov, A., Druzhinin, M., & Kalinin, A. (2020). Albumentations: Fast and Flexible Image Augmentations. Information, 11(2).
 <br>
 </div>
 
@@ -450,3 +446,8 @@ http://doi.org/10.5281/zenodo.4679653
 <li> We preprocessed the CXR images using Contrast Limited Adaptive Histogram Equalization (CLAHE) and Histogram normalization, but they did not give better results and were very computationally expensive.</li>
 </ul>
 </div>
+
+
+2. Link to all code files https://github.com/sheldonsebastian/vbd_cxr
+
+3. Link to download trained model files https://www.kaggle.com/sheldonsebastian/vbd-cxr-files

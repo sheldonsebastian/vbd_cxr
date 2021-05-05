@@ -331,7 +331,7 @@ The steps for thresholding logic are as follow:
 
 ![img.png](saved_images/thresholding_3.png)
 
-Using the thresholding logic, mAP of the No Findings class improved from <b>0.1368 to 0.9582</b> thus improving the overall mAP from <b>0.1979 to 0.2903</b>
+The No Findings class in our dataset is a 1x1 pixel in the top left corner of the image. Thus we need to predict a 1x1 if a chest x-ray is healthy. Using the thresholding logic, mAP of the No Findings class improved from <b>0.1368 to 0.9582</b> thus improving the overall mAP from <b>0.1979 to 0.2903</b>
 
 
 ## Results & Analysis

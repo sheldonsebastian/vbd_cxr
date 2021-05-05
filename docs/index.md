@@ -446,10 +446,14 @@ http://doi.org/10.5281/zenodo.4679653
 <li> We preprocessed the CXR images using Contrast Limited Adaptive Histogram Equalization (CLAHE) and Histogram normalization, but they did not give better results and were very computationally expensive.</li>
 </ul>
 <br>
-2. Link to all code files https://github.com/sheldonsebastian/vbd_cxr
+2. Link to all code files:
+
+ https://github.com/sheldonsebastian/vbd_cxr
 <br>
 <br>
-3. Link to download trained model files https://www.kaggle.com/sheldonsebastian/vbd-cxr-files
+3. Link to download trained model files:
+
+ https://www.kaggle.com/sheldonsebastian/vbd-cxr-files
 
 </div>
 

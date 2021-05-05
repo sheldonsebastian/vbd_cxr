@@ -12,7 +12,7 @@ https://sheldonsebastian.github.io/vbd_cxr/
 |1_eda|Code to perform EDA|
 |2_data_split|Code to split the data into train-validation-holdout|
 |3_trainer|Code to train classification models and object detection models.|
-|4_saved_models|Saved models are stored here. You can download trained models from https://www.kaggle.com/sheldonsebastian/vbd-cxr-files|
+|4_saved_models|Saved models are stored here. Download trained models from https://www.kaggle.com/sheldonsebastian/vbd-cxr-files|
 |5_inference_on_holdout_10_percent|Code to make predictions using classification, object detection, and ensemble models.|
 |6_inference_on_kaggle_test_files|Utility files to make Kaggle submissions|
 |7_deployment_files|Code related to Flask App|

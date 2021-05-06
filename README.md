@@ -8,7 +8,7 @@ https://sheldonsebastian.github.io/vbd_cxr/
 
 |Path|Description|
 |------------|-----------|
-|0_preprocessor|Code to convert DICOM to jpeg and resize images.|
+|0_preprocessor|Code to convert DICOM to png and resize images.|
 |1_eda|Code to perform EDA|
 |2_data_split|Code to split the data into train-validation-holdout|
 |3_trainer|Code to train classification models and object detection models.|
@@ -43,3 +43,4 @@ https://sheldonsebastian.github.io/vbd_cxr/
 3. [detectron2](https://github.com/facebookresearch/detectron2)
 4. [ensemble-boxes](https://github.com/ZFTurbo/Weighted-Boxes-Fusion)
 5. [Mean-Average-Precision-for-Boxes](https://github.com/ZFTurbo/Mean-Average-Precision-for-Boxes)
+6. [YOLOv5](https://github.com/ultralytics/yolov5)

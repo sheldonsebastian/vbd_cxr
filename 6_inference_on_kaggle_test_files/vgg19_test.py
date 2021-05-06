@@ -30,7 +30,8 @@ import os
 # %% --------------------DIRECTORIES and VARIABLES
 TEST_DIR = f"{BASE_DIR}/input_data/512x512"
 TEST_IMAGE_DIR = f"{BASE_DIR}/input_data/512x512/test"
-SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
+SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models/abnormality_detection_trained_models" \
+                        f"/classification_models"
 
 # %% --------------------
 # generic transformer used for validation data and holdout data

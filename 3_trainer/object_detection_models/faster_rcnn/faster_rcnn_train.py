@@ -36,7 +36,8 @@ import shutil
 IMAGE_DIR = f"{BASE_DIR}/input_data/512x512/train"
 EXTERNAL_DIR = f"{BASE_DIR}/input_data/external/"
 SPLIT_DIR = f"{BASE_DIR}/2_data_split"
-SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
+SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models/abnormality_detection_trained_models" \
+                        f"/object_detection_models"
 
 # %% --------------------
 train_gt_dataframe = f"{SPLIT_DIR}/512/unmerged/90_percent_train/object_detection/90_percent/train_df.csv"

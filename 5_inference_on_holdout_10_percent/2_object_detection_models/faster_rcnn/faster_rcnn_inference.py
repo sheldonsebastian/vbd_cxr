@@ -36,7 +36,8 @@ import os
 # %% --------------------DIRECTORIES and VARIABLES
 IMAGE_DIR = f"{BASE_DIR}/input_data/512x512/train"
 SPLIT_DIR = f"{BASE_DIR}/2_data_split"
-SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models"
+SAVED_MODEL_DIRECTORY = f"{BASE_DIR}/4_saved_models/abnormality_detection_trained_models" \
+                        f"/object_detection_models"
 
 # %% --------------------READ DATA
 holdout_gt_dataframe = f"{SPLIT_DIR}/512/unmerged/10_percent_holdout/holdout_df.csv"

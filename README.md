@@ -27,9 +27,13 @@ https://sheldonsebastian.github.io/vbd_cxr/
 2. To create data train-holdout split for classification and object detection models, run all scripts in 2_data_split in the order they appear.
 3. Download trained models from [here](https://www.kaggle.com/sheldonsebastian/vbd-cxr-files) or run all the scripts in 3_trainer.
 4. To make inference on holdout dataset using:
-    a. classification models run all scripts in 5_inference_on_holdout_10_percent/1_classification_models folder. 
+   
+    a. classification models run all scripts in 5_inference_on_holdout_10_percent/1_classification_models folder.
+   
     b. object detection model run all scripts in 5_inference_on_holdout_10_percent/2_object_detection_models folder.
+   
     c. ensemble model run all scripts in 5_inference_on_holdout_10_percent/3_ensemble folder.
+   
 4. To make inference on kaggle test dataset run all scripts in 6_inference_on_kaggle_test_files folder.
 
 ### Additional Packages required:
